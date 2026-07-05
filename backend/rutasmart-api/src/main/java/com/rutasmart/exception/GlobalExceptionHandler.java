@@ -3,6 +3,7 @@ package com.rutasmart.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -58,5 +59,21 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error(ex.getMessage()));
 
     }
+
+
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+public ResponseEntity<ApiResponse<Object>> validationException(
+        MethodArgumentNotValidException ex) {
+
+    String mensaje = ex.getBindingResult()
+            .getFieldErrors()
+            .get(0)
+            .getDefaultMessage();
+
+    return ResponseEntity.badRequest()
+            .body(ApiResponse.error(mensaje));
+}
 
 }

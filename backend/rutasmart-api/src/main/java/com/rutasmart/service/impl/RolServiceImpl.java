@@ -63,9 +63,7 @@ public class RolServiceImpl implements RolService {
             throw new BusinessException("El nombre del rol ya existe.");
         }
 
-        rol.setNombre(dto.getNombre());
-        rol.setDescripcion(dto.getDescripcion());
-        rol.setEstado(dto.getEstado());
+        mapper.updateEntity(dto, rol);
 
         Rol actualizado = repository.save(rol);
 

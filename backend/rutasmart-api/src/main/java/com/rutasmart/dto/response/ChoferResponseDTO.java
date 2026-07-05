@@ -1,16 +1,17 @@
 package com.rutasmart.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.*;
-import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LoginResponse {
+public class ChoferResponseDTO {
+
+    private Long idChofer;
 
     private Long idUsuario;
 
@@ -22,7 +23,14 @@ public class LoginResponse {
 
     private String correo;
 
-    private String rol;
+    private String telefono;
+
+    private String numeroLicencia;
+
+    private String categoriaLicencia;
+
+    private LocalDate fechaVencimiento;
+
 
     private Boolean estado;
 

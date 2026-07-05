@@ -1,6 +1,8 @@
 package com.rutasmart.service.impl;
 
-import com.rutasmart.dto.UsuarioDTO;
+import com.rutasmart.dto.UsuarioCreateDTO;
+import com.rutasmart.dto.UsuarioResponseDTO;
+import com.rutasmart.dto.UsuarioUpdateDTO;
 import com.rutasmart.entity.Rol;
 import com.rutasmart.entity.Usuario;
 import com.rutasmart.exception.BusinessException;
@@ -28,16 +30,16 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public List<UsuarioDTO> listar() {
+    public List<UsuarioResponseDTO> listar() {
 
-        return usuarioMapper.toDTOList(
+        return usuarioMapper.toResponseDTOList(
                 usuarioRepository.findAll()
         );
 
     }
 
     @Override
-    public UsuarioDTO buscarPorId(Long id) {
+    public UsuarioResponseDTO buscarPorId(Long id) {
 
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() ->
@@ -45,12 +47,12 @@ public class UsuarioServiceImpl implements UsuarioService {
                                 "Usuario no encontrado."
                         ));
 
-        return usuarioMapper.toDTO(usuario);
+        return usuarioMapper.toResponseDTO(usuario);
 
     }
 
     @Override
-    public UsuarioDTO guardar(UsuarioDTO dto) {
+    public UsuarioResponseDTO guardar(UsuarioCreateDTO dto) {
 
         if (usuarioRepository.existsByCodigo(dto.getCodigo())) {
 
@@ -78,25 +80,19 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         usuario.setRol(rol);
 
-        /*
-         * Temporal.
-         * Más adelante usaremos UsuarioCreateDTO
-         */
-
         usuario.setPasswordHash(
-                passwordEncoder.encode("123456")
+                passwordEncoder.encode(dto.getPassword())
         );
 
-        Usuario guardado =
-                usuarioRepository.save(usuario);
+        Usuario guardado = usuarioRepository.save(usuario);
 
-        return usuarioMapper.toDTO(guardado);
+        return usuarioMapper.toResponseDTO(guardado);
 
     }
 
     @Override
-    public UsuarioDTO actualizar(Long id,
-                                 UsuarioDTO dto) {
+    public UsuarioResponseDTO actualizar(Long id,
+                                         UsuarioUpdateDTO dto) {
 
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() ->
@@ -136,10 +132,9 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setEstado(dto.getEstado());
         usuario.setRol(rol);
 
-        Usuario actualizado =
-                usuarioRepository.save(usuario);
+        Usuario actualizado = usuarioRepository.save(usuario);
 
-        return usuarioMapper.toDTO(actualizado);
+        return usuarioMapper.toResponseDTO(actualizado);
 
     }
 

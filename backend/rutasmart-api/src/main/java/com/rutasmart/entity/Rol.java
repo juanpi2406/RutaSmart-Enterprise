@@ -1,4 +1,5 @@
 package com.rutasmart.entity;
+import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 public class Rol {
 
     @Id
@@ -26,7 +28,8 @@ public class Rol {
     private String descripcion;
 
     @Column(nullable = false)
-    private Boolean estado;
+    @Builder.Default
+    private Boolean estado = true;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -34,8 +37,12 @@ public class Rol {
     @Column(name = "updated_at", insertable = false)
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "rol",
-           fetch = FetchType.LAZY)
-    private List<Usuario> usuarios;
+        @OneToMany(mappedBy = "rol",
+                fetch = FetchType.LAZY)
+        private List<Usuario> usuarios;
+
+
+    
+    
 
 }

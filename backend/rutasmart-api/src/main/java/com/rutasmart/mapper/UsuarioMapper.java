@@ -1,6 +1,8 @@
 package com.rutasmart.mapper;
 
-import com.rutasmart.dto.UsuarioDTO;
+import com.rutasmart.dto.UsuarioCreateDTO;
+import com.rutasmart.dto.UsuarioResponseDTO;
+import com.rutasmart.dto.UsuarioUpdateDTO;
 import com.rutasmart.entity.Usuario;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -10,31 +12,45 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface UsuarioMapper {
 
-    /**
-     * Entity -> DTO
+    /*
+     * ============================
+     * Entity -> ResponseDTO
+     * ============================
      */
     @Mapping(source = "rol.idRol", target = "idRol")
     @Mapping(source = "rol.nombre", target = "nombreRol")
-    UsuarioDTO toDTO(Usuario usuario);
+    UsuarioResponseDTO toResponseDTO(Usuario usuario);
 
-    /**
-     * DTO -> Entity
+    /*
+     * ============================
+     * CreateDTO -> Entity
+     * ============================
      */
+    @Mapping(target = "idUsuario", ignore = true)
     @Mapping(target = "rol", ignore = true)
     @Mapping(target = "passwordHash", ignore = true)
     @Mapping(target = "ultimoLogin", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    Usuario toEntity(UsuarioDTO dto);
+    Usuario toEntity(UsuarioCreateDTO dto);
 
-    /**
-     * Lista Entity -> Lista DTO
+    /*
+     * ============================
+     * UpdateDTO -> Entity
+     * ============================
      */
-    List<UsuarioDTO> toDTOList(List<Usuario> usuarios);
+    @Mapping(target = "idUsuario", ignore = true)
+    @Mapping(target = "rol", ignore = true)
+    @Mapping(target = "passwordHash", ignore = true)
+    @Mapping(target = "ultimoLogin", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    Usuario toEntity(UsuarioUpdateDTO dto);
 
-    /**
-     * Lista DTO -> Lista Entity
+    /*
+     * ============================
+     * Lista Entity -> ResponseDTO
+     * ============================
      */
-    List<Usuario> toEntityList(List<UsuarioDTO> usuariosDTO);
-
+    List<UsuarioResponseDTO> toResponseDTOList(List<Usuario> usuarios);
 }

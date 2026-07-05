@@ -1,6 +1,8 @@
 package com.rutasmart.controller;
 
-import com.rutasmart.dto.UsuarioDTO;
+import com.rutasmart.dto.UsuarioCreateDTO;
+import com.rutasmart.dto.UsuarioResponseDTO;
+import com.rutasmart.dto.UsuarioUpdateDTO;
 import com.rutasmart.exception.ApiResponse;
 import com.rutasmart.service.interfaces.UsuarioService;
 import jakarta.validation.Valid;
@@ -23,7 +25,7 @@ public class UsuarioController {
      * Listar todos los usuarios
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UsuarioDTO>>> listar() {
+    public ResponseEntity<ApiResponse<List<UsuarioResponseDTO>>> listar() {
 
         return ResponseEntity.ok(
                 ApiResponse.success(
@@ -31,13 +33,14 @@ public class UsuarioController {
                         "Listado de usuarios obtenido correctamente."
                 )
         );
+
     }
 
     /**
      * Buscar usuario por ID
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<UsuarioDTO>> buscar(
+    public ResponseEntity<ApiResponse<UsuarioResponseDTO>> buscar(
             @PathVariable Long id) {
 
         return ResponseEntity.ok(
@@ -46,16 +49,17 @@ public class UsuarioController {
                         "Usuario encontrado."
                 )
         );
+
     }
 
     /**
      * Registrar usuario
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<UsuarioDTO>> guardar(
-            @Valid @RequestBody UsuarioDTO dto) {
+    public ResponseEntity<ApiResponse<UsuarioResponseDTO>> guardar(
+            @Valid @RequestBody UsuarioCreateDTO dto) {
 
-        UsuarioDTO usuario = service.guardar(dto);
+        UsuarioResponseDTO usuario = service.guardar(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
@@ -64,17 +68,18 @@ public class UsuarioController {
                                 "Usuario registrado correctamente."
                         )
                 );
+
     }
 
     /**
      * Actualizar usuario
      */
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<UsuarioDTO>> actualizar(
+    public ResponseEntity<ApiResponse<UsuarioResponseDTO>> actualizar(
             @PathVariable Long id,
-            @Valid @RequestBody UsuarioDTO dto) {
+            @Valid @RequestBody UsuarioUpdateDTO dto) {
 
-        UsuarioDTO usuario = service.actualizar(id, dto);
+        UsuarioResponseDTO usuario = service.actualizar(id, dto);
 
         return ResponseEntity.ok(
                 ApiResponse.success(
@@ -82,6 +87,7 @@ public class UsuarioController {
                         "Usuario actualizado correctamente."
                 )
         );
+
     }
 
     /**
@@ -99,6 +105,7 @@ public class UsuarioController {
                         "Usuario eliminado correctamente."
                 )
         );
+
     }
 
 }
