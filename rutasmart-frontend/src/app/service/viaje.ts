@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../models/usuario';
 import { Viaje } from '../models/viaje';
 
 @Injectable({
@@ -26,5 +25,17 @@ export class ViajeService {
 
   buscarPorId(id: number): Observable<Viaje> {
     return this.http.get<Viaje>(`${this.API}/${id}`);
+  }
+
+  guardar(viaje: Partial<Viaje>): Observable<Viaje> {
+    return this.http.post<Viaje>(this.API, viaje);
+  }
+
+  actualizar(id: number, viaje: Partial<Viaje>): Observable<Viaje> {
+    return this.http.put<Viaje>(`${this.API}/${id}`, viaje);
+  }
+
+  eliminar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API}/${id}`);
   }
 }

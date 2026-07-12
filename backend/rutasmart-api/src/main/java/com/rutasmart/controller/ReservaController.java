@@ -4,6 +4,7 @@ import com.rutasmart.dto.ReservaDTO;
 import com.rutasmart.service.interfaces.ReservaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,32 +17,38 @@ public class ReservaController {
 
     private final ReservaService reservaService;
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
     public List<ReservaDTO> listar() {
         return reservaService.listar();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/alumno/{idAlumno}")
     public List<ReservaDTO> listarPorAlumno(@PathVariable Long idAlumno) {
         return reservaService.listarPorAlumno(idAlumno);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/viaje/{idViaje}")
     public List<ReservaDTO> listarPorViaje(@PathVariable Long idViaje) {
         return reservaService.listarPorViaje(idViaje);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ReservaDTO buscarPorId(@PathVariable Long id) {
         return reservaService.buscarPorId(id);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ReservaDTO guardar(@RequestBody ReservaDTO dto) {
         return reservaService.guardar(dto);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/{id}")
     public ReservaDTO actualizar(@PathVariable Long id,
                                  @RequestBody ReservaDTO dto) {
@@ -50,6 +57,7 @@ public class ReservaController {
 
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {

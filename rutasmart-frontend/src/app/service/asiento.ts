@@ -1,14 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../models/usuario';
+import { Asiento } from '../models/asiento';
 
-export interface Asiento {
-    idAsiento: number;
-    idViaje: number;
-    numeroAsiento: number;
-    estado: boolean;
-}
+export type { Asiento } from '../models/asiento';
 
 @Injectable({
   providedIn: 'root'
@@ -19,5 +14,17 @@ export class AsientoService {
 
   listarPorViaje(idViaje: number): Observable<Asiento[]> {
     return this.http.get<Asiento[]>(`${this.API}/viaje/${idViaje}`);
+  }
+
+  guardar(asiento: Partial<Asiento>): Observable<Asiento> {
+    return this.http.post<Asiento>(this.API, asiento);
+  }
+
+  actualizar(id: number, asiento: Partial<Asiento>): Observable<Asiento> {
+    return this.http.put<Asiento>(`${this.API}/${id}`, asiento);
+  }
+
+  eliminar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API}/${id}`);
   }
 }

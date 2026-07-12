@@ -4,30 +4,40 @@ import { LoginComponent } from './login/login';
 import { DashboardComponent } from './dashboard/dashboard';
 import { DashboardHomeComponent } from './dashboard/home/home';
 
-/* ======== MÓDULOS EXISTENTES ======== */
+/* ======== MÓDULOS ADMINISTRACIÓN ======== */
 
 import { UsuariosComponent } from './dashboard/usuarios/usuarios';
-import { TransporteComponent } from './dashboard/transporte/transporte';
-import { ReservasComponent } from './dashboard/reservas/reservas';
-import { ReportesComponent } from './dashboard/reportes/reportes';
-
-/* ======== MÓDULOS FUTUROS ======== */
-
-/*
 import { AlumnosComponent } from './dashboard/alumnos/alumnos';
 import { ChoferesComponent } from './dashboard/choferes/choferes';
 import { BusesComponent } from './dashboard/buses/buses';
 import { RutasComponent } from './dashboard/rutas/rutas';
 import { ParaderosComponent } from './dashboard/paraderos/paraderos';
-import { ViajesComponent } from './dashboard/viajes/viajes';
 import { ProgramacionesComponent } from './dashboard/programaciones/programaciones';
+import { ViajesComponent } from './dashboard/viajes/viajes';
+import { ReservasComponent } from './dashboard/reservas/reservas';
 import { IncidenciasComponent } from './dashboard/incidencias/incidencias';
-import { PerfilComponent } from './dashboard/perfil/perfil';
-import { MisReservasComponent } from './dashboard/mis-reservas/mis-reservas';
-import { ReservarComponent } from './dashboard/reservar/reservar';
-import { MiRutaComponent } from './dashboard/mi-ruta/mi-ruta';
+import { ReportesComponent } from './dashboard/reportes/reportes';
 import { ConfiguracionComponent } from './dashboard/configuracion/configuracion';
-*/
+
+/* ======== MÓDULOS CHOFER ======== */
+
+import { MiRutaComponent } from './dashboard/mi-ruta/mi-ruta';
+import { MiProgramacionComponent } from './dashboard/mi-programacion/mi-programacion';
+
+/* ======== MÓDULOS ALUMNO ======== */
+
+import { ReservarComponent } from './dashboard/reservar/reservar';
+import { MisReservasComponent } from './dashboard/mis-reservas/mis-reservas';
+import { NotificacionesComponent } from './dashboard/notificaciones/notificaciones';
+
+/* ======== COMPARTIDOS ALUMNO/CHOFER ======== */
+
+import { PerfilComponent } from './dashboard/perfil/perfil';
+
+/* ======== GUARDS ======== */
+
+import { authGuard } from './guards/auth.guard';
+import { rolGuard } from './guards/rol.guard';
 
 export const routes: Routes = [
 
@@ -45,6 +55,7 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivate: [authGuard],
 
     children: [
 
@@ -58,100 +69,165 @@ export const routes: Routes = [
       },
 
       // =============================
-      // YA IMPLEMENTADOS
+      // ADMINISTRACIÓN (solo ADMINISTRADOR)
       // =============================
 
       {
         path: 'usuarios',
-        component: UsuariosComponent
+        component: UsuariosComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR'] }
       },
 
       {
-        path: 'transporte',
-        component: TransporteComponent
+        path: 'alumnos',
+        component: AlumnosComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR'] }
       },
+
+      {
+        path: 'choferes',
+        component: ChoferesComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR'] }
+      },
+
+      {
+        path: 'buses',
+        component: BusesComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR'] }
+      },
+
+      {
+        path: 'rutas',
+        component: RutasComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR'] }
+      },
+
+      {
+        path: 'paraderos',
+        component: ParaderosComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR'] }
+      },
+
+      {
+        path: 'programaciones',
+        component: ProgramacionesComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR'] }
+      },
+
+      {
+        path: 'viajes',
+        component: ViajesComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR'] }
+      },
+
+      // =============================
+      // RESERVAS (ADMINISTRADOR + ALUMNO)
+      // =============================
 
       {
         path: 'reservas',
-        component: ReservasComponent
+        component: ReservasComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR'] }
       },
+
+      // =============================
+      // INCIDENCIAS (ADMINISTRADOR + CHOFER)
+      // =============================
+
+      {
+        path: 'incidencias',
+        component: IncidenciasComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR', 'CHOFER'] }
+      },
+
+      {
+        path: 'reportar-incidencia',
+        component: IncidenciasComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['CHOFER'] }
+      },
+
+      // =============================
+      // CHOFER
+      // =============================
+
+      {
+        path: 'mi-ruta',
+        component: MiRutaComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['CHOFER'] }
+      },
+
+      {
+        path: 'mi-programacion',
+        component: MiProgramacionComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['CHOFER'] }
+      },
+
+      // =============================
+      // ALUMNO
+      // =============================
+
+      {
+        path: 'reservar',
+        component: ReservarComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ALUMNO'] }
+      },
+
+      {
+        path: 'mis-reservas',
+        component: MisReservasComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ALUMNO'] }
+      },
+
+      {
+        path: 'notificaciones',
+        component: NotificacionesComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ALUMNO'] }
+      },
+
+      // =============================
+      // COMPARTIDO ALUMNO/CHOFER
+      // =============================
+
+      {
+        path: 'perfil',
+        component: PerfilComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ALUMNO', 'CHOFER'] }
+      },
+
+      // =============================
+      // REPORTES Y CONFIGURACIÓN (solo ADMINISTRADOR)
+      // =============================
 
       {
         path: 'reportes',
-        component: ReportesComponent
-      },
-
-      // =============================
-      // SIGUIENTES MÓDULOS
-      // (Descomentar cuando existan)
-      // =============================
-
-      /*
-      {
-        path:'alumnos',
-        component:AlumnosComponent
+        component: ReportesComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR'] }
       },
 
       {
-        path:'choferes',
-        component:ChoferesComponent
-      },
-
-      {
-        path:'buses',
-        component:BusesComponent
-      },
-
-      {
-        path:'rutas',
-        component:RutasComponent
-      },
-
-      {
-        path:'paraderos',
-        component:ParaderosComponent
-      },
-
-      {
-        path:'programaciones',
-        component:ProgramacionesComponent
-      },
-
-      {
-        path:'viajes',
-        component:ViajesComponent
-      },
-
-      {
-        path:'incidencias',
-        component:IncidenciasComponent
-      },
-
-      {
-        path:'perfil',
-        component:PerfilComponent
-      },
-
-      {
-        path:'mis-reservas',
-        component:MisReservasComponent
-      },
-
-      {
-        path:'reservar',
-        component:ReservarComponent
-      },
-
-      {
-        path:'mi-ruta',
-        component:MiRutaComponent
-      },
-
-      {
-        path:'configuracion',
-        component:ConfiguracionComponent
+        path: 'configuracion',
+        component: ConfiguracionComponent,
+        canActivate: [rolGuard],
+        data: { roles: ['ADMINISTRADOR'] }
       }
-      */
 
     ]
 

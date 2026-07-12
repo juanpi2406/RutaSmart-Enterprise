@@ -1,0 +1,59 @@
+<div class="usuarios-container">
+
+    <div class="page-header">
+        <div>
+            <h2>Mi Ruta</h2>
+            <p>Consulta la ruta y los paraderos asignados para tu turno actual.</p>
+        </div>
+    </div>
+
+    @if(cargando){
+        <p style="color: var(--muted);">Cargando...</p>
+    } @else if(sinAsignacion){
+        <div class="tabla-container" style="padding: 30px; text-align: center; color: var(--muted);">
+            No tienes una ruta asignada actualmente.
+        </div>
+    } @else {
+
+        <div class="cards">
+            <div class="card">
+                <i class="bi bi-sign-turn-right-fill"></i>
+                <div>
+                    <span>Ruta</span>
+                    <h2>{{ ruta?.nombre }}</h2>
+                </div>
+            </div>
+
+            <div class="card">
+                <i class="bi bi-clock-fill"></i>
+                <div>
+                    <span>Hora de salida</span>
+                    <h2>{{ programacion?.horaSalida }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabla-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Orden</th>
+                        <th>Paradero</th>
+                        <th>Dirección</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(paradero of paraderos; track paradero.idParadero){
+                    <tr>
+                        <td>{{ paradero.orden }}</td>
+                        <td>{{ paradero.nombre }}</td>
+                        <td>{{ paradero.direccion ?? '-' }}</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    }
+
+</div>

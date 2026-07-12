@@ -1,90 +1,35 @@
 /*
 ==========================================================
 MODELO CHOFER
-Basado en ChoferResponseDTO
-==========================================================
-*/
-
-import { Usuario } from './usuario';
-
-export interface Chofer {
-
-    idChofer: number;
-
-    licencia: string;
-
-    categoriaLicencia: string;
-
-    fechaVencimiento: string;
-
-    estado: boolean;
-
-    usuario: Usuario;
-
-    createdAt?: string;
-
-    updatedAt?: string;
-
-}
-
-/*
-==========================================================
-DTO CREAR CHOFER
-==========================================================
-*/
-
-export interface ChoferCreate {
-
-    idUsuario: number;
-
-    licencia: string;
-
-    categoriaLicencia: string;
-
-    fechaVencimiento: string;
-
-}
-
-/*
-==========================================================
-DTO ACTUALIZAR CHOFER
-==========================================================
-*/
-
-export interface ChoferUpdate {
-
-    licencia: string;
-
-    categoriaLicencia: string;
-
-    fechaVencimiento: string;
-
-    estado: boolean;
-
-}
-
-/*
-==========================================================
-RESPUESTAS API
+Basado en ChoferResponseDTO / ChoferCreateDTO / ChoferUpdateDTO
 ==========================================================
 */
 
 export interface ChoferResponse {
-
-    success: boolean;
-
-    message: string;
-
-    data: Chofer;
-
+    idChofer: number;
+    idUsuario: number;
+    codigo: string;
+    nombres: string;
+    apellidos: string;
+    correo: string;
+    telefono: string;
+    numeroLicencia: string;
+    categoriaLicencia: string;
+    fechaVencimiento: string;
+    estado: boolean;
 }
 
-export interface ChoferListResponse {
+export interface ChoferCreate {
+    idUsuario: number;
+    numeroLicencia: string;
+    categoriaLicencia: string;
+    fechaVencimiento: string;
+    estado?: boolean;
+}
 
-    success: boolean;
-
-    message: string;
-
-    data: Chofer[];
-
+export interface ChoferUpdate {
+    numeroLicencia: string;
+    categoriaLicencia: string;
+    fechaVencimiento: string;
+    estado: boolean;
 }

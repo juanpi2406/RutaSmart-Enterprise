@@ -2,6 +2,11 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { SessionService } from '../../service/session';
+import { UsuarioService } from '../../service/usuario';
+import { AlumnoService } from '../../service/alumno';
+import { BusService } from '../../service/bus';
+import { ReservaService } from '../../service/reserva';
+import { IncidenciaService } from '../../service/incidencia';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -15,6 +20,11 @@ import { SessionService } from '../../service/session';
 export class DashboardHomeComponent implements OnInit {
 
   private session = inject(SessionService);
+  private usuarioService = inject(UsuarioService);
+  private alumnoService = inject(AlumnoService);
+  private busService = inject(BusService);
+  private reservaService = inject(ReservaService);
+  private incidenciaService = inject(IncidenciaService);
 
   usuario: any;
 
@@ -41,6 +51,9 @@ export class DashboardHomeComponent implements OnInit {
   // ==========================
   // Estado Flota
   // ==========================
+  // Nota: BusDTO solo tiene un booleano "estado" (activo/inactivo),
+  // no hay un estado operativo de 3 valores en el backend.
+  // busesEnRuta / busesMantenimiento quedan en 0 (dato no disponible).
 
   busesOperativos = 0;
 
@@ -53,8 +66,6 @@ export class DashboardHomeComponent implements OnInit {
   // ==========================
 
   reservasPorDia: any[] = [];
-
-  constructor(){}
 
   ngOnInit(): void {
 
@@ -74,109 +85,42 @@ export class DashboardHomeComponent implements OnInit {
       }
     );
 
-    this.cargarDashboard();
+    if (this.rol === 'ADMINISTRADOR') {
+      this.cargarDashboard();
+    }
 
   }
 
   cargarDashboard(): void {
 
-    // ==========
-    // TEMPORAL
-    // ==========
-    // Luego serán reemplazados
-    // por llamadas HTTP.
+    this.usuarioService.listar().subscribe({
+      next: (respuesta) => this.totalUsuarios = respuesta.data.length,
+      error: (err) => console.error(err)
+    });
 
-    this.totalUsuarios = 68;
+    this.alumnoService.listar().subscribe({
+      next: (data) => this.totalAlumnos = data.length,
+      error: (err) => console.error(err)
+    });
 
-    this.totalAlumnos = 45;
-
-    this.totalBuses = 12;
-
-    this.totalReservas = 231;
-
-    this.totalIncidencias = 3;
-
-    this.busesOperativos = 9;
-
-    this.busesEnRuta = 2;
-
-    this.busesMantenimiento = 1;
-
-    this.reservasPorDia = [
-
-      {
-        dia: 'Lun',
-        reservas: 34
+    this.busService.listar().subscribe({
+      next: (data) => {
+        this.totalBuses = data.length;
+        this.busesOperativos = data.filter(b => b.estado === true).length;
       },
+      error: (err) => console.error(err)
+    });
 
-      {
-        dia: 'Mar',
-        reservas: 48
-      },
+    this.reservaService.listar().subscribe({
+      next: (data) => this.totalReservas = data.length,
+      error: (err) => console.error(err)
+    });
 
-      {
-        dia: 'Mié',
-        reservas: 55
-      },
-
-      {
-        dia: 'Jue',
-        reservas: 61
-      },
-
-      {
-        dia: 'Vie',
-        reservas: 74
-      },
-
-      {
-        dia: 'Sáb',
-        reservas: 82
-      }
-
-    ];
+    this.incidenciaService.listar().subscribe({
+      next: (data) => this.totalIncidencias = data.length,
+      error: (err) => console.error(err)
+    });
 
   }
-
-  // ==========================
-  // FUTURAS LLAMADAS
-  // ==========================
-
-  /*
-  cargarUsuarios(){
-
-      this.usuarioService.listar()
-      .subscribe(...);
-
-  }
-
-  cargarAlumnos(){
-
-      this.alumnoService.listar()
-      .subscribe(...);
-
-  }
-
-  cargarBuses(){
-
-      this.busService.listar()
-      .subscribe(...);
-
-  }
-
-  cargarReservas(){
-
-      this.reservaService.listar()
-      .subscribe(...);
-
-  }
-
-  cargarIncidencias(){
-
-      this.incidenciaService.listar()
-      .subscribe(...);
-
-  }
-  */
 
 }

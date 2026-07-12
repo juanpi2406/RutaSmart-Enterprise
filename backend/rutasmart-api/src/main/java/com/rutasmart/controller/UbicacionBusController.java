@@ -4,6 +4,7 @@ import com.rutasmart.dto.UbicacionBusDTO;
 import com.rutasmart.service.interfaces.UbicacionBusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,16 +17,19 @@ public class UbicacionBusController {
 
     private final UbicacionBusService ubicacionBusService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public List<UbicacionBusDTO> listar() {
         return ubicacionBusService.listar();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public UbicacionBusDTO buscarPorId(@PathVariable Long id) {
         return ubicacionBusService.buscarPorId(id);
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CHOFER')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UbicacionBusDTO guardar(
@@ -35,6 +39,7 @@ public class UbicacionBusController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CHOFER')")
     @PutMapping("/{id}")
     public UbicacionBusDTO actualizar(
             @PathVariable Long id,
@@ -44,6 +49,7 @@ public class UbicacionBusController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CHOFER')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {

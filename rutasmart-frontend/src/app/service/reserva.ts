@@ -1,28 +1,40 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Reserva } from '../models/reserva';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservaService {
-  private apiUrl = 'URL_DE_TU_BACKEND/api/reservas'; // Reemplaza con tu endpoint real
+  private http = inject(HttpClient);
+  private readonly API = 'http://localhost:8080/api/reservas';
 
-  constructor(private http: HttpClient) {}
-
-  obtenerReservasActivas(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/activas`);
+  listar(): Observable<Reserva[]> {
+    return this.http.get<Reserva[]>(this.API);
   }
 
-  obtenerHistorial(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/historial`);
+  listarPorAlumno(idAlumno: number): Observable<Reserva[]> {
+    return this.http.get<Reserva[]>(`${this.API}/alumno/${idAlumno}`);
   }
 
-  crearReserva(reservaData: { ruta: string; hora: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, reservaData);
+  listarPorViaje(idViaje: number): Observable<Reserva[]> {
+    return this.http.get<Reserva[]>(`${this.API}/viaje/${idViaje}`);
   }
 
-  cancelarReserva(ruta: string, hora: string): Observable<any> {
-    return this.http.request('delete', `${this.apiUrl}`, { body: { ruta, hora } });
+  buscarPorId(id: number): Observable<Reserva> {
+    return this.http.get<Reserva>(`${this.API}/${id}`);
+  }
+
+  guardar(reserva: Partial<Reserva>): Observable<Reserva> {
+    return this.http.post<Reserva>(this.API, reserva);
+  }
+
+  actualizar(id: number, reserva: Partial<Reserva>): Observable<Reserva> {
+    return this.http.put<Reserva>(`${this.API}/${id}`, reserva);
+  }
+
+  eliminar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API}/${id}`);
   }
 }

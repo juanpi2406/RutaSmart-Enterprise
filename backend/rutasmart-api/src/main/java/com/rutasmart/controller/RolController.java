@@ -3,6 +3,7 @@ package com.rutasmart.controller;
 import com.rutasmart.dto.RolDTO;
 import com.rutasmart.service.interfaces.RolService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/roles")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMINISTRADOR')")
 public class RolController {
 
     private final RolService service;

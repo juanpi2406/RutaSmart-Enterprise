@@ -16,15 +16,12 @@ public interface RolMapper {
      */
     RolDTO toDTO(Rol entity);
 
-<<<<<<< HEAD
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "usuarios", ignore = true)
-=======
     /**
      * DTO -> Entity
      */
->>>>>>> dcdb45b (feat(alumno): implementar a Angular)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "usuarios", ignore = true)
     Rol toEntity(RolDTO dto);
 
     /**
@@ -32,18 +29,18 @@ public interface RolMapper {
      */
     List<RolDTO> toDTOList(List<Rol> entityList);
 
-<<<<<<< HEAD
-    // 👇 AGREGA ESTE MÉTODO AQUÍ ABAJO
+    /**
+     * Lista DTO -> Lista Entity
+     */
+    List<Rol> toEntityList(List<RolDTO> dtoList);
+
+    /**
+     * Actualiza una entidad existente a partir del DTO.
+     */
     @Mapping(target = "idRol", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "usuarios", ignore = true)
     void updateEntity(RolDTO dto, @MappingTarget Rol entity);
-=======
-    /**
-     * Lista DTO -> Lista Entity
-     */
-    List<Rol> toEntityList(List<RolDTO> dtoList);
->>>>>>> dcdb45b (feat(alumno): implementar a Angular)
 
 }

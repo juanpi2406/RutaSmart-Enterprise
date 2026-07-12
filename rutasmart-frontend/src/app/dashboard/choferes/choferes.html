@@ -1,0 +1,142 @@
+<div class="usuarios-container">
+
+    <div class="page-header">
+
+        <div>
+            <h2>Gestión de Choferes</h2>
+            <p>Administración de choferes del sistema RutaSmart.</p>
+        </div>
+
+        <button class="btn-primary" (click)="abrirModalCrear()">
+            <i class="bi bi-plus-circle-fill"></i> Nuevo Chofer
+        </button>
+
+    </div>
+
+    <div class="cards">
+
+        <div class="card">
+            <i class="bi bi-person-badge-fill"></i>
+            <div>
+                <span>Total Choferes</span>
+                <h2>{{ choferesLista.length }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="toolbar">
+
+        <input type="text" placeholder="Buscar por nombre, código o licencia..." (input)="filtrarChoferes($event)">
+
+    </div>
+
+    <div class="tabla-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Licencia</th>
+                    <th>Categoría</th>
+                    <th>Vencimiento</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for(chofer of choferesFiltrados; track chofer.idChofer){
+                <tr>
+                    <td>{{ chofer.codigo }}</td>
+                    <td>{{ chofer.nombres }} {{ chofer.apellidos }}</td>
+                    <td>{{ chofer.telefono }}</td>
+                    <td>{{ chofer.numeroLicencia }}</td>
+                    <td>{{ chofer.categoriaLicencia }}</td>
+                    <td>{{ chofer.fechaVencimiento }}</td>
+                    <td>
+                        @if(chofer.estado){
+                            <span class="badge success">Activo</span>
+                        } @else {
+                            <span class="badge danger">Inactivo</span>
+                        }
+                    </td>
+                    <td>
+                        <button class="btn-icon edit" (click)="editarChofer(chofer)">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="btn-icon delete" (click)="eliminarChofer(chofer.idChofer)">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="8" style="text-align: center; color: var(--muted); padding: 30px;">
+                        No se encontraron choferes registrados.
+                    </td>
+                </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+
+    @if(mostrarModal){
+    <div class="modal-overlay" (click)="cerrarModal()">
+        <div class="modal" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>{{ choferEnEdicion?.idChofer ? 'Editar Chofer' : 'Nuevo Chofer' }}</h3>
+                <button class="btn-close" (click)="cerrarModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Usuario (rol Chofer)</label>
+                        <select [(ngModel)]="form.idUsuario" name="idUsuario" [disabled]="!!choferEnEdicion?.idChofer">
+                            @for(usuario of usuariosDisponibles; track usuario.idUsuario){
+                                <option [ngValue]="usuario.idUsuario">{{ usuario.codigo }} - {{ usuario.nombres }} {{ usuario.apellidos }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Número de licencia</label>
+                        <input type="text" [(ngModel)]="form.numeroLicencia" name="numeroLicencia" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <input type="text" [(ngModel)]="form.categoriaLicencia" name="categoriaLicencia">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha de vencimiento</label>
+                        <input type="date" [(ngModel)]="form.fechaVencimiento" name="fechaVencimiento">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select [(ngModel)]="form.estado" name="estado">
+                            <option [ngValue]="true">Activo</option>
+                            <option [ngValue]="false">Inactivo</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+                        <button type="button" class="btn-primary" (click)="guardarChofer()">Guardar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    }
+
+</div>

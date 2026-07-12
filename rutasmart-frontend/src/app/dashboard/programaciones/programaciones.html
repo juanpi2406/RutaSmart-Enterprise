@@ -1,0 +1,192 @@
+<div class="usuarios-container">
+
+    <div class="page-header">
+
+        <div>
+            <h2>Gestión de Programaciones</h2>
+            <p>Programación de viajes por ruta y asignación de bus/chofer.</p>
+        </div>
+
+        <button class="btn-primary" (click)="abrirModalCrear()">
+            <i class="bi bi-plus-circle-fill"></i> Nueva Programación
+        </button>
+
+    </div>
+
+    <div class="tabla-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Ruta</th>
+                    <th>Hora Salida</th>
+                    <th>Hora Llegada</th>
+                    <th>Días</th>
+                    <th>Estado</th>
+                    <th>Asignaciones</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for(prog of programacionesLista; track prog.idProgramacion){
+                <tr>
+                    <td>{{ nombreRuta(prog.idRuta) }}</td>
+                    <td>{{ prog.horaSalida }}</td>
+                    <td>{{ prog.horaLlegadaEstimada }}</td>
+                    <td>{{ prog.diasOperacion }}</td>
+                    <td>
+                        @if(prog.estado){
+                            <span class="badge success">Activa</span>
+                        } @else {
+                            <span class="badge danger">Inactiva</span>
+                        }
+                    </td>
+                    <td>
+                        @for(asig of asignacionesDe(prog.idProgramacion); track asig.idAsignacion){
+                            <div style="font-size: 12px; margin-bottom: 4px;">
+                                {{ nombreBus(asig.idBus) }} / {{ nombreChofer(asig.idChofer) }}
+                                <button class="btn-icon delete" style="padding: 2px 6px;" (click)="eliminarAsignacion(asig.idAsignacion)">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                </button>
+                            </div>
+                        } @empty {
+                            <span style="color: var(--muted); font-size: 12px;">Sin asignar</span>
+                        }
+                        <button class="btn-icon edit" style="margin-top: 4px;" (click)="abrirModalAsignar(prog)">
+                            <i class="bi bi-plus-circle"></i> Asignar
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn-icon edit" (click)="editarProgramacion(prog)">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="btn-icon delete" (click)="eliminarProgramacion(prog.idProgramacion)">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="7" style="text-align: center; color: var(--muted); padding: 30px;">
+                        No se encontraron programaciones registradas.
+                    </td>
+                </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+
+    @if(mostrarModal){
+    <div class="modal-overlay" (click)="cerrarModal()">
+        <div class="modal" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>{{ programacionEnEdicion?.idProgramacion ? 'Editar Programación' : 'Nueva Programación' }}</h3>
+                <button class="btn-close" (click)="cerrarModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Ruta</label>
+                        <select [(ngModel)]="form.idRuta" name="idRuta">
+                            @for(ruta of rutas; track ruta.idRuta){
+                                <option [ngValue]="ruta.idRuta">{{ ruta.nombre }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hora de salida</label>
+                        <input type="time" [(ngModel)]="form.horaSalida" name="horaSalida" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hora de llegada estimada</label>
+                        <input type="time" [(ngModel)]="form.horaLlegadaEstimada" name="horaLlegadaEstimada" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Días de operación</label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                            @for(dia of dias; track dia){
+                                <label style="display: flex; align-items: center; gap: 5px; font-weight: normal;">
+                                    <input type="checkbox" [(ngModel)]="diasSeleccionados[dia]" [name]="dia">
+                                    {{ dia }}
+                                </label>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select [(ngModel)]="form.estado" name="estado">
+                            <option [ngValue]="true">Activa</option>
+                            <option [ngValue]="false">Inactiva</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+                        <button type="button" class="btn-primary" (click)="guardarProgramacion()">Guardar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    }
+
+    @if(mostrarModalAsignacion){
+    <div class="modal-overlay" (click)="cerrarModalAsignacion()">
+        <div class="modal" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Asignar Bus y Chofer</h3>
+                <button class="btn-close" (click)="cerrarModalAsignacion()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Bus</label>
+                        <select [(ngModel)]="formAsignacion.idBus" name="idBusAsig">
+                            @for(bus of buses; track bus.idBus){
+                                <option [ngValue]="bus.idBus">{{ bus.codigo }} - {{ bus.placa }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Chofer</label>
+                        <select [(ngModel)]="formAsignacion.idChofer" name="idChoferAsig">
+                            @for(chofer of choferes; track chofer.idChofer){
+                                <option [ngValue]="chofer.idChofer">{{ chofer.nombres }} {{ chofer.apellidos }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha de inicio</label>
+                        <input type="date" [(ngModel)]="formAsignacion.fechaInicio" name="fechaInicio" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha de fin (opcional)</label>
+                        <input type="date" [(ngModel)]="formAsignacion.fechaFin" name="fechaFin">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" (click)="cerrarModalAsignacion()">Cancelar</button>
+                        <button type="button" class="btn-primary" (click)="guardarAsignacion()">Guardar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    }
+
+</div>

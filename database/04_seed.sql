@@ -14,7 +14,7 @@ INSERT INTO roles
 (nombre, descripcion)
 VALUES
 
-('ADMIN','Administrador del sistema'),
+('ADMINISTRADOR','Administrador del sistema'),
 
 ('ALUMNO','Estudiante'),
 

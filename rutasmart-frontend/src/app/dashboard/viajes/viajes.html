@@ -1,0 +1,149 @@
+<div class="usuarios-container">
+
+    <div class="page-header">
+
+        <div>
+            <h2>Gestión de Viajes</h2>
+            <p>Administración de los viajes generados a partir de las programaciones.</p>
+        </div>
+
+        <button class="btn-primary" (click)="abrirModalCrear()">
+            <i class="bi bi-plus-circle-fill"></i> Nuevo Viaje
+        </button>
+
+    </div>
+
+    <div class="toolbar">
+
+        <input type="text" placeholder="Buscar por bus, chofer o ruta..." (input)="filtrarViajes($event)">
+
+        <select (change)="cambiarFiltroEstado($event)">
+            <option value="TODOS">Todos los estados</option>
+            @for(estado of estados; track estado){
+                <option [value]="estado">{{ estado }}</option>
+            }
+        </select>
+
+    </div>
+
+    <div class="tabla-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Ruta</th>
+                    <th>Bus</th>
+                    <th>Chofer</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for(viaje of viajesFiltrados; track viaje.idViaje){
+                <tr>
+                    <td>{{ nombreRuta(viaje.idProgramacion) }}</td>
+                    <td>{{ nombreBus(viaje.idBus) }}</td>
+                    <td>{{ nombreChofer(viaje.idChofer) }}</td>
+                    <td>{{ viaje.fechaViaje }}</td>
+                    <td>
+                        <span class="badge"
+                            [class.success]="viaje.estado === 'FINALIZADO'"
+                            [class.danger]="viaje.estado === 'CANCELADO'">
+                            {{ viaje.estado }}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn-icon edit" (click)="editarViaje(viaje)">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="btn-icon delete" (click)="eliminarViaje(viaje.idViaje)">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--muted); padding: 30px;">
+                        No se encontraron viajes registrados.
+                    </td>
+                </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+
+    @if(mostrarModal){
+    <div class="modal-overlay" (click)="cerrarModal()">
+        <div class="modal" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>{{ viajeEnEdicion?.idViaje ? 'Editar Viaje' : 'Nuevo Viaje' }}</h3>
+                <button class="btn-close" (click)="cerrarModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Programación</label>
+                        <select [(ngModel)]="form.idProgramacion" name="idProgramacion">
+                            @for(prog of programaciones; track prog.idProgramacion){
+                                <option [ngValue]="prog.idProgramacion">
+                                    {{ nombreRuta(prog.idProgramacion) }} - {{ prog.horaSalida }}
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Bus</label>
+                        <select [(ngModel)]="form.idBus" name="idBus">
+                            @for(bus of buses; track bus.idBus){
+                                <option [ngValue]="bus.idBus">{{ bus.codigo }} - {{ bus.placa }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Chofer</label>
+                        <select [(ngModel)]="form.idChofer" name="idChofer">
+                            @for(chofer of choferes; track chofer.idChofer){
+                                <option [ngValue]="chofer.idChofer">{{ chofer.nombres }} {{ chofer.apellidos }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha del viaje</label>
+                        <input type="date" [(ngModel)]="form.fechaViaje" name="fechaViaje" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select [(ngModel)]="form.estado" name="estado">
+                            @for(estado of estados; track estado){
+                                <option [ngValue]="estado">{{ estado }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Observaciones</label>
+                        <input type="text" [(ngModel)]="form.observaciones" name="observaciones">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+                        <button type="button" class="btn-primary" (click)="guardarViaje()">Guardar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    }
+
+</div>

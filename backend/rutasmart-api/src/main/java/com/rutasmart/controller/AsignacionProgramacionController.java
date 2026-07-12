@@ -4,6 +4,7 @@ import com.rutasmart.dto.AsignacionProgramacionDTO;
 import com.rutasmart.service.interfaces.AsignacionProgramacionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @RequestMapping("/api/asignaciones")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@PreAuthorize("hasRole('ADMINISTRADOR')")
 public class AsignacionProgramacionController {
 
     private final AsignacionProgramacionService service;

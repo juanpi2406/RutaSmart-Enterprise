@@ -1,6 +1,5 @@
 package com.rutasmart.controller;
 
-<<<<<<< HEAD
 import com.rutasmart.dto.request.ChoferCreateDTO;
 import com.rutasmart.dto.request.ChoferUpdateDTO;
 import com.rutasmart.dto.response.ChoferResponseDTO;
@@ -12,37 +11,24 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/choferes")
 @RequiredArgsConstructor
 @Tag(name = "Choferes", description = "API para la gestión de choferes")
-
-=======
-import com.rutasmart.dto.ChoferDTO;
-import com.rutasmart.service.interfaces.ChoferService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-@RestController
-@RequestMapping("/api/choferes")
-@RequiredArgsConstructor
-@CrossOrigin(origins = "*")
->>>>>>> dcdb45b (feat(alumno): implementar a Angular)
 public class ChoferController {
 
     private final ChoferService choferService;
 
-<<<<<<< HEAD
     /**
      * Listar todos los choferes
      */
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
     @Operation(summary = "Listar todos los choferes")
     public ResponseEntity<ApiResponse<List<ChoferResponseDTO>>> listar() {
@@ -61,6 +47,7 @@ public class ChoferController {
     /**
      * Buscar chofer por ID
      */
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     @Operation(summary = "Obtener chofer por ID")
     public ResponseEntity<ApiResponse<ChoferResponseDTO>> obtenerPorId(
@@ -80,6 +67,7 @@ public class ChoferController {
     /**
      * Registrar nuevo chofer
      */
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping
     @Operation(summary = "Registrar un nuevo chofer")
     public ResponseEntity<ApiResponse<ChoferResponseDTO>> crear(
@@ -100,6 +88,7 @@ public class ChoferController {
     /**
      * Actualizar chofer
      */
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar un chofer")
     public ResponseEntity<ApiResponse<ChoferResponseDTO>> actualizar(
@@ -120,6 +109,7 @@ public class ChoferController {
     /**
      * Eliminar chofer
      */
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar un chofer")
     public ResponseEntity<ApiResponse<Object>> eliminar(
@@ -134,36 +124,6 @@ public class ChoferController {
                 )
         );
 
-=======
-    @GetMapping
-    public List<ChoferDTO> listar() {
-        return choferService.listar();
-    }
-
-    @GetMapping("/{id}")
-    public ChoferDTO buscarPorId(@PathVariable Long id) {
-        return choferService.buscarPorId(id);
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ChoferDTO guardar(@RequestBody ChoferDTO dto) {
-        return choferService.guardar(dto);
-    }
-
-    @PutMapping("/{id}")
-    public ChoferDTO actualizar(@PathVariable Long id,
-                                @RequestBody ChoferDTO dto) {
-
-        return choferService.actualizar(id, dto);
-
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable Long id) {
-        choferService.eliminar(id);
->>>>>>> dcdb45b (feat(alumno): implementar a Angular)
     }
 
 }

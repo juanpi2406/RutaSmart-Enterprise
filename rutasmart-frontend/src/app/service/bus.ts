@@ -17,4 +17,16 @@ export class BusService {
   buscarPorId(id: number): Observable<Bus> {
     return this.http.get<Bus>(`${this.API}/${id}`);
   }
+
+  guardar(bus: Partial<Bus>): Observable<Bus> {
+    return this.http.post<Bus>(this.API, bus);
+  }
+
+  actualizar(id: number, bus: Partial<Bus>): Observable<Bus> {
+    return this.http.put<Bus>(`${this.API}/${id}`, bus);
+  }
+
+  eliminar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API}/${id}`);
+  }
 }

@@ -1,22 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ApiResponse } from '../models/api-response';
 
 export interface Rol {
 
   idRol: number;
 
   nombre: string;
-
-}
-
-export interface ApiResponse<T>{
-
-  success: boolean;
-
-  message: string;
-
-  data: T;
 
 }
 

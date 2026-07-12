@@ -1,0 +1,121 @@
+<div class="usuarios-container">
+
+    <div class="page-header">
+
+        <div>
+            <h2>{{ esAdmin ? 'Gestión de Incidencias' : 'Reportar Incidencia' }}</h2>
+            <p>
+                @if(esAdmin){
+                    Administración de incidencias reportadas por los choferes.
+                } @else {
+                    Reporta incidencias durante tus viajes y consulta tu historial.
+                }
+            </p>
+        </div>
+
+        <button class="btn-primary" (click)="abrirModalReportar()">
+            <i class="bi bi-plus-circle-fill"></i> Reportar Incidencia
+        </button>
+
+    </div>
+
+    <div class="tabla-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Descripción</th>
+                    <th>Viaje</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for(incidencia of incidenciasFiltradas; track incidencia.idIncidencia){
+                <tr>
+                    <td>{{ incidencia.tipo }}</td>
+                    <td>{{ incidencia.descripcion }}</td>
+                    <td>{{ incidencia.idViaje ?? '-' }}</td>
+                    <td>
+                        @if(esAdmin){
+                            <select [ngModel]="incidencia.estado" (ngModelChange)="cambiarEstado(incidencia, $event)">
+                                @for(estado of estados; track estado){
+                                    <option [ngValue]="estado">{{ estado }}</option>
+                                }
+                            </select>
+                        } @else {
+                            <span class="badge" [class.success]="incidencia.estado === 'RESUELTA'">{{ incidencia.estado }}</span>
+                        }
+                    </td>
+                    <td>{{ incidencia.fechaRegistro ?? '-' }}</td>
+                    <td>
+                        @if(esAdmin){
+                            <button class="btn-icon delete" (click)="eliminarIncidencia(incidencia.idIncidencia)">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        }
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--muted); padding: 30px;">
+                        No se encontraron incidencias registradas.
+                    </td>
+                </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+
+    @if(mostrarModal){
+    <div class="modal-overlay" (click)="cerrarModal()">
+        <div class="modal" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Reportar Incidencia</h3>
+                <button class="btn-close" (click)="cerrarModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <select [(ngModel)]="form.tipo" name="tipo">
+                            @for(tipo of tipos; track tipo){
+                                <option [ngValue]="tipo">{{ tipo }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Viaje relacionado (opcional)</label>
+                        <select [(ngModel)]="form.idViaje" name="idViaje">
+                            <option [ngValue]="undefined">Ninguno</option>
+                            @for(viaje of viajes; track viaje.idViaje){
+                                <option [ngValue]="viaje.idViaje">Viaje #{{ viaje.idViaje }} - {{ viaje.fechaViaje }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <input type="text" [(ngModel)]="form.descripcion" name="descripcion" required>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+                        <button type="button" class="btn-primary" (click)="reportarIncidencia()">Reportar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    }
+
+</div>

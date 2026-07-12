@@ -21,6 +21,7 @@ public interface ProgramacionViajeMapper {
      */
     @Mapping(target = "ruta", ignore = true)
     @Mapping(target = "viajes", ignore = true)
+    @Mapping(target = "asignaciones", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     ProgramacionViaje toEntity(ProgramacionViajeDTO dto);

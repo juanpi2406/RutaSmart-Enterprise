@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -6,8 +7,12 @@ import { Injectable } from '@angular/core';
 export class SessionService {
 
   private readonly KEY = 'usuario';
+  private readonly esBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   guardar(usuario: any): void {
+
+    if (!this.esBrowser) return;
+
     localStorage.setItem(
       this.KEY,
       JSON.stringify(usuario)
@@ -15,6 +20,8 @@ export class SessionService {
   }
 
   obtener(): any {
+
+    if (!this.esBrowser) return null;
 
     const datos = localStorage.getItem(this.KEY);
 
@@ -50,6 +57,18 @@ export class SessionService {
 
   }
 
+  obtenerToken(): string | null {
+
+    const usuario = this.obtener();
+
+    if (!usuario) {
+      return null;
+    }
+
+    return usuario.token ?? null;
+
+  }
+
   estaLogueado(): boolean {
 
     return this.obtener() != null;
@@ -57,6 +76,8 @@ export class SessionService {
   }
 
   eliminar(): void {
+
+    if (!this.esBrowser) return;
 
     localStorage.removeItem(this.KEY);
 

@@ -1,0 +1,353 @@
+/*=========================================================
+=            SIDEBAR - RUTASMART ENTERPRISE
+=========================================================*/
+
+.sidebar{
+
+    width:280px;
+    min-width:280px;
+    height:100vh;
+
+    background:linear-gradient(
+        180deg,
+        #155bc9 0%,
+        #0f4ab2 45%,
+        #073e9f 100%
+    );
+
+    color:#fff;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+
+    position:sticky;
+    top:0;
+
+    overflow:hidden;
+
+    transition:.4s;
+
+    box-shadow:8px 0 25px rgba(0,0,0,.18);
+
+}
+
+/*====================================
+=            LOGO
+====================================*/
+
+.logo{
+
+    display:flex;
+    align-items:center;
+
+    gap:15px;
+
+    padding:30px;
+
+    border-bottom:1px solid rgba(255,255,255,.12);
+
+}
+
+.logo i{
+
+    font-size:42px;
+
+    color:#fff;
+
+}
+
+.logo h2{
+
+    font-size:25px;
+
+    font-weight:800;
+
+    letter-spacing:.5px;
+
+}
+
+.logo span{
+
+    display:block;
+
+    font-size:13px;
+
+    opacity:.75;
+
+    margin-top:4px;
+
+}
+
+/*====================================
+=            MENU
+====================================*/
+
+.menu{
+
+    margin-top:20px;
+
+    padding:0 18px;
+
+}
+
+.menu li{
+
+    margin-bottom:10px;
+
+}
+
+.menu li a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    padding:15px 18px;
+
+    border-radius:14px;
+
+    color:#fff;
+
+    font-size:15px;
+
+    font-weight:500;
+
+    transition:.35s;
+
+}
+
+.menu li a i{
+
+    font-size:20px;
+
+    width:25px;
+
+    text-align:center;
+
+}
+
+/*====================================
+=            HOVER
+====================================*/
+
+.menu li a:hover{
+
+    background:rgba(255,255,255,.14);
+
+    transform:translateX(8px);
+
+}
+
+/*====================================
+=            ACTIVO
+====================================*/
+
+.menu li.active a{
+
+    background:#fff;
+
+    color:#155bc9;
+
+    font-weight:700;
+
+    box-shadow:
+
+    0 8px 20px rgba(0,0,0,.18);
+
+}
+
+.menu li.active i{
+
+    color:#155bc9;
+
+}
+
+/*====================================
+=            FOOTER
+====================================*/
+
+.sidebar-footer{
+    
+    padding:25px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    border-top:1px solid rgba(255,255,255,.15);
+
+}
+
+.logout-btn{
+    margin-left:auto;
+    background:none;
+    color:#fff;
+    opacity:.7;
+    padding:5px;
+    font-size:18px;
+}
+
+.logout-btn:hover{
+    opacity:1;
+    color:var(--red);
+}
+
+.sidebar-footer img{
+
+    width:52px;
+
+    height:52px;
+
+    border-radius:50%;
+
+    border:3px solid rgba(255,255,255,.4);
+
+    object-fit:cover;
+
+}
+
+.sidebar-footer strong{
+
+    display:block;
+
+    font-size:15px;
+
+}
+
+.sidebar-footer small{
+
+    opacity:.8;
+
+}
+
+/*====================================
+=            EFECTO LUZ
+====================================*/
+
+.sidebar::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:260px;
+
+    height:260px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.08);
+
+    top:-120px;
+
+    right:-90px;
+
+}
+
+.sidebar::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:180px;
+
+    height:180px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.05);
+
+    bottom:-70px;
+
+    left:-60px;
+
+}
+
+/*====================================
+=            SCROLL
+====================================*/
+
+.sidebar{
+
+    overflow-y:auto;
+
+}
+
+.sidebar::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+
+    background:rgba(255,255,255,.25);
+
+    border-radius:20px;
+
+}
+
+/*====================================
+=            RESPONSIVE
+====================================*/
+
+@media(max-width:992px){
+
+.sidebar{
+
+    width:90px;
+    min-width:90px;
+
+}
+
+.logo h2,
+.logo span,
+.sidebar-footer div,
+.menu li a span{
+
+    display:none;
+
+}
+
+.logo{
+
+    justify-content:center;
+
+}
+
+.logo i{
+
+    font-size:38px;
+
+}
+
+.menu li a{
+
+    justify-content:center;
+
+    padding:16px;
+
+}
+
+.menu li a i{
+
+    margin:0;
+
+}
+
+.sidebar-footer{
+
+    justify-content:center;
+
+}
+
+.sidebar-footer img{
+    margin:0;
+}
+
+.sidebar-footer .logout-btn{
+    position:absolute;
+    right:15px;
+}

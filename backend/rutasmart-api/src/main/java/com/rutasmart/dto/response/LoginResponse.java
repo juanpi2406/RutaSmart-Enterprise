@@ -26,4 +26,6 @@ public class LoginResponse {
 
     private Boolean estado;
 
+    private String token;
+
 }

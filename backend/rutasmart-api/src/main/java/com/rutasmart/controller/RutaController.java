@@ -4,6 +4,7 @@ import com.rutasmart.dto.RutaDTO;
 import com.rutasmart.service.interfaces.RutaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,22 +17,26 @@ public class RutaController {
 
     private final RutaService rutaService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public List<RutaDTO> listar() {
         return rutaService.listar();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public RutaDTO buscarPorId(@PathVariable Long id) {
         return rutaService.buscarPorId(id);
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RutaDTO guardar(@RequestBody RutaDTO dto) {
         return rutaService.guardar(dto);
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{id}")
     public RutaDTO actualizar(@PathVariable Long id,
                               @RequestBody RutaDTO dto) {
@@ -40,6 +45,7 @@ public class RutaController {
 
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {

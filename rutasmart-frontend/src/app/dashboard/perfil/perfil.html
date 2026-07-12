@@ -1,0 +1,49 @@
+<div class="usuarios-container">
+
+    <div class="page-header">
+        <div>
+            <h2>Mi Perfil</h2>
+            <p>Actualiza tu información personal.</p>
+        </div>
+    </div>
+
+    @if(cargando){
+        <p style="color: var(--muted);">Cargando...</p>
+    } @else if(usuario){
+
+        <div class="tabla-container" style="padding: 24px; max-width: 500px;">
+            <form>
+                <div class="form-group">
+                    <label>Código</label>
+                    <input type="text" [value]="usuario.codigo" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label>Nombres</label>
+                    <input type="text" [(ngModel)]="form.nombres" name="nombres" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Apellidos</label>
+                    <input type="text" [(ngModel)]="form.apellidos" name="apellidos" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Correo</label>
+                    <input type="email" [(ngModel)]="form.correo" name="correo" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" [(ngModel)]="form.telefono" name="telefono">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-primary" (click)="guardarPerfil()">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+
+    }
+
+</div>

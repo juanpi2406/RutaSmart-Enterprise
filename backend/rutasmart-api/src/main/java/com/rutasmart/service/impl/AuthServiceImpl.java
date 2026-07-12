@@ -5,6 +5,7 @@ import com.rutasmart.dto.response.LoginResponse;
 import com.rutasmart.entity.Usuario;
 import com.rutasmart.exception.AuthenticationException;
 import com.rutasmart.repository.UsuarioRepository;
+import com.rutasmart.security.JwtService;
 import com.rutasmart.service.interfaces.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Override
     public LoginResponse login(LoginRequest request) {
@@ -44,6 +46,9 @@ public class AuthServiceImpl implements AuthService {
         usuario.setUltimoLogin(LocalDateTime.now());
         usuarioRepository.save(usuario);
 
+        // Generar token JWT
+        String token = jwtService.generarToken(usuario);
+
         // Construir respuesta
         return LoginResponse.builder()
                 .idUsuario(usuario.getIdUsuario())
@@ -53,6 +58,7 @@ public class AuthServiceImpl implements AuthService {
                 .correo(usuario.getCorreo())
                 .rol(usuario.getRol().getNombre())
                 .estado(usuario.getEstado())
+                .token(token)
                 .build();
     }
 }

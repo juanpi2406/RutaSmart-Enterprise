@@ -1,0 +1,168 @@
+<div class="usuarios-container">
+
+    <div class="page-header">
+
+        <div>
+            <h2>Gestión de Buses</h2>
+            <p>Administración de la flota de transporte de RutaSmart.</p>
+        </div>
+
+        <button class="btn-primary" (click)="abrirModalCrear()">
+            <i class="bi bi-plus-circle-fill"></i> Nuevo Bus
+        </button>
+
+    </div>
+
+    <div class="cards">
+
+        <div class="card">
+            <i class="bi bi-bus-front-fill"></i>
+            <div>
+                <span>Total Buses</span>
+                <h2>{{ busesLista.length }}</h2>
+            </div>
+        </div>
+
+        <div class="card">
+            <i class="bi bi-check-circle-fill"></i>
+            <div>
+                <span>Activos</span>
+                <h2>{{ totalActivos }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="toolbar">
+
+        <input type="text" placeholder="Buscar por código o placa..." (input)="filtrarBuses($event)">
+
+        <select (change)="cambiarFiltroEstado($event)">
+            <option value="TODOS">Todos</option>
+            <option value="ACTIVO">Activos</option>
+            <option value="INACTIVO">Inactivos</option>
+        </select>
+
+    </div>
+
+    <div class="tabla-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Placa</th>
+                    <th>Marca / Modelo</th>
+                    <th>Capacidad</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for(bus of busesFiltrados; track bus.idBus){
+                <tr>
+                    <td>{{ bus.codigo }}</td>
+                    <td>{{ bus.placa }}</td>
+                    <td>{{ bus.marca }} {{ bus.modelo }}</td>
+                    <td>{{ bus.capacidadAsientos }} asientos</td>
+                    <td>
+                        @if(bus.estado){
+                            <span class="badge success">Activo</span>
+                        } @else {
+                            <span class="badge danger">Inactivo</span>
+                        }
+                    </td>
+                    <td>
+                        <button class="btn-icon edit" (click)="editarBus(bus)">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="btn-icon delete" (click)="eliminarBus(bus.idBus)">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--muted); padding: 30px;">
+                        No se encontraron buses registrados.
+                    </td>
+                </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+
+    @if(mostrarModal){
+    <div class="modal-overlay" (click)="cerrarModal()">
+        <div class="modal" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>{{ busEnEdicion?.idBus ? 'Editar Bus' : 'Nuevo Bus' }}</h3>
+                <button class="btn-close" (click)="cerrarModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Código</label>
+                        <input type="text" [(ngModel)]="form.codigo" name="codigo" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Placa</label>
+                        <input type="text" [(ngModel)]="form.placa" name="placa" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Marca</label>
+                        <input type="text" [(ngModel)]="form.marca" name="marca" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Modelo</label>
+                        <input type="text" [(ngModel)]="form.modelo" name="modelo">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Año</label>
+                        <input type="number" [(ngModel)]="form.anio" name="anio">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Color</label>
+                        <input type="text" [(ngModel)]="form.color" name="color">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Capacidad de asientos</label>
+                        <input type="number" [(ngModel)]="form.capacidadAsientos" name="capacidadAsientos" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Observaciones</label>
+                        <input type="text" [(ngModel)]="form.observaciones" name="observaciones">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select [(ngModel)]="form.estado" name="estado">
+                            <option [ngValue]="true">Activo</option>
+                            <option [ngValue]="false">Inactivo</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+                        <button type="button" class="btn-primary" (click)="guardarBus()">Guardar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    }
+
+</div>
