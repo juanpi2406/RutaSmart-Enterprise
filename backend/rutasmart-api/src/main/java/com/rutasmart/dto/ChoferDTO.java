@@ -15,6 +15,7 @@ public class ChoferDTO {
 
     private Long idUsuario;
 
+<<<<<<< HEAD
     private String codigo;
 
     private String nombres;
@@ -26,12 +27,18 @@ public class ChoferDTO {
     private String telefono;
 
     private String numeroLicencia;
+=======
+    private String licencia;
+>>>>>>> dcdb45b (feat(alumno): implementar a Angular)
 
     private String categoriaLicencia;
 
     private LocalDate fechaVencimiento;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> dcdb45b (feat(alumno): implementar a Angular)
     private Boolean estado;
 
 }

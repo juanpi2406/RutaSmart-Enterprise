@@ -1,0 +1,59 @@
+<div class="page-title">
+  <div>
+    <h2>Mis Reservas</h2>
+    <p>Historial y estado de tus reservas de viajes.</p>
+  </div>
+</div>
+
+<div class="toolbar">
+  <input
+    type="text"
+    placeholder="Buscar por código o ruta..."
+    (input)="filtrarReservas($event)"
+  >
+  <select (change)="cambiarFiltroEstado($event)">
+    <option value="TODOS">Todos</option>
+    <option value="CONFIRMADA">Confirmadas</option>
+    <option value="PENDIENTE">Pendientes</option>
+    <option value="CANCELADA">Canceladas</option>
+  </select>
+</div>
+
+<div class="panel">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Fecha Reserva</th>
+        <th>Fecha Abordaje</th>
+        <th>Estado</th>
+        <th>Código QR</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (reserva of reservasFiltradas; track reserva.idReserva) {
+        <tr>
+          <td>{{ reserva.idReserva }}</td>
+          <td>{{ reserva.fechaReserva || '-' }}</td>
+          <td>{{ reserva.fechaAbordaje || '-' }}</td>
+          <td>
+            <span class="status"
+              [class.ok]="reserva.estado === 'CONFIRMADA'"
+              [class.warning]="reserva.estado === 'PENDIENTE'"
+              [class.danger]="reserva.estado === 'CANCELADA'">
+              {{ reserva.estado }}
+            </span>
+          </td>
+          <td><code>{{ reserva.codigoQr || '-' }}</code></td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="5" style="text-align: center; color: var(--muted); padding: 30px;">
+            <i class="bi bi-journal-bookmark" style="font-size: 40px; display: block; margin-bottom: 10px;"></i>
+            No tienes reservas registradas.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

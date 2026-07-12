@@ -1,0 +1,350 @@
+<div class="home-container">
+
+    <!-- ====================================== -->
+    <!-- BIENVENIDA -->
+    <!-- ====================================== -->
+
+    <section class="welcome">
+
+        <div>
+
+            <h2>
+
+                Bienvenido {{nombre}}
+
+            </h2>
+
+            <p>
+
+                {{rol}}
+
+            </p>
+
+        </div>
+
+        <div class="fecha">
+
+            {{fecha}}
+
+        </div>
+
+    </section>
+
+    <!-- ====================================== -->
+    <!-- KPI -->
+    <!-- ====================================== -->
+
+    <section class="kpis">
+
+        <div class="kpi-card usuarios">
+
+            <div>
+
+                <span>Usuarios</span>
+
+                <h2>
+
+                    {{totalUsuarios}}
+
+                </h2>
+
+            </div>
+
+            <i class="bi bi-people-fill"></i>
+
+        </div>
+
+        <div class="kpi-card alumnos">
+
+            <div>
+
+                <span>Alumnos</span>
+
+                <h2>
+
+                    {{totalAlumnos}}
+
+                </h2>
+
+            </div>
+
+            <i class="bi bi-mortarboard-fill"></i>
+
+        </div>
+
+        <div class="kpi-card buses">
+
+            <div>
+
+                <span>Buses</span>
+
+                <h2>
+
+                    {{totalBuses}}
+
+                </h2>
+
+            </div>
+
+            <i class="bi bi-bus-front-fill"></i>
+
+        </div>
+
+        <div class="kpi-card reservas">
+
+            <div>
+
+                <span>Reservas</span>
+
+                <h2>
+
+                    {{totalReservas}}
+
+                </h2>
+
+            </div>
+
+            <i class="bi bi-ticket-perforated-fill"></i>
+
+        </div>
+
+    </section>
+
+    <!-- ====================================== -->
+    <!-- GRAFICOS -->
+    <!-- ====================================== -->
+
+    <section class="dashboard-grid">
+
+        <!-- ====================== -->
+
+        <div class="panel panel-large">
+
+            <div class="panel-header">
+
+                <h3>
+
+                    Reservas por día
+
+                </h3>
+
+            </div>
+
+            <div class="panel-body">
+
+                <!-- Chart.js -->
+
+                <canvas
+                    id="chartReservas">
+
+                </canvas>
+
+            </div>
+
+        </div>
+
+        <!-- ====================== -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <h3>
+
+                    Estado de Flota
+
+                </h3>
+
+            </div>
+
+            <div class="panel-body estado-flota">
+
+                <div class="estado">
+
+                    <span class="dot verde"></span>
+
+                    Operativos
+
+                    <strong>
+
+                        {{busesOperativos}}
+
+                    </strong>
+
+                </div>
+
+                <div class="estado">
+
+                    <span class="dot azul"></span>
+
+                    En Ruta
+
+                    <strong>
+
+                        {{busesEnRuta}}
+
+                    </strong>
+
+                </div>
+
+                <div class="estado">
+
+                    <span class="dot rojo"></span>
+
+                    Mantenimiento
+
+                    <strong>
+
+                        {{busesMantenimiento}}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ====================================== -->
+    <!-- MAPA -->
+    <!-- ====================================== -->
+
+    <section class="panel mapa">
+
+        <div class="panel-header">
+
+            <h3>
+
+                Monitoreo en Tiempo Real
+
+            </h3>
+
+        </div>
+
+        <div
+            id="googleMap"
+            class="mapa-body">
+
+            <div class="mapa-placeholder">
+
+                <i class="bi bi-geo-alt-fill"></i>
+
+                <h3>
+
+                    Google Maps
+
+                </h3>
+
+                <p>
+
+                    Aquí se visualizarán los buses en tiempo real.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ====================================== -->
+    <!-- ACTIVIDAD -->
+    <!-- ====================================== -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <h3>
+
+                Actividad Reciente
+
+            </h3>
+
+        </div>
+
+        <div class="panel-body">
+
+            <table class="tabla-actividad">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Hora</th>
+
+                        <th>Evento</th>
+
+                        <th>Estado</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>08:15</td>
+
+                        <td>Reserva registrada</td>
+
+                        <td>
+
+                            <span class="badge ok">
+
+                                Correcto
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>09:30</td>
+
+                        <td>Bus asignado</td>
+
+                        <td>
+
+                            <span class="badge info">
+
+                                Ruta
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>10:10</td>
+
+                        <td>Incidencia reportada</td>
+
+                        <td>
+
+                            <span class="badge danger">
+
+                                Atención
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>

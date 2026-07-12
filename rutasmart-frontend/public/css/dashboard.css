@@ -1,0 +1,281 @@
+/* ===========================
+   DASHBOARD - RutaSmart
+=========================== */
+
+.layout{
+    display:flex;
+    height:100vh;
+    overflow:hidden;
+    background:#f5f7fb;
+}
+
+/* ===========================
+   CONTENIDO PRINCIPAL
+=========================== */
+
+.main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+/* ===========================
+   NAVBAR
+=========================== */
+
+.navbar{
+
+    height:70px;
+
+    background:#ffffff;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 25px;
+
+    border-bottom:1px solid #e5e7eb;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+
+    z-index:10;
+
+}
+
+.navbar .left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+.navbar h1{
+
+    margin:0;
+
+    font-size:24px;
+
+    color:#1f2937;
+
+}
+
+.menu-btn{
+
+    border:none;
+
+    background:none;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+    color:#374151;
+
+}
+
+/* ===========================
+   BUSCADOR
+=========================== */
+
+.search{
+
+    display:flex;
+
+    align-items:center;
+
+    background:#f3f4f6;
+
+    border-radius:25px;
+
+    padding:8px 15px;
+
+    gap:10px;
+
+}
+
+.search input{
+
+    border:none;
+
+    background:transparent;
+
+    outline:none;
+
+    width:180px;
+
+}
+
+/* ===========================
+   ICONOS
+=========================== */
+
+.right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+.icon{
+
+    position:relative;
+
+    border:none;
+
+    background:none;
+
+    font-size:20px;
+
+    cursor:pointer;
+
+    color:#374151;
+
+}
+
+.badge{
+
+    position:absolute;
+
+    top:-5px;
+
+    right:-8px;
+
+    background:#ef4444;
+
+    color:white;
+
+    border-radius:50%;
+
+    width:18px;
+
+    height:18px;
+
+    font-size:11px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+/* ===========================
+   RELOJ
+=========================== */
+
+.clock{
+
+    text-align:right;
+
+}
+
+.clock div{
+
+    font-size:17px;
+
+    font-weight:600;
+
+}
+
+.clock small{
+
+    color:#6b7280;
+
+}
+
+/* ===========================
+   AVATAR
+=========================== */
+
+.avatar{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:2px solid #e5e7eb;
+
+}
+
+/* ===========================
+   CONTENIDO
+=========================== */
+
+.dashboard{
+
+    flex:1;
+
+    overflow:auto;
+
+    padding:25px;
+
+}
+
+/* ===========================
+   SCROLL
+=========================== */
+
+.dashboard::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+.dashboard::-webkit-scrollbar-thumb{
+
+    background:#cbd5e1;
+
+    border-radius:8px;
+
+}
+
+.dashboard::-webkit-scrollbar-track{
+
+    background:transparent;
+
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:992px){
+
+    .search{
+
+        display:none;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .clock{
+
+        display:none;
+
+    }
+
+    .navbar{
+
+        padding:15px;
+
+    }
+
+}

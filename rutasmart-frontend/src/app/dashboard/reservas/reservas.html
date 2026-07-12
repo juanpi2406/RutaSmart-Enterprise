@@ -1,0 +1,122 @@
+<div class="page-title">
+  <div>
+    <h2>Control de Reservas</h2>
+    <p>Monitorea las reservas de los estudiantes.</p>
+  </div>
+</div>
+
+<div class="toolbar">
+  <input
+    type="text"
+    placeholder="Buscar por código QR o ID..."
+    (input)="filtrarReservas($event)"
+  >
+  <select (change)="cambiarFiltroEstado($event)">
+    <option value="TODOS">Todos</option>
+    <option value="CONFIRMADA">Confirmadas</option>
+    <option value="PENDIENTE">Pendientes</option>
+    <option value="CANCELADA">Canceladas</option>
+  </select>
+  <button class="btn-primary" (click)="abrirModalCrear()">
+    <i class="bi bi-plus-circle-fill"></i> Nueva Reserva
+  </button>
+</div>
+
+<div class="panel">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>ID Alumno</th>
+        <th>ID Viaje</th>
+        <th>ID Paradero</th>
+        <th>Fecha Abordaje</th>
+        <th>QR</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (reserva of reservasFiltradas; track reserva.idReserva) {
+        <tr>
+          <td>{{ reserva.idReserva }}</td>
+          <td>{{ reserva.idAlumno }}</td>
+          <td>{{ reserva.idViaje }}</td>
+          <td>{{ reserva.idParadero }}</td>
+          <td>{{ reserva.fechaAbordaje || '-' }}</td>
+          <td><code>{{ reserva.codigoQr || '-' }}</code></td>
+          <td>
+            <span class="status"
+              [class.ok]="reserva.estado === 'CONFIRMADA'"
+              [class.warning]="reserva.estado === 'PENDIENTE'"
+              [class.danger]="reserva.estado === 'CANCELADA'">
+              {{ reserva.estado }}
+            </span>
+          </td>
+          <td>
+            <button class="edit" (click)="confirmarReserva(reserva.idReserva)" [disabled]="reserva.estado === 'CONFIRMADA'">
+              <i class="bi bi-check-circle-fill"></i>
+            </button>
+            <button class="delete" (click)="cancelarReserva(reserva.idReserva)" [disabled]="reserva.estado === 'CANCELADA'">
+              <i class="bi bi-x-circle-fill"></i>
+            </button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="8" style="text-align: center; color: var(--muted); padding: 30px;">
+            <i class="bi bi-ticket-perforated" style="font-size: 40px; display: block; margin-bottom: 10px;"></i>
+            No hay reservas.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if(mostrarModal && reservaEnEdicion){
+<div class="modal-overlay" (click)="cerrarModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ reservaEnEdicion.idReserva ? 'Editar Reserva' : 'Nueva Reserva' }}</h3>
+      <button class="btn-close" (click)="cerrarModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form (submit)="guardarReserva($event)">
+        <div class="form-group">
+          <label>ID Alumno</label>
+          <input type="number" [(ngModel)]="form.idAlumno" name="idAlumno" required>
+        </div>
+        <div class="form-group">
+          <label>ID Viaje</label>
+          <input type="number" [(ngModel)]="form.idViaje" name="idViaje" required>
+        </div>
+        <div class="form-group">
+          <label>ID Paradero</label>
+          <input type="number" [(ngModel)]="form.idParadero" name="idParadero" required>
+        </div>
+        <div class="form-group">
+          <label>Fecha Abordaje</label>
+          <input type="datetime-local" [(ngModel)]="form.fechaAbordaje" name="fechaAbordaje">
+        </div>
+        <div class="form-group">
+          <label>Código QR</label>
+          <input type="text" [(ngModel)]="form.codigoQr" name="codigoQr">
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select [(ngModel)]="form.estado" name="estado">
+            <option value="PENDIENTE">Pendiente</option>
+            <option value="CONFIRMADA">Confirmada</option>
+            <option value="CANCELADA">Cancelada</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+}

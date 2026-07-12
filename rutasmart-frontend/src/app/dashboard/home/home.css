@@ -1,0 +1,130 @@
+/* ==========================================================
+   DASHBOARD HOME - RUTASMART ENTERPRISE
+========================================================== */
+
+.home-container{
+
+    padding:25px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:25px;
+
+}
+
+/*==========================================================*/
+
+.welcome{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:#ffffff;
+
+    border-radius:16px;
+
+    padding:25px 35px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+
+}
+
+.welcome h2{
+
+    margin:0;
+
+    font-size:30px;
+
+    color:#1f2937;
+
+}
+
+.welcome p{
+
+    margin-top:8px;
+
+    color:#6b7280;
+
+    font-size:16px;
+
+}
+
+.fecha{
+
+    color:#6b7280;
+
+    font-size:15px;
+
+}
+
+/*==========================================================*/
+
+.kpis{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:20px;
+
+}
+
+.kpi-card{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:25px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+
+    transition:.25s;
+
+    cursor:pointer;
+
+}
+
+.kpi-card:hover{
+
+    transform:translateY(-5px);
+
+}
+
+.kpi-card span{
+
+    color:#6b7280;
+
+    font-size:15px;
+
+}
+
+.kpi-card h2{
+
+    margin-top:10px;
+
+    font-size:34px;
+
+    color:#111827;
+
+}
+
+.kpi-card i{
+
+    font-size:48px;
+
+    opacity:.18;
+
+}
+

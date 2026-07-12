@@ -1,4 +1,4 @@
-package com.rutasmart.security;
+package com.rutasmart.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,0 +1,187 @@
+<div class="layout">
+
+  <!-- ========================= -->
+  <!-- SIDEBAR -->
+  <!-- ========================= -->
+
+  <aside class="sidebar">
+
+    <div class="logo">
+
+      <i class="bi bi-bus-front-fill"></i>
+
+      <div>
+
+        <h2>RutaSmart</h2>
+
+        <span>Enterprise</span>
+
+      </div>
+
+    </div>
+
+    <!-- MENÚ DINÁMICO -->
+
+    <ul class="menu">
+
+      @for(item of menu; track item.ruta){
+
+      <li>
+
+        <a
+          [routerLink]="item.ruta"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact:true}">
+
+          <i class="bi" [ngClass]="item.icono"></i>
+
+          <span>
+
+            {{item.titulo}}
+
+          </span>
+
+        </a>
+
+      </li>
+
+      }
+
+    </ul>
+
+    <!-- FOOTER SIDEBAR -->
+
+    <div class="sidebar-footer">
+
+      <img
+        src="img/avatar.png"
+        alt="Avatar"
+        id="userAvatar">
+
+      <div>
+
+        <strong>
+
+          {{nombreUsuario}}
+
+        </strong>
+
+        <small>
+
+          {{rolUsuario}}
+
+        </small>
+
+      </div>
+
+      <button
+        class="logout-btn"
+        (click)="logout()"
+        title="Cerrar sesión">
+
+        <i class="bi bi-box-arrow-right"></i>
+
+      </button>
+
+    </div>
+
+  </aside>
+
+  <!-- ========================= -->
+  <!-- CONTENIDO -->
+  <!-- ========================= -->
+
+  <div class="main">
+
+    <!-- NAVBAR -->
+
+    <header class="navbar">
+
+      <div class="left">
+
+        <button class="menu-btn">
+
+          <i class="bi bi-list"></i>
+
+        </button>
+
+        <h1>
+
+          Dashboard
+
+        </h1>
+
+      </div>
+
+      <div class="right">
+
+        <div class="search">
+
+          <i class="bi bi-search"></i>
+
+          <input
+            type="text"
+            placeholder="Buscar...">
+
+        </div>
+
+        <button class="icon">
+
+          <i class="bi bi-bell-fill"></i>
+
+          <span class="badge">
+
+            3
+
+          </span>
+
+        </button>
+
+        <button class="icon">
+
+          <i class="bi bi-envelope-fill"></i>
+
+          <span class="badge">
+
+            5
+
+          </span>
+
+        </button>
+
+        <div class="clock">
+
+          <div>
+
+            {{currentTime}}
+
+          </div>
+
+          <small>
+
+            {{currentDate}}
+
+          </small>
+
+        </div>
+
+        <img
+          src="img/avatar.png"
+          class="avatar"
+          alt="Avatar">
+
+      </div>
+
+    </header>
+
+    <!-- CONTENIDO DINÁMICO -->
+
+    <main class="dashboard">
+
+      <router-outlet></router-outlet>
+
+    </main>
+
+  </div>
+
+</div>

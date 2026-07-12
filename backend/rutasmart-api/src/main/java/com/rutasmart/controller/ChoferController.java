@@ -1,5 +1,6 @@
 package com.rutasmart.controller;
 
+<<<<<<< HEAD
 import com.rutasmart.dto.request.ChoferCreateDTO;
 import com.rutasmart.dto.request.ChoferUpdateDTO;
 import com.rutasmart.dto.response.ChoferResponseDTO;
@@ -20,10 +21,25 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Choferes", description = "API para la gestión de choferes")
 
+=======
+import com.rutasmart.dto.ChoferDTO;
+import com.rutasmart.service.interfaces.ChoferService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/choferes")
+@RequiredArgsConstructor
+@CrossOrigin(origins = "*")
+>>>>>>> dcdb45b (feat(alumno): implementar a Angular)
 public class ChoferController {
 
     private final ChoferService choferService;
 
+<<<<<<< HEAD
     /**
      * Listar todos los choferes
      */
@@ -118,6 +134,36 @@ public class ChoferController {
                 )
         );
 
+=======
+    @GetMapping
+    public List<ChoferDTO> listar() {
+        return choferService.listar();
+    }
+
+    @GetMapping("/{id}")
+    public ChoferDTO buscarPorId(@PathVariable Long id) {
+        return choferService.buscarPorId(id);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ChoferDTO guardar(@RequestBody ChoferDTO dto) {
+        return choferService.guardar(dto);
+    }
+
+    @PutMapping("/{id}")
+    public ChoferDTO actualizar(@PathVariable Long id,
+                                @RequestBody ChoferDTO dto) {
+
+        return choferService.actualizar(id, dto);
+
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminar(@PathVariable Long id) {
+        choferService.eliminar(id);
+>>>>>>> dcdb45b (feat(alumno): implementar a Angular)
     }
 
 }

@@ -1,0 +1,73 @@
+<div class="page-title">
+  <div>
+    <h2>Flota de Transporte</h2>
+    <p>Monitorea y gestiona los buses disponibles, capacidades y asignaciones de ruta en tiempo real.</p>
+  </div>
+  <button class="btn-primary" (click)="abrirModalBus()">
+    <i class="bi bi-bus-front-fill"></i> Nuevo Bus
+  </button>
+</div>
+
+<!-- Barra de Filtros Rápidos -->
+<div class="toolbar">
+  <input
+    type="text"
+    placeholder="Buscar por placa o número de bus..."
+    (input)="filtrarFlota($event)"
+  >
+  <select (change)="cambiarFiltroEstado($event)">
+    <option value="TODOS">Todos los Estados</option>
+    <option value="Operativo">Operativos</option>
+    <option value="En Ruta">En Ruta</option>
+    <option value="Mantenimiento">Mantenimiento</option>
+  </select>
+</div>
+
+<!-- Listado en Panel -->
+<div class="panel">
+  <table>
+    <thead>
+      <tr>
+        <th>Código Bus</th>
+        <th>Placa</th>
+        <th>Capacidad</th>
+        <th>Modelo / Descripción</th>
+        <th>Estado Actual</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (bus of flotaFiltrada; track bus.id) {
+        <tr>
+          <td><strong>{{ bus.codigo }}</strong></td>
+          <td><span class="badge-placa">{{ bus.placa }}</span></td>
+          <td>{{ bus.capacidad }} asientos</td>
+          <td>{{ bus.modelo }}</td>
+          <td>
+            <span class="status"
+              [class.ok]="bus.estado === 'Operativo'"
+              [class.warning]="bus.estado === 'En Ruta'"
+              [class.danger]="bus.estado === 'Mantenimiento'">
+              {{ bus.estado }}
+            </span>
+          </td>
+          <td>
+            <button class="edit" (click)="editarBus(bus)" title="Editar">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button class="delete" (click)="eliminarBus(bus.id)" title="Eliminar">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="6" style="text-align: center; color: var(--muted); padding: 30px;">
+            <i class="bi bi-bus-front" style="font-size: 40px; display: block; margin-bottom: 10px;"></i>
+            No se encontraron unidades de transporte registradas.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

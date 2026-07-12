@@ -1,0 +1,234 @@
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <i class="bi bi-bus-front-fill"></i>
+
+        <div>
+
+            <h2>RutaSmart</h2>
+
+            <span>Enterprise</span>
+
+        </div>
+
+    </div>
+
+    <ul class="menu">
+
+        <li>
+
+            <a routerLink="/dashboard">
+
+                <i class="bi bi-speedometer2"></i>
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <!-- PERSONAS -->
+
+        @if(rolUsuario=='ADMINISTRADOR'){
+
+        <li class="group">
+
+            <div class="group-title"
+
+                 (click)="toggle('personas')">
+
+                <span>
+
+                    👥 Gestión Personas
+
+                </span>
+
+                <i class="bi"
+
+                [class.bi-chevron-down]="!personasOpen"
+
+                [class.bi-chevron-up]="personasOpen"></i>
+
+            </div>
+
+            @if(personasOpen){
+
+            <ul>
+
+                <li>
+
+                    <a routerLink="/dashboard/usuarios">
+
+                        Usuarios
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a>
+
+                        Alumnos
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a>
+
+                        Choferes
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+            }
+
+        </li>
+
+        }
+
+        <!-- TRANSPORTE -->
+
+        @if(rolUsuario=='ADMINISTRADOR'
+        || rolUsuario=='CHOFER'){
+
+        <li class="group">
+
+            <div class="group-title"
+
+            (click)="toggle('transporte')">
+
+                <span>
+
+                    🚌 Transporte
+
+                </span>
+
+                <i class="bi"
+
+                [class.bi-chevron-down]="!transporteOpen"
+
+                [class.bi-chevron-up]="transporteOpen"></i>
+
+            </div>
+
+            @if(transporteOpen){
+
+            <ul>
+
+                <li><a>Buses</a></li>
+
+                <li><a>Rutas</a></li>
+
+                <li><a>Paraderos</a></li>
+
+            </ul>
+
+            }
+
+        </li>
+
+        }
+
+        <!-- OPERACIONES -->
+
+        <li class="group">
+
+            <div class="group-title"
+
+            (click)="toggle('operaciones')">
+
+                <span>
+
+                    📅 Operaciones
+
+                </span>
+
+                <i class="bi"
+
+                [class.bi-chevron-down]="!operacionesOpen"
+
+                [class.bi-chevron-up]="operacionesOpen"></i>
+
+            </div>
+
+            @if(operacionesOpen){
+
+            <ul>
+
+                @if(rolUsuario=='ADMINISTRADOR'){
+
+                <li><a>Programaciones</a></li>
+
+                <li><a>Viajes</a></li>
+
+                }
+
+                <li>
+
+                    <a routerLink="/dashboard/reservas">
+
+                        Reservas
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+            }
+
+        </li>
+
+        <!-- REPORTES -->
+
+        @if(rolUsuario=='ADMINISTRADOR'){
+
+        <li>
+
+            <a routerLink="/dashboard/reportes">
+
+                📊 Reportes
+
+            </a>
+
+        </li>
+
+        }
+
+    </ul>
+
+    <div class="footer">
+
+        <div class="avatar">
+
+            <i class="bi bi-person-circle"></i>
+
+        </div>
+
+        <div>
+
+            <strong>
+
+                {{nombreUsuario}}
+
+            </strong>
+
+            <small>
+
+                {{rolUsuario}}
+
+            </small>
+
+        </div>
+
+    </div>
+
+</aside>

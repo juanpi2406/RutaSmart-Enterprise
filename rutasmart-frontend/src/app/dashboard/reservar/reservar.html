@@ -1,0 +1,135 @@
+<div class="page-title">
+  <div>
+    <h2>Reservar Viaje</h2>
+    <p>Selecciona una ruta y fecha para ver los viajes disponibles.</p>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- BUSQUEDA -->
+<!-- ========================================== -->
+
+<div class="search-card">
+  <div class="search-row">
+    <select [(ngModel)]="idRutaSeleccionada" (change)="buscarViajes()">
+      <option [value]="0">Seleccione una ruta</option>
+      @for(ruta of rutas; track ruta.idRuta){
+        <option [value]="ruta.idRuta">{{ ruta.nombre }} ({{ ruta.origen }} → {{ ruta.destino }})</option>
+      }
+    </select>
+    <input
+      type="date"
+      [(ngModel)]="fechaViaje"
+      (change)="buscarViajes()"
+    >
+    <button class="btn-primary" (click)="buscarViajes()" [disabled]="!puedeBuscar()">
+      <i class="bi bi-search"></i> Buscar
+    </button>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- VIAJES DISPONIBLES -->
+<!-- ========================================== -->
+
+@if(viajesDisponibles.length > 0){
+<div class="panel">
+  <h3>Viajes Disponibles</h3>
+  <div class="viajes-grid">
+    @for(viaje of viajesDisponibles; track viaje.idViaje){
+    <div class="viaje-card">
+      <div class="viaje-header">
+        <h4>Viaje #{{ viaje.idViaje }}</h4>
+        <span class="status ok">Disponible</span>
+      </div>
+      <div class="viaje-body">
+        <p><strong>Fecha:</strong> {{ viaje.fechaViaje }}</p>
+        <p><strong>Bus ID:</strong> {{ viaje.idBus }}</p>
+        <p><strong>Estado:</strong> {{ viaje.estado }}</p>
+      </div>
+      <button class="btn-primary" (click)="seleccionarViaje(viaje)">
+        <i class="bi bi-ticket-perforated-fill"></i> Reservar
+      </button>
+    </div>
+    }
+  </div>
+</div>
+}
+
+@if(viajesDisponibles.length === 0 && busco){
+<div class="empty">
+  <i class="bi bi-bus-front" style="font-size: 50px;"></i>
+  <p>No hay viajes disponibles para esta ruta y fecha.</p>
+</div>
+}
+
+<!-- ========================================== -->
+<!-- MODAL RESERVA -->
+<!-- ========================================== -->
+
+@if(mostrarModal && viajeSeleccionado){
+<div class="modal-overlay" (click)="cerrarModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Confirmar Reserva - Viaje #{{ viajeSeleccionado.idViaje }}</h3>
+      <button class="btn-close" (click)="cerrarModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form (submit)="confirmarReserva($event)">
+        <div class="form-group">
+          <label>Paradero de Abordaje</label>
+          <select [(ngModel)]="form.idParadero" name="idParadero" required>
+            <option [value]="0">Seleccione paradero</option>
+            @for(paradero of paraderos; track paradero.idParadero){
+              <option [value]="paradero.idParadero">{{ paradero.nombre }} (Orden: {{ paradero.orden }})</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Fecha y Hora de Abordaje</label>
+          <input type="datetime-local" [(ngModel)]="form.fechaAbordaje" name="fechaAbordaje" required>
+        </div>
+        @if(capacidad > 0){
+        <div class="reserva-info">
+          <p><strong>Asientos disponibles:</strong> {{ capacidad - reservasOcupadas }} de {{ capacidad }}</p>
+          <div class="asientos-visual">
+            @for(i of [].constructor(capacidad); track i){
+              <span class="asiento"
+                [class.ocupado]="i < reservasOcupadas"
+                [class.libre]="i >= reservasOcupadas"
+                (click)="form.numeroAsiento = i + 1; $event.stopPropagation()">
+                {{ i + 1 }}
+              </span>
+            }
+          </div>
+        </div>
+        } @else {
+          <p class="text-muted">Cargando información del bus...</p>
+        }
+        @if(asientos.length > 0){
+        <div class="form-group" style="margin-top: 14px;">
+          <label>Asiento</label>
+          <select [(ngModel)]="form.numeroAsiento" name="numeroAsiento" required>
+            <option [value]="0">Seleccione asiento</option>
+            @for(asiento of asientos; track asiento.numeroAsiento){
+              <option [value]="asiento.numeroAsiento" [disabled]="!asiento.estado">
+                Asiento {{ asiento.numeroAsiento }} {{ asiento.estado ? '(Libre)' : '(Ocupado)' }}
+              </option>
+            }
+          </select>
+        </div>
+        } @else if (capacidad > 0) {
+          <p class="text-muted">No hay detalle de asientos disponible. Use el mapa visual para elegir.</p>
+        }
+        @if(form.numeroAsiento){
+        <p class="text-muted">Asiento seleccionado: <strong>{{ form.numeroAsiento }}</strong></p>
+        }
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn-primary" [disabled]="!form.idParadero || !form.numeroAsiento">Confirmar Reserva</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+}

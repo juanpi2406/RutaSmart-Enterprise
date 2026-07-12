@@ -1,0 +1,47 @@
+<div class="page-title">
+  <div>
+    <h2>Reportes Estadísticos e Incidencias</h2>
+    <p>Visualiza el rendimiento de las rutas, asistencias e incidencias críticas reportadas por los chóferes.</p>
+  </div>
+  <button class="btn-primary" (click)="exportarPDF()">
+    <i class="bi bi-file-earmark-pdf-fill"></i> Exportar Reporte
+  </button>
+</div>
+
+<div class="info-grid">
+  <!-- Tarjeta de Resumen -->
+  <div class="panel">
+    <div class="panel-title">
+      <h3><i class="bi bi-graph-up-arrow"></i> Resumen Operativo Semanal</h3>
+    </div>
+    <div style="padding: 20px; color: var(--muted); text-align: center; border: 2px dashed var(--line); border-radius: 12px; margin-top: 15px;">
+      <p style="font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 5px;">Eficiencia del Servicio: 94.2%</p>
+      <small>Total de viajes ejecutados sin retrasos esta semana.</small>
+    </div>
+  </div>
+
+  <!-- Historial de Incidencias -->
+  <div class="panel">
+    <div class="panel-title">
+      <h3><i class="bi bi-exclamation-triangle-fill"></i> Últimas Incidencias</h3>
+    </div>
+    <div class="timeline" style="margin-top: 15px;">
+      <div class="item">
+        <div class="dot danger"></div>
+        <div>
+          <strong>Falla Mecánica - BUS-03</strong>
+          <p>Retraso reportado en Ruta Centro por neumático bajo.</p>
+          <small>Hace 1 hora</small>
+        </div>
+      </div>
+      <div class="item">
+        <div class="dot warning"></div>
+        <div>
+          <strong>Congestión Vehicular</strong>
+          <p>Ruta Sur con retraso de 15 minutos en Av. Principal.</p>
+          <small>Hace 3 horas</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

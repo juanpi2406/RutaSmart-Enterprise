@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
@@ -53,6 +54,8 @@ public class Usuario {
     @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;
 
+
+
     /*=========================================
      * ESTADO
      =========================================*/
@@ -81,4 +84,27 @@ public class Usuario {
             insertable = false)
     private LocalDateTime updatedAt;
 
+    /*=========================================
+ * RELACIONES
+ =========================================*/
+
+@OneToOne(mappedBy = "usuario",
+        fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL)
+private Alumno alumno;
+
+@OneToOne(mappedBy = "usuario",
+        fetch = FetchType.LAZY,
+        cascade = CascadeType.ALL)
+private Chofer chofer;
+
+@OneToMany(mappedBy = "usuario",
+        fetch = FetchType.LAZY)
+private List<Incidencia> incidencias;
+
+@OneToMany(mappedBy = "usuario",
+        fetch = FetchType.LAZY)
+private List<Notificacion> notificaciones;
+
 }
+

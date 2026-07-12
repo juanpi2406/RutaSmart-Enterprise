@@ -1,0 +1,47 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <i class="bi bi-bus-front-fill"></i>
+      <h1>RutaSmart</h1>
+      <span>Enterprise</span>
+    </div>
+
+
+    <form (ngSubmit)="onLogin()" #loginForm="ngForm" class="login-form">
+      <div class="input-group">
+        <i class="bi bi-person-fill"></i>
+        <input
+          type="text"
+          name="username"
+          [(ngModel)]="credentials.username"
+          placeholder="Usuario"
+          required
+        >
+      </div>
+
+      <div class="input-group">
+        <i class="bi bi-lock-fill"></i>
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="credentials.password"
+          placeholder="Contraseña"
+          required
+        >
+      </div>
+      @if (errorMessage) {
+  <div style="color: #ef4444; text-align: center; font-size: 14px; margin-bottom: 15px; font-weight: 500;">
+    {{ errorMessage }}
+  </div>
+}
+      <button type="submit" class="login-btn" [disabled]="!loginForm.form.valid">
+        Ingresar al Sistema
+        <i class="bi bi-arrow-right"></i>
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p>© 2026 RutaSmart Enterprise</p>
+    </div>
+  </div>
+</div>
