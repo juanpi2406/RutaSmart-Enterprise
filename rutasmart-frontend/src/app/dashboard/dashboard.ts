@@ -61,13 +61,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
       item.roles.includes(this.rolUsuario)
     );
 
-    this.actualizarFechaHora();
+//setTimeout(() => {
 
-    this.reloj = setInterval(() => {
+  //this.actualizarFechaHora();
 
-      this.actualizarFechaHora();
+ // this.reloj = setInterval(() => {
 
-    }, 1000);
+   // this.actualizarFechaHora();
+
+  //}, 1000);
+
+//});
 
   }
 

@@ -228,9 +228,9 @@ FROM incidencias
 
 WHERE estado='PENDIENTE'
 
-)
+    ) AS incidencias_pendientes
 
-incidencias_pendientes;
+FROM viajes;
 
 
 

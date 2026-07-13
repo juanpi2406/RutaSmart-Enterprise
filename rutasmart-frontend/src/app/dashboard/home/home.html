@@ -30,6 +30,12 @@
 
     </section>
 
+    <!-- ===================================================== -->
+    <!-- DASHBOARD ADMINISTRADOR -->
+    <!-- ===================================================== -->
+
+    @if(rol=='ADMINISTRADOR'){
+
     <!-- ====================================== -->
     <!-- KPI -->
     <!-- ====================================== -->
@@ -42,11 +48,7 @@
 
                 <span>Usuarios</span>
 
-                <h2>
-
-                    {{totalUsuarios}}
-
-                </h2>
+                <h2>{{totalUsuarios}}</h2>
 
             </div>
 
@@ -60,11 +62,7 @@
 
                 <span>Alumnos</span>
 
-                <h2>
-
-                    {{totalAlumnos}}
-
-                </h2>
+                <h2>{{totalAlumnos}}</h2>
 
             </div>
 
@@ -78,11 +76,7 @@
 
                 <span>Buses</span>
 
-                <h2>
-
-                    {{totalBuses}}
-
-                </h2>
+                <h2>{{totalBuses}}</h2>
 
             </div>
 
@@ -96,11 +90,7 @@
 
                 <span>Reservas</span>
 
-                <h2>
-
-                    {{totalReservas}}
-
-                </h2>
+                <h2>{{totalReservas}}</h2>
 
             </div>
 
@@ -111,12 +101,12 @@
     </section>
 
     <!-- ====================================== -->
-    <!-- GRAFICOS -->
+    <!-- DASHBOARD -->
     <!-- ====================================== -->
 
     <section class="dashboard-grid">
 
-        <!-- ====================== -->
+        <!-- ========================= -->
 
         <div class="panel panel-large">
 
@@ -132,18 +122,13 @@
 
             <div class="panel-body">
 
-                <!-- Chart.js -->
-
-                <canvas
-                    id="chartReservas">
-
-                </canvas>
+                <canvas id="chartReservas"></canvas>
 
             </div>
 
         </div>
 
-        <!-- ====================== -->
+        <!-- ========================= -->
 
         <div class="panel">
 
@@ -346,5 +331,552 @@
         </div>
 
     </section>
+
+    }
+
+    <!-- ===================================================== -->
+<!-- DASHBOARD ALUMNO -->
+<!-- ===================================================== -->
+
+@else if(rol=='ALUMNO'){
+
+<!-- ====================================== -->
+<!-- KPI -->
+<!-- ====================================== -->
+
+<section class="kpis">
+
+    <div class="kpi-card reservas">
+
+        <div>
+
+            <span>Próximo Viaje</span>
+
+            <h3>{{proximoViaje}}</h3>
+
+        </div>
+
+        <i class="bi bi-calendar-check-fill"></i>
+
+    </div>
+
+    <div class="kpi-card buses">
+
+        <div>
+
+            <span>Estado del Bus</span>
+
+            <h3>{{estadoBus}}</h3>
+
+        </div>
+
+        <i class="bi bi-bus-front-fill"></i>
+
+    </div>
+
+    <div class="kpi-card alumnos">
+
+        <div>
+
+            <span>Mis Reservas</span>
+
+            <h2>{{misReservas}}</h2>
+
+        </div>
+
+        <i class="bi bi-ticket-perforated-fill"></i>
+
+    </div>
+
+    <div class="kpi-card usuarios">
+
+        <div>
+
+            <span>Notificaciones</span>
+
+            <h2>{{misNotificaciones}}</h2>
+
+        </div>
+
+        <i class="bi bi-bell-fill"></i>
+
+    </div>
+
+</section>
+
+<!-- ====================================== -->
+<!-- PANEL PRINCIPAL -->
+<!-- ====================================== -->
+
+<section class="dashboard-grid">
+
+    <div class="panel panel-large">
+
+        <div class="panel-header">
+
+            <h3>
+
+                Mi Ruta de Hoy
+
+            </h3>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div style="padding:20px;">
+
+                <p>
+
+                    <strong>Ruta:</strong>
+
+                    Ruta Universitaria
+
+                </p>
+
+                <p>
+
+                    <strong>Estado:</strong>
+
+                    {{estadoBus}}
+
+                </p>
+
+                <p>
+
+                    <strong>Próximo viaje:</strong>
+
+                    {{proximoViaje}}
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <h3>
+
+                Accesos Rápidos
+
+            </h3>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="estado">
+
+                <i class="bi bi-ticket-perforated-fill"></i>
+
+                Reservar Viaje
+
+            </div>
+
+            <div class="estado">
+
+                <i class="bi bi-calendar-x-fill"></i>
+
+                Cancelar Reserva
+
+            </div>
+
+            <div class="estado">
+
+                <i class="bi bi-bell-fill"></i>
+
+                Ver Notificaciones
+
+            </div>
+
+            <div class="estado">
+
+                <i class="bi bi-person-circle"></i>
+
+                Mi Perfil
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ====================================== -->
+<!-- MAPA -->
+<!-- ====================================== -->
+
+<section class="panel mapa">
+
+    <div class="panel-header">
+
+        <h3>
+
+            Ubicación del Bus
+
+        </h3>
+
+    </div>
+
+    <div
+        id="googleMapAlumno"
+        class="mapa-body">
+
+        <div class="mapa-placeholder">
+
+            <i class="bi bi-geo-alt-fill"></i>
+
+            <h3>
+
+                Seguimiento en Tiempo Real
+
+            </h3>
+
+            <p>
+
+                Aquí podrás visualizar el bus asignado a tu ruta.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ====================================== -->
+<!-- NOTIFICACIONES -->
+<!-- ====================================== -->
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <h3>
+
+            Últimas Notificaciones
+
+        </h3>
+
+    </div>
+
+    <div class="panel-body">
+
+        <table class="tabla-actividad">
+
+            <thead>
+
+                <tr>
+
+                    <th>Hora</th>
+
+                    <th>Mensaje</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr>
+
+                    <td>08:00</td>
+
+                    <td>No existen notificaciones nuevas.</td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+}
+<!-- ===================================================== -->
+<!-- DASHBOARD CHOFER -->
+<!-- ===================================================== -->
+
+@else if(rol=='CHOFER'){
+
+<!-- ====================================== -->
+<!-- KPI -->
+<!-- ====================================== -->
+
+<section class="kpis">
+
+    <div class="kpi-card buses">
+
+        <div>
+
+            <span>Bus Asignado</span>
+
+            <h3>{{busAsignado}}</h3>
+
+        </div>
+
+        <i class="bi bi-bus-front-fill"></i>
+
+    </div>
+
+    <div class="kpi-card usuarios">
+
+        <div>
+
+            <span>Estado del Viaje</span>
+
+            <h3>{{estadoViaje}}</h3>
+
+        </div>
+
+        <i class="bi bi-sign-turn-right-fill"></i>
+
+    </div>
+
+    <div class="kpi-card alumnos">
+
+        <div>
+
+            <span>Pasajeros</span>
+
+            <h2>{{pasajeros}}</h2>
+
+        </div>
+
+        <i class="bi bi-people-fill"></i>
+
+    </div>
+
+    <div class="kpi-card reservas">
+
+        <div>
+
+            <span>Incidencias</span>
+
+            <h2>{{incidenciasHoy}}</h2>
+
+        </div>
+
+        <i class="bi bi-exclamation-triangle-fill"></i>
+
+    </div>
+
+</section>
+
+<!-- ====================================== -->
+<!-- PANEL PRINCIPAL -->
+<!-- ====================================== -->
+
+<section class="dashboard-grid">
+
+    <div class="panel panel-large">
+
+        <div class="panel-header">
+
+            <h3>
+
+                Jornada de Hoy
+
+            </h3>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div style="padding:20px;line-height:2;">
+
+                <p>
+
+                    <strong>Bus:</strong>
+
+                    {{busAsignado}}
+
+                </p>
+
+                <p>
+
+                    <strong>Estado:</strong>
+
+                    {{estadoViaje}}
+
+                </p>
+
+                <p>
+
+                    <strong>Pasajeros:</strong>
+
+                    {{pasajeros}}
+
+                </p>
+
+                <br>
+
+                <button class="btn-primary">
+
+                    <i class="bi bi-play-circle-fill"></i>
+
+                    Iniciar Viaje
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <h3>
+
+                Accesos Rápidos
+
+            </h3>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="estado">
+
+                <i class="bi bi-geo-alt-fill"></i>
+
+                Actualizar ubicación
+
+            </div>
+
+            <div class="estado">
+
+                <i class="bi bi-people-fill"></i>
+
+                Registrar pasajeros
+
+            </div>
+
+            <div class="estado">
+
+                <i class="bi bi-exclamation-circle-fill"></i>
+
+                Reportar incidencia
+
+            </div>
+
+            <div class="estado">
+
+                <i class="bi bi-stop-circle-fill"></i>
+
+                Finalizar viaje
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ====================================== -->
+<!-- MAPA -->
+<!-- ====================================== -->
+
+<section class="panel mapa">
+
+    <div class="panel-header">
+
+        <h3>
+
+            Ubicación del Bus
+
+        </h3>
+
+    </div>
+
+    <div
+        id="googleMapChofer"
+        class="mapa-body">
+
+        <div class="mapa-placeholder">
+
+            <i class="bi bi-geo-alt-fill"></i>
+
+            <h3>
+
+                GPS del Vehículo
+
+            </h3>
+
+            <p>
+
+                Aquí se visualizará la ubicación del bus en tiempo real.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ====================================== -->
+<!-- ACTIVIDAD -->
+<!-- ====================================== -->
+
+<section class="panel">
+
+    <div class="panel-header">
+
+        <h3>
+
+            Actividad del Viaje
+
+        </h3>
+
+    </div>
+
+    <div class="panel-body">
+
+        <table class="tabla-actividad">
+
+            <thead>
+
+                <tr>
+
+                    <th>Hora</th>
+
+                    <th>Evento</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr>
+
+                    <td>07:45</td>
+
+                    <td>Esperando inicio de jornada.</td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+}
 
 </div>

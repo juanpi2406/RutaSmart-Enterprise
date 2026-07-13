@@ -373,3 +373,79 @@ tbody tr:hover{
         min-width:900px;
     }
 }
+
+/*=========================================
+LOADING
+=========================================*/
+
+.loading-container{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    min-height:65vh;
+
+}
+
+.loading-card{
+
+    width:420px;
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:40px;
+
+    text-align:center;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+}
+
+.loading-card h3{
+
+    margin-top:20px;
+
+    margin-bottom:10px;
+
+    color:#1f2937;
+
+}
+
+.loading-card p{
+
+    color:#6b7280;
+
+}
+
+.spinner{
+
+    font-size:52px;
+
+    color:#2563eb;
+
+    display:inline-block;
+
+    animation:girar 1s linear infinite;
+
+}
+
+@keyframes girar{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}

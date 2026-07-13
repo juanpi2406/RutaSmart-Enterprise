@@ -26,13 +26,19 @@ public interface UsuarioMapper {
      * CreateDTO -> Entity
      * ============================
      */
-    @Mapping(target = "idUsuario", ignore = true)
-    @Mapping(target = "rol", ignore = true)
-    @Mapping(target = "passwordHash", ignore = true)
-    @Mapping(target = "ultimoLogin", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    Usuario toEntity(UsuarioCreateDTO dto);
+        @Mapping(target = "idUsuario", ignore = true)
+        @Mapping(target = "rol", ignore = true)
+        @Mapping(target = "passwordHash", ignore = true)
+        @Mapping(target = "ultimoLogin", ignore = true)
+        @Mapping(target = "createdAt", ignore = true)
+        @Mapping(target = "updatedAt", ignore = true)
+
+        /* Relaciones */
+     
+        @Mapping(target = "incidencias", ignore = true)
+        @Mapping(target = "notificaciones", ignore = true)
+
+        Usuario toEntity(UsuarioCreateDTO dto);
 
     /*
      * ============================
@@ -45,6 +51,11 @@ public interface UsuarioMapper {
     @Mapping(target = "ultimoLogin", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+
+ 
+    @Mapping(target = "incidencias", ignore = true)
+    @Mapping(target = "notificaciones", ignore = true)
+
     Usuario toEntity(UsuarioUpdateDTO dto);
 
     /*

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IncidenciaService } from '../../service/incidencia';
@@ -23,6 +23,7 @@ export class IncidenciasComponent implements OnInit {
   private incidenciaService = inject(IncidenciaService);
   private viajeService = inject(ViajeService);
   private session = inject(SessionService);
+  private cdr = inject(ChangeDetectorRef);
 
   tipos = TIPOS;
   estados = ESTADOS;
@@ -44,7 +45,12 @@ export class IncidenciasComponent implements OnInit {
     this.idUsuario = usuario?.idUsuario ?? 0;
     this.esAdmin = this.session.obtenerRol() === 'ADMINISTRADOR';
 
-    this.viajeService.listar().subscribe({ next: (data) => this.viajes = data });
+    this.viajeService.listar().subscribe({
+      next: (data) => {
+        this.viajes = data;
+        this.cdr.detectChanges();
+      }
+    });
     this.listarIncidencias();
   }
 
@@ -57,10 +63,12 @@ export class IncidenciasComponent implements OnInit {
           : data.filter(i => i.idUsuario === this.idUsuario);
         this.incidenciasFiltradas = [...this.incidenciasLista];
         this.cargando = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error(error);
         this.cargando = false;
+        this.cdr.detectChanges();
       }
     });
   }

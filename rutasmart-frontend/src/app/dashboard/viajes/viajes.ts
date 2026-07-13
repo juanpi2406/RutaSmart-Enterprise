@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ViajeService } from '../../service/viaje';
@@ -29,6 +29,7 @@ export class ViajesComponent implements OnInit {
   private choferService = inject(ChoferService);
   private programacionService = inject(ProgramacionViajeService);
   private rutaService = inject(RutaService);
+  private cdr = inject(ChangeDetectorRef);
 
   estados = ESTADOS;
 
@@ -52,13 +53,14 @@ export class ViajesComponent implements OnInit {
   }
 
   cargarCatalogos(): void {
-    this.busService.listar().subscribe({ next: (data) => this.buses = data });
-    this.rutaService.listar().subscribe({ next: (data) => this.rutas = data });
-    this.choferService.listar().subscribe({ next: (respuesta) => this.choferes = respuesta.data });
+    this.busService.listar().subscribe({ next: (data) => { this.buses = data; this.cdr.detectChanges(); } });
+    this.rutaService.listar().subscribe({ next: (data) => { this.rutas = data; this.cdr.detectChanges(); } });
+    this.choferService.listar().subscribe({ next: (respuesta) => { this.choferes = respuesta.data; this.cdr.detectChanges(); } });
     this.programacionService.listar().subscribe({
       next: (data) => {
         this.programaciones = data;
         this.listarViajes();
+        this.cdr.detectChanges();
       }
     });
   }
@@ -70,10 +72,12 @@ export class ViajesComponent implements OnInit {
         this.viajesLista = data;
         this.aplicarFiltros();
         this.cargando = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error(error);
         this.cargando = false;
+        this.cdr.detectChanges();
       }
     });
   }

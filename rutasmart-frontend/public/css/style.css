@@ -3,9 +3,8 @@
 =            RUTASMART ENTERPRISE - STYLE.CSS
 =========================================================*/
 
-/* Google Font */
+/* Fuente local: evita que la compilación dependa de Google Fonts o de Internet. */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
 /*==========================
@@ -13,6 +12,8 @@
 ==========================*/
 
 :root{
+
+    --font-sans: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
     --blue:#155bc9;
     --blue-dark:#073e9f;
@@ -69,7 +70,7 @@ html{
 
 body{
 
-    font-family:'Inter',sans-serif;
+    font-family:var(--font-sans);
 
     background:var(--background);
 

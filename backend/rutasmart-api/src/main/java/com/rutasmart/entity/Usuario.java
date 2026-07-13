@@ -88,15 +88,7 @@ public class Usuario {
  * RELACIONES
  =========================================*/
 
-@OneToOne(mappedBy = "usuario",
-        fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL)
-private Alumno alumno;
 
-@OneToOne(mappedBy = "usuario",
-        fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL)
-private Chofer chofer;
 
 @OneToMany(mappedBy = "usuario",
         fetch = FetchType.LAZY)

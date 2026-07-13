@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RolService, Rol } from '../../service/rol';
 
@@ -12,6 +12,7 @@ import { RolService, Rol } from '../../service/rol';
 export class ConfiguracionComponent implements OnInit {
 
   private rolService = inject(RolService);
+  private cdr = inject(ChangeDetectorRef);
 
   roles: Rol[] = [];
 
@@ -20,8 +21,14 @@ export class ConfiguracionComponent implements OnInit {
 
   ngOnInit(): void {
     this.rolService.listar().subscribe({
-      next: (respuesta) => this.roles = respuesta.data,
-      error: (err) => console.error(err)
+      next: (respuesta) => {
+        this.roles = respuesta.data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        this.cdr.detectChanges();
+      }
     });
   }
 

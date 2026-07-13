@@ -5,12 +5,18 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class UsuarioCreateDTO {
+
+    /*=========================================
+     * DATOS DEL USUARIO
+     =========================================*/
 
     @NotBlank(message = "El código es obligatorio.")
     private String codigo;
@@ -28,7 +34,6 @@ public class UsuarioCreateDTO {
     @NotBlank(message = "El teléfono es obligatorio.")
     private String telefono;
 
-    @NotBlank(message = "La contraseña es obligatoria.")
     private String password;
 
     @NotNull(message = "Debe seleccionar un rol.")
@@ -36,5 +41,29 @@ public class UsuarioCreateDTO {
 
     @NotNull(message = "Debe indicar el estado.")
     private Boolean estado;
+
+    /*=========================================
+     * DATOS DEL ALUMNO
+     * (Solo se usan cuando el rol es ALUMNO)
+     =========================================*/
+
+    private String codigoUniversitario;
+
+    private String facultad;
+
+    private String sede;
+
+    private Short ciclo;
+
+    /*=========================================
+     * DATOS DEL CHOFER
+     * (Solo se usan cuando el rol es CHOFER)
+     =========================================*/
+
+    private String numeroLicencia;
+
+    private String categoriaLicencia;
+
+    private LocalDate fechaVencimiento;
 
 }

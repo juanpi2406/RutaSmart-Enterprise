@@ -2,7 +2,6 @@ package com.rutasmart.service.impl;
 
 import com.rutasmart.dto.ReservaDTO;
 import com.rutasmart.entity.Alumno;
-import com.rutasmart.entity.Asiento;
 import com.rutasmart.entity.Paradero;
 import com.rutasmart.entity.Reserva;
 import com.rutasmart.entity.Viaje;
@@ -10,7 +9,6 @@ import com.rutasmart.exception.BusinessException;
 import com.rutasmart.exception.ResourceNotFoundException;
 import com.rutasmart.mapper.ReservaMapper;
 import com.rutasmart.repository.AlumnoRepository;
-import com.rutasmart.repository.AsientoRepository;
 import com.rutasmart.repository.ParaderoRepository;
 import com.rutasmart.repository.ReservaRepository;
 import com.rutasmart.repository.ViajeRepository;
@@ -28,7 +26,6 @@ public class ReservaServiceImpl implements ReservaService {
     private final AlumnoRepository alumnoRepository;
     private final ViajeRepository viajeRepository;
     private final ParaderoRepository paraderoRepository;
-    private final AsientoRepository asientoRepository;
     private final ReservaMapper reservaMapper;
 
     @Override
@@ -83,15 +80,19 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setViaje(viaje);
         reserva.setParadero(paradero);
 
-        Reserva guardada = reservaRepository.save(reserva);
+        Long reservasActuales = reservaRepository.countByViaje_IdViaje(
+                viaje.getIdViaje()
+        );
 
-        if (guardada.getNumeroAsiento() != null) {
-            asientoRepository.findByViaje_IdViajeAndNumeroAsiento(guardada.getViaje().getIdViaje(), guardada.getNumeroAsiento())
-                    .ifPresent(asiento -> {
-                        asiento.setEstado(false);
-                        asientoRepository.save(asiento);
-                    });
+        Short capacidad = viaje.getBus().getCapacidadAsientos();
+
+        if (reservasActuales >= capacidad) {
+            throw new BusinessException(
+                    "No existen cupos disponibles para este viaje."
+            );
         }
+
+        Reserva guardada = reservaRepository.save(reserva);
 
         return reservaMapper.toDTO(guardada);
 
@@ -126,16 +127,6 @@ public class ReservaServiceImpl implements ReservaService {
 
         Reserva actualizada = reservaRepository.save(reserva);
 
-        liberarAsiento(actualizada.getIdReserva());
-
-        if (actualizada.getNumeroAsiento() != null && actualizada.getViaje() != null) {
-            asientoRepository.findByViaje_IdViajeAndNumeroAsiento(actualizada.getViaje().getIdViaje(), actualizada.getNumeroAsiento())
-                    .ifPresent(asiento -> {
-                        asiento.setEstado(false);
-                        asientoRepository.save(asiento);
-                    });
-        }
-
         return reservaMapper.toDTO(actualizada);
 
     }
@@ -147,22 +138,9 @@ public class ReservaServiceImpl implements ReservaService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Reserva no encontrada."));
 
-        liberarAsiento(id);
-
         reservaRepository.delete(reserva);
 
     }
 
-    private void liberarAsiento(Long idReserva) {
-        reservaRepository.findById(idReserva).ifPresent(reserva -> {
-            if (reserva.getNumeroAsiento() != null && reserva.getViaje() != null) {
-                asientoRepository.findByViaje_IdViajeAndNumeroAsiento(reserva.getViaje().getIdViaje(), reserva.getNumeroAsiento())
-                        .ifPresent(asiento -> {
-                            asiento.setEstado(true);
-                            asientoRepository.save(asiento);
-                        });
-            }
-        });
-    }
 
 }
