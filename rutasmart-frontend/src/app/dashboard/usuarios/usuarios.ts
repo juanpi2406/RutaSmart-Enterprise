@@ -78,6 +78,63 @@ pantallaLista = false;
   form: Partial<Usuario> = {};
 
   /*=========================================
+ * CATÁLOGOS
+ =========================================*/
+
+facultades: string[] = [
+  'Ingeniería de Sistemas',
+  'Ingeniería Industrial',
+  'Arquitectura',
+  'Administración',
+  'Contabilidad',
+  'Derecho'
+];
+
+sedes: string[] = [
+  'Lima Norte',
+  'Lima Centro',
+  'Lima Sur'
+];
+
+ciclos: number[] = [
+  1,2,3,4,5,6,7,8,9,10
+];
+
+/*=========================================
+ * LICENCIAS
+ =========================================*/
+
+categoriasLicencia: string[] = [
+  'A-I',
+  'A-IIa',
+  'A-IIb',
+  'A-IIIa',
+  'A-IIIb',
+  'A-IIIc'
+];
+
+
+soloNumerosTelefono(evento: string): void {
+
+  this.form.telefono = (evento || '')
+    .replace(/\D/g, '')
+    .substring(0, 9);
+
+}
+
+soloNumeros(event: KeyboardEvent): void {
+
+  const tecla = event.key;
+
+  if (!/^[0-9]$/.test(tecla)) {
+
+    event.preventDefault();
+
+  }
+
+}
+
+  /*=========================================
    * INIT
    =========================================*/
 
@@ -276,6 +333,8 @@ private inicializarPantalla(): void {
       ciclo: undefined,
 
       /* Chofer */
+
+
 
       numeroLicencia: '',
 

@@ -4,6 +4,12 @@ import { CommonModule } from '@angular/common';
 import { SessionService } from '../../service/session';
 import { DashboardService } from '../../service/dashboard';
 import { ChangeDetectorRef } from '@angular/core';
+import { interval } from 'rxjs';
+import { NgZone } from '@angular/core';
+
+
+
+
 
 @Component({
   selector: 'app-dashboard-home',
@@ -24,6 +30,13 @@ export class DashboardHomeComponent implements OnInit {
 
   private dashboardService = inject(DashboardService);
   private cdr = inject(ChangeDetectorRef);
+
+private zone = inject(NgZone);
+/*=========================================
+SIMULACIÓN
+=========================================*/
+
+viajeIniciado = false;
 
   /*=========================================
    * SESIÓN
@@ -96,6 +109,51 @@ export class DashboardHomeComponent implements OnInit {
   horaLlegada = '';
 
   asientosDisponibles = 0;
+/*=========================================
+POSICIÓN DEL BUS
+=========================================*/
+
+busLeft = 62;
+
+busTop = 39;
+
+/*=========================================
+RUTA DEL BUS
+=========================================*/
+
+private rutaBus = [
+
+  { left: 72, top: 84 },
+  { left: 70, top: 76 },
+  { left: 68, top: 69 },
+  { left: 66, top: 60 },
+  { left: 64, top: 52 },
+  { left: 61, top: 44 },
+  { left: 57, top: 36 },
+  { left: 52, top: 30 },
+  { left: 46, top: 25 },
+  { left: 40, top: 22 }
+
+];
+
+private indiceRuta = 0;
+
+
+iniciarViaje(): void {
+
+    if (this.viajeIniciado) {
+        return;
+    }
+
+    this.viajeIniciado = true;
+
+    this.estadoViaje = 'EN RUTA';
+
+    this.iniciarSimulacion();
+
+}
+
+
 
   /*=========================================
    * CHART
@@ -121,6 +179,9 @@ export class DashboardHomeComponent implements OnInit {
       }
     );
 
+
+
+
     switch (this.rol) {
 
       case 'ADMINISTRADOR':
@@ -142,6 +203,14 @@ export class DashboardHomeComponent implements OnInit {
         break;
 
     }
+
+
+
+    if (this.rol !== 'CHOFER') {
+
+    this.iniciarSimulacion();
+
+}
 
   }
 
@@ -208,6 +277,8 @@ cargarDashboardAdmin(): void {
       });
 
 }
+
+
 
   /*=========================================
  * DASHBOARD ALUMNO
@@ -308,6 +379,50 @@ cargarDashboardChofer(): void {
         }
 
       });
+
+}
+
+private avanzando = true;
+
+private iniciarSimulacion(): void {
+
+    this.busLeft = this.rutaBus[0].left;
+    this.busTop = this.rutaBus[0].top;
+
+    interval(3000).subscribe(() => {
+
+        if (this.avanzando) {
+
+            this.indiceRuta++;
+
+            if (this.indiceRuta >= this.rutaBus.length - 1) {
+
+                this.indiceRuta = this.rutaBus.length - 1;
+
+                this.avanzando = false;
+
+            }
+
+        } else {
+
+            this.indiceRuta--;
+
+            if (this.indiceRuta <= 0) {
+
+                this.indiceRuta = 0;
+
+                this.avanzando = true;
+
+            }
+
+        }
+
+        this.busLeft = this.rutaBus[this.indiceRuta].left;
+        this.busTop = this.rutaBus[this.indiceRuta].top;
+        this.cdr.detectChanges();
+    });
+
+
 
 }
 

@@ -128,3 +128,112 @@
 
 }
 
+/*=========================================
+MAPA
+=========================================*/
+
+#googleMap{
+
+    height:450px;
+
+    width:100%;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+}
+/*=========================================
+=            MAPA LEAFLET
+=========================================*/
+
+.mapa{
+
+    padding:20px;
+
+}
+
+.mapa-body{
+
+    width:100%;
+
+    height:500px;
+
+    min-height:500px;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+}
+
+
+
+.bus{
+
+    position:absolute;
+
+    font-size:34px;
+
+    color:#0d6efd;
+
+    left:120px;
+
+    top:220px;
+
+    transition:all 1.5s ease;
+
+    z-index:1000;
+
+}
+
+
+
+/*=========================================
+CENTRO DE MONITOREO
+=========================================*/
+
+.mapa-container{
+
+    position:relative;
+
+    width:100%;
+
+    max-width:1100px;
+
+    margin:auto;
+
+}
+
+.mapa-img{
+
+    width:100%;
+
+    display:block;
+
+    border-radius:15px;
+
+}
+
+.bus{
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    font-size:40px;
+
+    color:#1565C0;
+
+    z-index:20;
+
+    transition:left .8s linear,
+               top .8s linear;
+
+    transform:translate(-50%,-50%);
+
+    filter:drop-shadow(0 4px 8px rgba(0,0,0,.35));
+
+}

@@ -62,6 +62,26 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioResponseDTO guardar(UsuarioCreateDTO dto) {
 
         //=========================================
+                // NORMALIZAR DATOS
+                //=========================================
+
+                dto.setCodigo(dto.getCodigo().trim().toUpperCase());
+                dto.setCorreo(dto.getCorreo().trim().toLowerCase());
+
+                if (dto.getCodigoUniversitario() != null) {
+                dto.setCodigoUniversitario(
+                        dto.getCodigoUniversitario().trim().toUpperCase()
+                );
+                }
+
+                if (dto.getNumeroLicencia() != null) {
+                dto.setNumeroLicencia(
+                        dto.getNumeroLicencia().trim().toUpperCase()
+                );
+                }
+
+
+        //=========================================
         // VALIDACIONES USUARIO
         //=========================================
 
@@ -212,11 +232,22 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioResponseDTO actualizar(Long id,
                                          UsuarioUpdateDTO dto) {
 
+
+
+
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Usuario no encontrado."
                         ));
+
+
+                //=========================================
+        // NORMALIZAR DATOS
+        //=========================================
+
+        dto.setCodigo(dto.getCodigo().trim().toUpperCase());
+        dto.setCorreo(dto.getCorreo().trim().toLowerCase());
 
         //=========================================
         // VALIDAR CÓDIGO
@@ -258,8 +289,8 @@ public class UsuarioServiceImpl implements UsuarioService {
         // ACTUALIZAR USUARIO
         //=========================================
 
-        usuario.setCodigo(dto.getCodigo());
-        usuario.setNombres(dto.getNombres());
+        usuario.setCodigo(dto.getCodigo().trim().toUpperCase());
+        usuario.setCorreo(dto.getCorreo().trim().toLowerCase());
         usuario.setApellidos(dto.getApellidos());
         usuario.setCorreo(dto.getCorreo());
         usuario.setTelefono(dto.getTelefono());

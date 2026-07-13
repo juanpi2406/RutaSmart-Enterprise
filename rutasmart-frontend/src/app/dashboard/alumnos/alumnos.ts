@@ -221,29 +221,21 @@ export class AlumnosComponent implements OnInit {
 
     this.alumnoEnEdicion = alumno;
 
-    this.form = {
+  this.form = {
 
-      codigoUniversitario:
+    idUsuario: alumno.idUsuario,
 
-        alumno.codigoUniversitario,
+    codigoUniversitario: alumno.codigoUniversitario,
 
-      facultad:
+    facultad: alumno.facultad,
 
-        alumno.facultad,
+    sede: alumno.sede,
 
-      sede:
+    ciclo: alumno.ciclo,
 
-        alumno.sede,
+    estado: alumno.estado
 
-      ciclo:
-
-        alumno.ciclo,
-
-      estado:
-
-        alumno.estado
-
-    };
+  };
 
     this.mostrarModal = true;
 
@@ -366,29 +358,21 @@ export class AlumnosComponent implements OnInit {
 
       }
 
-      const dto = {
+    const dto = {
 
-        codigoUniversitario:
+      idUsuario: alumno.idUsuario,
 
-          alumno.codigoUniversitario,
+      codigoUniversitario: alumno.codigoUniversitario,
 
-        facultad:
+      facultad: alumno.facultad,
 
-          alumno.facultad,
+      sede: alumno.sede,
 
-        sede:
+      ciclo: alumno.ciclo,
 
-          alumno.sede,
+      estado: !alumno.estado
 
-        ciclo:
-
-          alumno.ciclo,
-
-        estado:
-
-          !alumno.estado
-
-      };
+    };
 
       this.alumnoService.actualizar(
 
@@ -439,5 +423,9 @@ export class AlumnosComponent implements OnInit {
     });
 
   }
+
+
+
+
 
 }
