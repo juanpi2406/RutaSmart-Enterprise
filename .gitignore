@@ -61,8 +61,7 @@ Thumbs.db
 # Spring Boot
 ##############################
 
-**/application.properties
-**/application-dev.properties
+
 
 ##############################
 # Environment
@@ -132,4 +131,3 @@ Desktop.ini
 # Linux
 ##############################
 
-*~
