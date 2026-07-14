@@ -8,7 +8,7 @@ import { Incidencia } from '../models/incidencia';
 })
 export class IncidenciaService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/incidencias';
+  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/incidencias';
 
   listar(): Observable<Incidencia[]> {
     return this.http.get<Incidencia[]>(this.API);

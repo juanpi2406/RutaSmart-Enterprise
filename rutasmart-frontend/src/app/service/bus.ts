@@ -8,7 +8,7 @@ import { Bus } from '../models/bus';
 })
 export class BusService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/buses';
+  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/buses';
 
   listar(): Observable<Bus[]> {
     return this.http.get<Bus[]>(this.API);

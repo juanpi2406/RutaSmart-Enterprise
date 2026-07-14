@@ -9,7 +9,7 @@ import { ChoferCreate, ChoferResponse, ChoferUpdate } from '../models/chofer';
 })
 export class ChoferService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/choferes';
+  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/choferes';
 
   listar(): Observable<ApiResponse<ChoferResponse[]>> {
     return this.http.get<ApiResponse<ChoferResponse[]>>(this.API);

@@ -8,7 +8,7 @@ import { Alumno } from '../models/alumno';
 })
 export class AlumnoService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/alumnos';
+  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/alumnos';
 
   listar(): Observable<Alumno[]> {
     return this.http.get<Alumno[]>(this.API);

@@ -9,7 +9,7 @@ import { LoginRequest, LoginResponse } from '../models/auth';
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/auth/login';
+  private apiUrl = 'https://tu-dominio-de-railway.up.railway.app/api/auth/login';
 
   enviarLogin(datos: LoginRequest): Observable<ApiResponse<LoginResponse>> {
     return this.http.post<ApiResponse<LoginResponse>>(this.apiUrl, datos);

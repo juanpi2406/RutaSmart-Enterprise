@@ -10,7 +10,7 @@ export type { Asiento } from '../models/asiento';
 })
 export class AsientoService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/asientos';
+  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/asientos';
 
   listarPorViaje(idViaje: number): Observable<Asiento[]> {
     return this.http.get<Asiento[]>(`${this.API}/viaje/${idViaje}`);

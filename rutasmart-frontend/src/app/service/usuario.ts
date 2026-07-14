@@ -8,7 +8,7 @@ import { Usuario, ApiResponse } from '../models/usuario';
 })
 export class UsuarioService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/usuarios';
+  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/usuarios';
 
   listar(): Observable<ApiResponse<Usuario[]>> {
     return this.http.get<ApiResponse<Usuario[]>>(this.API);

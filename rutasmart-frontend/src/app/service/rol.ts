@@ -18,7 +18,7 @@ export class RolService {
 
   private http = inject(HttpClient);
 
-  private readonly API = 'http://localhost:8080/api/roles';
+  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/roles';
 
   listar(): Observable<ApiResponse<Rol[]>> {
 

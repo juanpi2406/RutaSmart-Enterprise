@@ -8,7 +8,7 @@ import { AsignacionProgramacion } from '../models/asignacion-programacion';
 })
 export class AsignacionProgramacionService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/asignaciones';
+  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/asignaciones';
 
   listar(): Observable<AsignacionProgramacion[]> {
     return this.http.get<AsignacionProgramacion[]>(this.API);

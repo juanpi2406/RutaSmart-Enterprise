@@ -16,7 +16,7 @@ export class ConfiguracionComponent implements OnInit {
 
   roles: Rol[] = [];
 
-  readonly apiDocsUrl = 'http://localhost:8080/api-docs';
+  readonly apiDocsUrl = 'https://tu-dominio-de-railway.up.railway.app/api-docs';
   readonly swaggerUrl = 'http://localhost:8080/swagger';
 
   ngOnInit(): void {

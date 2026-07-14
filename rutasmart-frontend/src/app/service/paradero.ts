@@ -8,7 +8,7 @@ import { Paradero } from '../models/paradero';
 })
 export class ParaderoService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/paraderos';
+  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/paraderos';
 
   listar(): Observable<Paradero[]> {
     return this.http.get<Paradero[]>(this.API);

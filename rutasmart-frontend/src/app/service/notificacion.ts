@@ -8,7 +8,7 @@ import { Notificacion } from '../models/notificacion';
 })
 export class NotificacionService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/notificaciones';
+  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/notificaciones';
 
   listar(): Observable<Notificacion[]> {
     return this.http.get<Notificacion[]>(this.API);

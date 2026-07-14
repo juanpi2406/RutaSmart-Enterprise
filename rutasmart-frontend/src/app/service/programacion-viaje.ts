@@ -8,7 +8,7 @@ import { ProgramacionViaje } from '../models/programacion-viaje';
 })
 export class ProgramacionViajeService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/programaciones';
+  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/programaciones';
 
   listar(): Observable<ProgramacionViaje[]> {
     return this.http.get<ProgramacionViaje[]>(this.API);

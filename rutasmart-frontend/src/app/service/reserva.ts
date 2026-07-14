@@ -8,7 +8,7 @@ import { Reserva } from '../models/reserva';
 })
 export class ReservaService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/reservas';
+  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/reservas';
 
   listar(): Observable<Reserva[]> {
     return this.http.get<Reserva[]>(this.API);

@@ -12,7 +12,7 @@ export class DashboardService {
 
   private http = inject(HttpClient);
 
-  private readonly API = 'http://localhost:8080/api/dashboard';
+  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/dashboard';
 
   /*=========================================
    * ADMINISTRADOR
