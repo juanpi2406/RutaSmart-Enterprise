@@ -17,6 +17,37 @@
         </div>
     </div>
 
+    <section class="theme-panel">
+        <div class="theme-panel__header">
+            <div>
+                <h3>Personalización visual</h3>
+                <p>Prueba combinaciones de color y guarda el estilo que prefieras.</p>
+            </div>
+            <label class="theme-switch">
+                <input type="checkbox" [(ngModel)]="tema.modoOscuro" (change)="aplicarTema()">
+                <span></span>
+                Modo noche
+            </label>
+        </div>
+
+        <div class="theme-controls">
+            <label>
+                Color principal
+                <input type="color" [(ngModel)]="tema.colorPrincipal" (input)="aplicarTema()">
+            </label>
+            <label>
+                Color secundario
+                <input type="color" [(ngModel)]="tema.colorSecundario" (input)="aplicarTema()">
+            </label>
+            <div class="theme-preview">
+                <button class="btn-primary" type="button">Vista principal</button>
+                <span>Los cambios se aplican al instante.</span>
+            </div>
+        </div>
+
+        <button class="btn-secondary" type="button" (click)="restablecerTema()">Restablecer colores</button>
+    </section>
+
     <div class="tabla-container" style="padding: 20px; margin-bottom: 20px;">
         <p style="margin: 0 0 10px 0;">Documentación de la API:</p>
         <a [href]="swaggerUrl" target="_blank" class="btn-primary" style="display: inline-block; text-decoration: none; margin-right: 10px;">

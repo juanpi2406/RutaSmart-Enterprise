@@ -10,6 +10,7 @@ import { SessionService } from '../service/session';
 import { MENU } from '../config/menu';
 import { MenuItem } from '../models/menu-item';
 import { CommonModule } from '@angular/common';
+import { LoadingOverlayComponent } from '../components/loading-overlay/loading-overlay';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +19,8 @@ imports: [
     CommonModule,
     RouterOutlet,
     RouterLink,
-    RouterLinkActive
+    RouterLinkActive,
+    LoadingOverlayComponent
 ],
   templateUrl: './dashboard.html'
 })

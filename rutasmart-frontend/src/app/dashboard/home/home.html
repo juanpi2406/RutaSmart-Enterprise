@@ -203,6 +203,10 @@
 
     <div class="panel-header">
         <h3>Monitoreo en Tiempo Real</h3>
+        <span class="tracking-status" [class.activo]="viajeIniciado">
+            <i class="bi bi-broadcast"></i>
+            {{ viajeIniciado ? 'Bus en ruta' : 'Esperando inicio del viaje' }}
+        </span>
     </div>
 
     <div class="panel-body">
@@ -519,6 +523,10 @@
             Mi Bus en Tiempo Real
 
         </h3>
+        <span class="tracking-status" [class.activo]="viajeIniciado">
+            <i class="bi bi-broadcast"></i>
+            {{ viajeIniciado ? 'Ubicación en vivo' : 'Esperando al chofer' }}
+        </span>
 
     </div>
 
@@ -794,6 +802,10 @@
             Miruta
 
         </h3>
+        <span class="tracking-status" [class.activo]="viajeIniciado">
+            <i class="bi bi-broadcast"></i>
+            {{ viajeIniciado ? 'Transmitiendo ubicación' : 'Viaje pendiente' }}
+        </span>
 
     </div>
 

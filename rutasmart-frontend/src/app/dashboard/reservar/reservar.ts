@@ -156,8 +156,7 @@ export class ReservarComponent implements OnInit {
           },
           error: (err) => {
             console.error(err);
-            const mensaje = err?.status ? `Error ${err.status}` : 'Error al crear reserva';
-            alert(mensaje);
+            alert(err?.error?.message ?? 'No se pudo registrar la reserva. Inténtalo nuevamente.');
           }
         });
       },

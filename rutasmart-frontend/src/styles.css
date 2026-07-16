@@ -1,1 +1,44 @@
-/* You can add global styles to this file, and also import other style files */
+/* Paleta global configurable desde Configuración. */
+:root {
+  --color-principal: #2563eb;
+  --color-secundario: #0f766e;
+  --page-color: #f8fafc;
+  --surface-color: #ffffff;
+  --text-color: #1f2937;
+  --muted-color: #6b7280;
+}
+
+html, body { background: var(--page-color); color: var(--text-color); }
+
+body { transition: background-color .25s ease, color .25s ease; }
+
+.btn-primary, thead, .sidebar .active { background-color: var(--color-principal) !important; }
+.btn-primary:hover { filter: brightness(.9); }
+.page-header h2, .card h2, .modal-header h3, .theme-panel h3 { color: var(--text-color) !important; }
+.page-header p, .card span { color: var(--muted-color) !important; }
+.card, .toolbar, .tabla-container, .modal { background-color: var(--surface-color) !important; }
+.card i, .edit { color: var(--color-principal) !important; }
+.toolbar input:focus, .form-group input:focus, .form-group select:focus { border-color: var(--color-principal) !important; }
+input[type="text"], textarea { text-transform: uppercase; }
+
+:root[data-theme='dark'] {
+  --page-color: #111827;
+  --surface-color: #1f2937;
+  --text-color: #f3f4f6;
+  --muted-color: #cbd5e1;
+}
+
+:root[data-theme='dark'] .main,
+:root[data-theme='dark'] .dashboard,
+:root[data-theme='dark'] .usuarios-container { background-color: var(--page-color) !important; }
+:root[data-theme='dark'] .card,
+:root[data-theme='dark'] .toolbar,
+:root[data-theme='dark'] .tabla-container,
+:root[data-theme='dark'] .modal,
+:root[data-theme='dark'] .theme-panel { color: var(--text-color) !important; }
+:root[data-theme='dark'] tbody td,
+:root[data-theme='dark'] .form-group label { color: var(--text-color) !important; border-color: #475569 !important; }
+:root[data-theme='dark'] tbody tr:hover { background: #334155 !important; }
+:root[data-theme='dark'] input,
+:root[data-theme='dark'] select,
+:root[data-theme='dark'] textarea { background: #111827 !important; color: #f3f4f6 !important; border-color: #475569 !important; }

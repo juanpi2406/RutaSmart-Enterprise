@@ -1,11 +1,12 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { SessionService } from '../../service/session';
 import { DashboardService } from '../../service/dashboard';
 import { ChangeDetectorRef } from '@angular/core';
-import { interval } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { NgZone } from '@angular/core';
+import { BusTrackingService } from '../../service/bus-tracking.service';
 
 
 
@@ -20,7 +21,7 @@ import { NgZone } from '@angular/core';
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })
-export class DashboardHomeComponent implements OnInit {
+export class DashboardHomeComponent implements OnInit, OnDestroy {
 
   /*=========================================
    * SERVICIOS
@@ -32,11 +33,15 @@ export class DashboardHomeComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
 private zone = inject(NgZone);
+private trackingBus = inject(BusTrackingService);
+private simulacion?: Subscription;
+private seguimiento?: Subscription;
 /*=========================================
 SIMULACIÓN
 =========================================*/
 
 viajeIniciado = false;
+ultimaActualizacion = 0;
 
   /*=========================================
    * SESIÓN
@@ -206,12 +211,19 @@ iniciarViaje(): void {
 
 
 
-    if (this.rol !== 'CHOFER') {
+    this.seguimiento = this.trackingBus.posicion$.subscribe((posicion) => {
+      this.busLeft = posicion.left;
+      this.busTop = posicion.top;
+      this.ultimaActualizacion = posicion.actualizadoEn;
+      if (this.rol !== 'CHOFER') this.viajeIniciado = posicion.activo;
+      this.cdr.detectChanges();
+    });
 
-    this.iniciarSimulacion();
+  }
 
-}
-
+  ngOnDestroy(): void {
+    this.simulacion?.unsubscribe();
+    this.seguimiento?.unsubscribe();
   }
 
 
@@ -386,10 +398,15 @@ private avanzando = true;
 
 private iniciarSimulacion(): void {
 
+    this.simulacion?.unsubscribe();
+    this.indiceRuta = 0;
+    this.avanzando = true;
+
     this.busLeft = this.rutaBus[0].left;
     this.busTop = this.rutaBus[0].top;
+    this.trackingBus.publicar(this.busLeft, this.busTop);
 
-    interval(3000).subscribe(() => {
+    this.simulacion = interval(3000).subscribe(() => {
 
         if (this.avanzando) {
 
@@ -419,6 +436,7 @@ private iniciarSimulacion(): void {
 
         this.busLeft = this.rutaBus[this.indiceRuta].left;
         this.busTop = this.rutaBus[this.indiceRuta].top;
+        this.trackingBus.publicar(this.busLeft, this.busTop);
         this.cdr.detectChanges();
     });
 

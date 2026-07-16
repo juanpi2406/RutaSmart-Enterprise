@@ -187,6 +187,29 @@ MAPA
 
 }
 
+.tracking-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.tracking-status.activo {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.tracking-status.activo i { animation: pulso-ubicacion 1.5s infinite; }
+
+@keyframes pulso-ubicacion {
+    50% { opacity: .35; }
+}
+
 
 
 /*=========================================
