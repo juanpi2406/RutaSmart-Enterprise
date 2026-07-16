@@ -2,13 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Bus } from '../models/bus';
+import { API_BASE_URL } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BusService {
   private http = inject(HttpClient);
-  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/buses';
+  private readonly API = `${API_BASE_URL}/api/buses`;
 
   listar(): Observable<Bus[]> {
     return this.http.get<Bus[]>(this.API);

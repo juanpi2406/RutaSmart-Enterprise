@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Asiento } from '../models/asiento';
+import { API_BASE_URL } from '../config/api.config';
 
 export type { Asiento } from '../models/asiento';
 
@@ -10,7 +11,7 @@ export type { Asiento } from '../models/asiento';
 })
 export class AsientoService {
   private http = inject(HttpClient);
-  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/asientos';
+  private readonly API = `${API_BASE_URL}/api/asientos`;
 
   listarPorViaje(idViaje: number): Observable<Asiento[]> {
     return this.http.get<Asiento[]>(`${this.API}/viaje/${idViaje}`);

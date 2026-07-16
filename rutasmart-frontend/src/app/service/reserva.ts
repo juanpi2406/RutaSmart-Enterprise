@@ -2,13 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Reserva } from '../models/reserva';
+import { API_BASE_URL } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservaService {
   private http = inject(HttpClient);
-  private readonly API = 'https://tu-dominio-de-railway.up.railway.app/api/reservas';
+  private readonly API = `${API_BASE_URL}/api/reservas`;
 
   listar(): Observable<Reserva[]> {
     return this.http.get<Reserva[]>(this.API);
