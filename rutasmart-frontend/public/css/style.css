@@ -15,32 +15,36 @@
 
     --font-sans: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
-    --blue:#155bc9;
-    --blue-dark:#073e9f;
-    --blue-light:#2f80ed;
+    --blue:var(--color-principal, #dc2626);
+    --blue-dark:var(--color-secundario, #991b1b);
+    --blue-light:#f87171;
 
     --green:#16a34a;
     --orange:#f59e0b;
     --red:#ef4444;
     --purple:#7c3aed;
 
-    --white:#ffffff;
+    --white:var(--surface-color, #161616);
 
-    --background:#f4f7fb;
+    --background:var(--page-color, #0b0b0b);
 
-    --text:#1e293b;
+    --surface:var(--surface-color, #161616);
 
-    --muted:#64748b;
+    --surface-2:#1f1f1f;
 
-    --line:#e5e7eb;
+    --text:var(--text-color, #f3f4f6);
+
+    --muted:var(--muted-color, #9ca3af);
+
+    --line:#2a2a2a;
 
     --shadow:
 
-        0 10px 25px rgba(0,0,0,.08);
+        0 10px 25px rgba(0,0,0,.45);
 
     --shadow-hover:
 
-        0 15px 35px rgba(0,0,0,.15);
+        0 15px 35px rgba(0,0,0,.6);
 
     --radius:18px;
 
@@ -77,6 +81,8 @@ body{
     color:var(--text);
 
     overflow-x:hidden;
+
+    color-scheme:dark;
 
 }
 
@@ -256,9 +262,9 @@ th{
 
     padding:14px;
 
-    background:#eef4ff;
+    background:var(--surface-2);
 
-    color:var(--blue-dark);
+    color:var(--blue-light);
 
 }
 
@@ -278,7 +284,7 @@ tbody tr{
 
 tbody tr:hover{
 
-    background:#f8fbff;
+    background:var(--surface-2);
 
 }
 
@@ -444,7 +450,7 @@ tbody tr:hover{
 
 ::-webkit-scrollbar-track{
 
-    background:#edf2f7;
+    background:var(--background);
 
 }
 

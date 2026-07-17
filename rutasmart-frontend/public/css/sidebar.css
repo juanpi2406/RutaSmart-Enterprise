@@ -10,9 +10,9 @@
 
     background:linear-gradient(
         180deg,
-        #155bc9 0%,
-        #0f4ab2 45%,
-        #073e9f 100%
+        #dc2626 0%,
+        #b91c1c 45%,
+        #7f1212 100%
     );
 
     color:#fff;
@@ -147,21 +147,21 @@
 
 .menu li.active a{
 
-    background:#fff;
+    background:var(--blue-light);
 
-    color:#155bc9;
+    color:white;
 
     font-weight:700;
 
     box-shadow:
 
-    0 8px 20px rgba(0,0,0,.18);
+    0 8px 20px rgba(0,0,0,.35);
 
 }
 
 .menu li.active i{
 
-    color:#155bc9;
+    color:white;
 
 }
 

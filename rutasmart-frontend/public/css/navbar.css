@@ -6,7 +6,7 @@
 
     height:80px;
 
-    background:rgba(255,255,255,.85);
+    background:var(--white);
 
     backdrop-filter:blur(12px);
 
@@ -20,7 +20,7 @@
 
     padding:0 35px;
 
-    border-bottom:1px solid #e5e7eb;
+    border-bottom:1px solid var(--line);
 
     position:sticky;
 
@@ -28,7 +28,7 @@
 
     z-index:999;
 
-    box-shadow:0 4px 18px rgba(0,0,0,.05);
+    box-shadow:0 4px 18px rgba(0,0,0,.35);
 
 }
 
@@ -52,7 +52,7 @@
 
     font-weight:700;
 
-    color:#1e293b;
+    color:var(--text);
 
 }
 
@@ -64,9 +64,9 @@
 
     border-radius:12px;
 
-    background:#eef4ff;
+    background:var(--surface-2);
 
-    color:#155bc9;
+    color:var(--blue);
 
     display:flex;
 
@@ -82,7 +82,7 @@
 
 .menu-btn:hover{
 
-    background:#155bc9;
+    background:var(--blue);
 
     color:white;
 
@@ -112,7 +112,7 @@
 
     height:46px;
 
-    background:#f5f7fb;
+    background:var(--background);
 
     border-radius:25px;
 
@@ -126,21 +126,21 @@
 
     transition:.35s;
 
-    border:2px solid transparent;
+    border:2px solid var(--line);
 
 }
 
 .search:hover{
 
-    background:white;
+    background:var(--surface);
 
-    border-color:#155bc9;
+    border-color:var(--blue);
 
 }
 
 .search i{
 
-    color:#64748b;
+    color:var(--muted);
 
     font-size:18px;
 
@@ -154,13 +154,13 @@
 
     font-size:15px;
 
-    color:#1e293b;
+    color:var(--text);
 
 }
 
 .search input::placeholder{
 
-    color:#94a3b8;
+    color:var(--muted);
 
 }
 
@@ -176,7 +176,7 @@
 
     border-radius:50%;
 
-    background:white;
+    background:var(--surface-2);
 
     display:flex;
 
@@ -186,9 +186,9 @@
 
     font-size:20px;
 
-    color:#155bc9;
+    color:var(--blue);
 
-    box-shadow:0 8px 18px rgba(0,0,0,.08);
+    box-shadow:0 8px 18px rgba(0,0,0,.35);
 
     position:relative;
 
@@ -198,7 +198,7 @@
 
 .icon:hover{
 
-    background:#155bc9;
+    background:var(--blue);
 
     color:white;
 
@@ -264,13 +264,13 @@
 
     font-weight:700;
 
-    color:#155bc9;
+    color:var(--blue);
 
 }
 
 #fecha{
 
-    color:#64748b;
+    color:var(--muted);
 
     font-size:13px;
 
@@ -290,9 +290,9 @@
 
     object-fit:cover;
 
-    border:3px solid white;
+    border:3px solid var(--line);
 
-    box-shadow:0 8px 20px rgba(0,0,0,.12);
+    box-shadow:0 8px 20px rgba(0,0,0,.4);
 
     transition:.35s;
 
