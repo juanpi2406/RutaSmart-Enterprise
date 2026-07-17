@@ -195,44 +195,46 @@
     <!-- ====================================== -->
     <!-- MAPA -->
     <!-- ====================================== -->
+<!-- ====================================== -->
+<!-- MAPA -->
+<!-- ====================================== -->
 
-    <section class="panel mapa">
+<section class="panel">
 
-        <div class="panel-header">
+    <div class="panel-header">
+        <h3>Monitoreo en Tiempo Real</h3>
+        <span class="tracking-status" [class.activo]="viajeIniciado">
+            <i class="bi bi-broadcast"></i>
+            {{ viajeIniciado ? 'Bus en ruta' : 'Esperando inicio del viaje' }}
+        </span>
+    </div>
 
-            <h3>
+    <div class="panel-body">
 
-                Monitoreo en Tiempo Real
+        <div class="mapa-container">
 
-            </h3>
+            <!-- Imagen de la ruta -->
+            <img
+                     src="/mapa-utp.png"
+                    class="mapa-img"
+                    alt="Ruta Javier Prado - UTP">
+
+            <!-- Bus -->
+<i
+
+          class="bi bi-bus-front-fill bus"
+
+          [style.left.%]="busLeft"
+
+          [style.top.%]="busTop">
+
+          </i>
 
         </div>
 
-        <div
-            id="googleMap"
-            class="mapa-body">
+    </div>
 
-            <div class="mapa-placeholder">
-
-                <i class="bi bi-geo-alt-fill"></i>
-
-                <h3>
-
-                    Google Maps
-
-                </h3>
-
-                <p>
-
-                    Aquí se visualizarán los buses en tiempo real.
-
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
+</section>
 
     <!-- ====================================== -->
     <!-- ACTIVIDAD -->
@@ -456,6 +458,56 @@
 
     </div>
 
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <h3>
+
+                Accesos Rápidos
+
+            </h3>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="estado">
+
+                <i class="bi bi-ticket-perforated-fill"></i>
+
+                Reservar Viaje
+
+            </div>
+
+            <div class="estado">
+
+                <i class="bi bi-calendar-x-fill"></i>
+
+                Cancelar Reserva
+
+            </div>
+
+            <div class="estado">
+
+                <i class="bi bi-bell-fill"></i>
+
+                Ver Notificaciones
+
+            </div>
+
+            <div class="estado">
+
+                <i class="bi bi-person-circle"></i>
+
+                Mi Perfil
+
+            </div>
+
+        </div>
+
+    </div>
+
 </section>
 
 <!-- ====================================== -->
@@ -468,35 +520,34 @@
 
         <h3>
 
-            Ubicación del Bus
+            Mi Bus en Tiempo Real
 
         </h3>
+        <span class="tracking-status" [class.activo]="viajeIniciado">
+            <i class="bi bi-broadcast"></i>
+            {{ viajeIniciado ? 'Ubicación en vivo' : 'Esperando al chofer' }}
+        </span>
 
     </div>
 
-    <div
-        id="googleMapAlumno"
-        class="mapa-body">
+   <div class="panel-body">
 
-        <div class="mapa-placeholder">
+    <div class="mapa-container">
 
-            <i class="bi bi-geo-alt-fill"></i>
+        <img
+            src="/mapa-utp.png"
+            class="mapa-img"
+            alt="Mi Bus">
 
-            <h3>
-
-                Seguimiento en Tiempo Real
-
-            </h3>
-
-            <p>
-
-                Aquí podrás visualizar el bus asignado a tu ruta.
-
-            </p>
-
-        </div>
+        <i
+            class="bi bi-bus-front-fill bus"
+            [style.left.%]="busLeft"
+            [style.top.%]="busTop">
+        </i>
 
     </div>
+
+</div>
 
 </section>
 
@@ -669,13 +720,16 @@
 
                 <br>
 
-                <button class="btn-primary">
+      <button
+          class="btn-primary"
+          (click)="iniciarViaje()"
+          [disabled]="viajeIniciado">
 
-                    <i class="bi bi-play-circle-fill"></i>
+          <i class="bi bi-play-circle-fill"></i>
 
-                    Iniciar Viaje
+          {{ viajeIniciado ? 'Viaje en Curso' : 'Iniciar Viaje' }}
 
-                </button>
+      </button>
 
             </div>
 
@@ -745,35 +799,34 @@
 
         <h3>
 
-            Ubicación del Bus
+            Miruta
 
         </h3>
+        <span class="tracking-status" [class.activo]="viajeIniciado">
+            <i class="bi bi-broadcast"></i>
+            {{ viajeIniciado ? 'Transmitiendo ubicación' : 'Viaje pendiente' }}
+        </span>
 
     </div>
 
-    <div
-        id="googleMapChofer"
-        class="mapa-body">
+<div class="panel-body">
 
-        <div class="mapa-placeholder">
+    <div class="mapa-container">
 
-            <i class="bi bi-geo-alt-fill"></i>
+        <img
+            src="/mapa-utp.png"
+            class="mapa-img"
+            alt="Mi Ruta">
 
-            <h3>
-
-                GPS del Vehículo
-
-            </h3>
-
-            <p>
-
-                Aquí se visualizará la ubicación del bus en tiempo real.
-
-            </p>
-
-        </div>
+        <i
+            class="bi bi-bus-front-fill bus"
+            [style.left.%]="busLeft"
+            [style.top.%]="busTop">
+        </i>
 
     </div>
+
+</div>
 
 </section>
 

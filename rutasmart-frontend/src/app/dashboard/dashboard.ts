@@ -10,6 +10,7 @@ import { SessionService } from '../service/session';
 import { MENU } from '../config/menu';
 import { MenuItem } from '../models/menu-item';
 import { CommonModule } from '@angular/common';
+import { LoadingOverlayComponent } from '../components/loading-overlay/loading-overlay';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +19,8 @@ imports: [
     CommonModule,
     RouterOutlet,
     RouterLink,
-    RouterLinkActive
+    RouterLinkActive,
+    LoadingOverlayComponent
 ],
   templateUrl: './dashboard.html'
 })
@@ -75,13 +77,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
     console.log('Dashboard resolved role:', rolActual);
     console.log('Dashboard menu items:', this.menu.map(item => item.titulo));
 
-    this.actualizarFechaHora();
+//setTimeout(() => {
 
-    this.reloj = setInterval(() => {
+  //this.actualizarFechaHora();
 
-      this.actualizarFechaHora();
+ // this.reloj = setInterval(() => {
 
-    }, 1000);
+   // this.actualizarFechaHora();
+
+  //}, 1000);
+
+//});
 
   }
 

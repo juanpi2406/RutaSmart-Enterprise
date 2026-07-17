@@ -1,9 +1,16 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { SessionService } from '../../service/session';
 import { DashboardService } from '../../service/dashboard';
 import { ChangeDetectorRef } from '@angular/core';
+import { interval, Subscription } from 'rxjs';
+import { NgZone } from '@angular/core';
+import { BusTrackingService } from '../../service/bus-tracking.service';
+
+
+
+
 
 @Component({
   selector: 'app-dashboard-home',
@@ -14,7 +21,7 @@ import { ChangeDetectorRef } from '@angular/core';
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })
-export class DashboardHomeComponent implements OnInit {
+export class DashboardHomeComponent implements OnInit, OnDestroy {
 
   /*=========================================
    * SERVICIOS
@@ -24,6 +31,17 @@ export class DashboardHomeComponent implements OnInit {
 
   private dashboardService = inject(DashboardService);
   private cdr = inject(ChangeDetectorRef);
+
+private zone = inject(NgZone);
+private trackingBus = inject(BusTrackingService);
+private simulacion?: Subscription;
+private seguimiento?: Subscription;
+/*=========================================
+SIMULACIÓN
+=========================================*/
+
+viajeIniciado = false;
+ultimaActualizacion = 0;
 
   /*=========================================
    * SESIÓN
@@ -96,6 +114,51 @@ export class DashboardHomeComponent implements OnInit {
   horaLlegada = '';
 
   asientosDisponibles = 0;
+/*=========================================
+POSICIÓN DEL BUS
+=========================================*/
+
+busLeft = 62;
+
+busTop = 39;
+
+/*=========================================
+RUTA DEL BUS
+=========================================*/
+
+private rutaBus = [
+
+  { left: 72, top: 84 },
+  { left: 70, top: 76 },
+  { left: 68, top: 69 },
+  { left: 66, top: 60 },
+  { left: 64, top: 52 },
+  { left: 61, top: 44 },
+  { left: 57, top: 36 },
+  { left: 52, top: 30 },
+  { left: 46, top: 25 },
+  { left: 40, top: 22 }
+
+];
+
+private indiceRuta = 0;
+
+
+iniciarViaje(): void {
+
+    if (this.viajeIniciado) {
+        return;
+    }
+
+    this.viajeIniciado = true;
+
+    this.estadoViaje = 'EN RUTA';
+
+    this.iniciarSimulacion();
+
+}
+
+
 
   /*=========================================
    * CHART
@@ -121,6 +184,9 @@ export class DashboardHomeComponent implements OnInit {
       }
     );
 
+
+
+
     switch (this.rol) {
 
       case 'ADMINISTRADOR':
@@ -143,6 +209,21 @@ export class DashboardHomeComponent implements OnInit {
 
     }
 
+
+
+    this.seguimiento = this.trackingBus.posicion$.subscribe((posicion) => {
+      this.busLeft = posicion.left;
+      this.busTop = posicion.top;
+      this.ultimaActualizacion = posicion.actualizadoEn;
+      if (this.rol !== 'CHOFER') this.viajeIniciado = posicion.activo;
+      this.cdr.detectChanges();
+    });
+
+  }
+
+  ngOnDestroy(): void {
+    this.simulacion?.unsubscribe();
+    this.seguimiento?.unsubscribe();
   }
 
 
@@ -208,6 +289,8 @@ cargarDashboardAdmin(): void {
       });
 
 }
+
+
 
   /*=========================================
  * DASHBOARD ALUMNO
@@ -308,6 +391,56 @@ cargarDashboardChofer(): void {
         }
 
       });
+
+}
+
+private avanzando = true;
+
+private iniciarSimulacion(): void {
+
+    this.simulacion?.unsubscribe();
+    this.indiceRuta = 0;
+    this.avanzando = true;
+
+    this.busLeft = this.rutaBus[0].left;
+    this.busTop = this.rutaBus[0].top;
+    this.trackingBus.publicar(this.busLeft, this.busTop);
+
+    this.simulacion = interval(3000).subscribe(() => {
+
+        if (this.avanzando) {
+
+            this.indiceRuta++;
+
+            if (this.indiceRuta >= this.rutaBus.length - 1) {
+
+                this.indiceRuta = this.rutaBus.length - 1;
+
+                this.avanzando = false;
+
+            }
+
+        } else {
+
+            this.indiceRuta--;
+
+            if (this.indiceRuta <= 0) {
+
+                this.indiceRuta = 0;
+
+                this.avanzando = true;
+
+            }
+
+        }
+
+        this.busLeft = this.rutaBus[this.indiceRuta].left;
+        this.busTop = this.rutaBus[this.indiceRuta].top;
+        this.trackingBus.publicar(this.busLeft, this.busTop);
+        this.cdr.detectChanges();
+    });
+
+
 
 }
 

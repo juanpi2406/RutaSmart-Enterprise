@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { DashboardAdmin } from '../models/dashboardAdmin';
 import { DashboardAlumno } from '../models/dashboardAlumno';
 import { DashboardChofer } from '../models/dashboardChofer';
+import { API_BASE_URL } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class DashboardService {
 
   private http = inject(HttpClient);
 
-  private readonly API = 'http://localhost:8080/api/dashboard';
+  private readonly API = `${API_BASE_URL}/api/dashboard`;
 
   /*=========================================
    * ADMINISTRADOR

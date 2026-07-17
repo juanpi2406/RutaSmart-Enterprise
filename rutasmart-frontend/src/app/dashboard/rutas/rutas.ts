@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RutaService } from '../../service/ruta';
@@ -15,6 +15,7 @@ import Swal from 'sweetalert2';
 export class RutasComponent implements OnInit {
 
   private rutaService = inject(RutaService);
+  private cdr = inject(ChangeDetectorRef);
 
   rutasLista: Ruta[] = [];
   rutasFiltradas: Ruta[] = [];
@@ -40,10 +41,12 @@ export class RutasComponent implements OnInit {
         this.rutasFiltradas = [...this.rutasLista];
         this.totalActivas = this.rutasLista.filter(r => r.estado === true).length;
         this.cargando = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error(error);
         this.cargando = false;
+        this.cdr.detectChanges();
       }
     });
   }

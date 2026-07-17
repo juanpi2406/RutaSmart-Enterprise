@@ -34,8 +34,6 @@ public interface UsuarioMapper {
         @Mapping(target = "updatedAt", ignore = true)
 
         /* Relaciones */
-        @Mapping(target = "alumno", ignore = true)
-        @Mapping(target = "chofer", ignore = true)
         @Mapping(target = "incidencias", ignore = true)
         @Mapping(target = "notificaciones", ignore = true)
 
@@ -53,8 +51,6 @@ public interface UsuarioMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
 
-    @Mapping(target = "alumno", ignore = true)
-    @Mapping(target = "chofer", ignore = true)
     @Mapping(target = "incidencias", ignore = true)
     @Mapping(target = "notificaciones", ignore = true)
 

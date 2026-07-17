@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReservaService } from '../../service/reserva';
@@ -13,6 +13,7 @@ import { Reserva } from '../../models/reserva';
 })
 export class ReservasComponent implements OnInit {
   private reservaService = inject(ReservaService);
+  private cdr = inject(ChangeDetectorRef);
 
   reservasLista: Reserva[] = [];
   reservasFiltradas: Reserva[] = [];
@@ -32,8 +33,12 @@ export class ReservasComponent implements OnInit {
       next: (data) => {
         this.reservasLista = data;
         this.reservasFiltradas = [...this.reservasLista];
+        this.cdr.detectChanges();
       },
-      error: (err) => console.error(err)
+      error: (err) => {
+        console.error(err);
+        this.cdr.detectChanges();
+      }
     });
   }
 

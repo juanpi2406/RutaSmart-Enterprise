@@ -23,6 +23,7 @@
             ],
         "styles": [
           "src/styles.css",
+
           "./public/css/style.css",
           "./public/css/navbar.css",
           "./public/css/sidebar.css",

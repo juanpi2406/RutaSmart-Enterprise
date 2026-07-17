@@ -3,13 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/api-response';
 import { ChoferCreate, ChoferResponse, ChoferUpdate } from '../models/chofer';
+import { API_BASE_URL } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChoferService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/choferes';
+  private readonly API = `${API_BASE_URL}/api/choferes`;
 
   listar(): Observable<ApiResponse<ChoferResponse[]>> {
     return this.http.get<ApiResponse<ChoferResponse[]>>(this.API);

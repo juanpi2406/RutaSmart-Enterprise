@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BusService } from '../../service/bus';
@@ -15,6 +15,7 @@ import Swal from 'sweetalert2';
 export class BusesComponent implements OnInit {
 
   private busService = inject(BusService);
+  private cdr = inject(ChangeDetectorRef);
 
   busesLista: Bus[] = [];
   busesFiltrados: Bus[] = [];
@@ -40,10 +41,12 @@ export class BusesComponent implements OnInit {
         this.busesFiltrados = [...this.busesLista];
         this.totalActivos = this.busesLista.filter(b => b.estado === true).length;
         this.cargando = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error(error);
         this.cargando = false;
+        this.cdr.detectChanges();
       }
     });
   }

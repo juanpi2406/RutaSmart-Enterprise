@@ -2,13 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Paradero } from '../models/paradero';
+import { API_BASE_URL } from '../config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ParaderoService {
   private http = inject(HttpClient);
-  private readonly API = 'http://localhost:8080/api/paraderos';
+  private readonly API = `${API_BASE_URL}/api/paraderos`;
 
   listar(): Observable<Paradero[]> {
     return this.http.get<Paradero[]>(this.API);

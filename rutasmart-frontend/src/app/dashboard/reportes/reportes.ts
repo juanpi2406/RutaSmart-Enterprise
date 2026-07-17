@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReservaService } from '../../service/reserva';
 import { IncidenciaService } from '../../service/incidencia';
@@ -16,6 +16,7 @@ export class ReportesComponent implements OnInit {
   private reservaService = inject(ReservaService);
   private incidenciaService = inject(IncidenciaService);
   private busService = inject(BusService);
+  private cdr = inject(ChangeDetectorRef);
 
   totalReservas = 0;
   totalBuses = 0;
@@ -26,8 +27,14 @@ export class ReportesComponent implements OnInit {
   ngOnInit(): void {
 
     this.reservaService.listar().subscribe({
-      next: (data) => this.totalReservas = data.length,
-      error: (err) => console.error(err)
+      next: (data) => {
+        this.totalReservas = data.length;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        this.cdr.detectChanges();
+      }
     });
 
     this.busService.listar().subscribe({
@@ -37,8 +44,12 @@ export class ReportesComponent implements OnInit {
         this.eficiencia = this.totalBuses > 0
           ? Math.round((this.busesActivos / this.totalBuses) * 1000) / 10
           : 0;
+        this.cdr.detectChanges();
       },
-      error: (err) => console.error(err)
+      error: (err) => {
+        console.error(err);
+        this.cdr.detectChanges();
+      }
     });
 
     this.incidenciaService.listar().subscribe({
@@ -46,8 +57,12 @@ export class ReportesComponent implements OnInit {
         this.ultimasIncidencias = data
           .sort((a, b) => (b.fechaRegistro ?? '').localeCompare(a.fechaRegistro ?? ''))
           .slice(0, 5);
+        this.cdr.detectChanges();
       },
-      error: (err) => console.error(err)
+      error: (err) => {
+        console.error(err);
+        this.cdr.detectChanges();
+      }
     });
 
   }

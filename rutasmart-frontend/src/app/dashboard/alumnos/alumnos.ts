@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -37,6 +37,7 @@ export class AlumnosComponent implements OnInit {
   private alumnoService = inject(AlumnoService);
 
   private usuarioService = inject(UsuarioService);
+  private cdr = inject(ChangeDetectorRef);
 
   /*=========================================
    * LISTAS
@@ -115,6 +116,7 @@ export class AlumnosComponent implements OnInit {
         this.aplicarFiltros();
 
         this.cargando = false;
+        this.cdr.detectChanges();
 
       },
 
@@ -123,6 +125,7 @@ export class AlumnosComponent implements OnInit {
         console.error(error);
 
         this.cargando = false;
+        this.cdr.detectChanges();
 
       }
 
@@ -218,29 +221,21 @@ export class AlumnosComponent implements OnInit {
 
     this.alumnoEnEdicion = alumno;
 
-    this.form = {
+  this.form = {
 
-      codigoUniversitario:
+    idUsuario: alumno.idUsuario,
 
-        alumno.codigoUniversitario,
+    codigoUniversitario: alumno.codigoUniversitario,
 
-      facultad:
+    facultad: alumno.facultad,
 
-        alumno.facultad,
+    sede: alumno.sede,
 
-      sede:
+    ciclo: alumno.ciclo,
 
-        alumno.sede,
+    estado: alumno.estado
 
-      ciclo:
-
-        alumno.ciclo,
-
-      estado:
-
-        alumno.estado
-
-    };
+  };
 
     this.mostrarModal = true;
 
@@ -284,9 +279,14 @@ export class AlumnosComponent implements OnInit {
 
       next: () => {
 
-        this.cerrarModal();
+
 
         this.listarAlumnos();
+
+
+
+
+         this.cerrarModal();
 
         Swal.fire({
 
@@ -358,29 +358,21 @@ export class AlumnosComponent implements OnInit {
 
       }
 
-      const dto = {
+    const dto = {
 
-        codigoUniversitario:
+      idUsuario: alumno.idUsuario,
 
-          alumno.codigoUniversitario,
+      codigoUniversitario: alumno.codigoUniversitario,
 
-        facultad:
+      facultad: alumno.facultad,
 
-          alumno.facultad,
+      sede: alumno.sede,
 
-        sede:
+      ciclo: alumno.ciclo,
 
-          alumno.sede,
+      estado: !alumno.estado
 
-        ciclo:
-
-          alumno.ciclo,
-
-        estado:
-
-          !alumno.estado
-
-      };
+    };
 
       this.alumnoService.actualizar(
 
@@ -431,5 +423,9 @@ export class AlumnosComponent implements OnInit {
     });
 
   }
+
+
+
+
 
 }

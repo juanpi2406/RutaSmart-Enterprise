@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChoferService } from '../../service/chofer';
@@ -18,6 +18,7 @@ export class ChoferesComponent implements OnInit {
 
   private choferService = inject(ChoferService);
   private usuarioService = inject(UsuarioService);
+  private cdr = inject(ChangeDetectorRef);
 
   usuarios: Usuario[] = [];
   usuariosDisponibles: Usuario[] = [];
@@ -40,8 +41,12 @@ export class ChoferesComponent implements OnInit {
       next: (respuesta) => {
         this.usuarios = respuesta.data;
         this.listarChoferes();
+        this.cdr.detectChanges();
       },
-      error: (err) => console.error(err)
+      error: (err) => {
+        console.error(err);
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -53,10 +58,12 @@ export class ChoferesComponent implements OnInit {
         this.calcularDisponibles();
         this.aplicarFiltros();
         this.cargando = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error(error);
         this.cargando = false;
+        this.cdr.detectChanges();
       }
     });
   }

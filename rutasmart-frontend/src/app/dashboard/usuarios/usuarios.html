@@ -1,6 +1,16 @@
 <div class="usuarios-container">
 
+
+
+
+
+
     <div class="page-header">
+
+
+
+
+
 
         <div>
 
@@ -15,7 +25,7 @@
         </button>
 
     </div>
-
+    @if(!cargando){
     <div class="cards">
 
         <div class="card">
@@ -50,7 +60,19 @@
             </div>
         </div>
 
-    </div>
+    </div>}
+
+    @if(cargando){
+
+<div class="loading-cards">
+
+    <i class="bi bi-arrow-repeat spinner"></i>
+
+    <span>Cargando estadísticas...</span>
+
+</div>
+
+}
 
     <div class="toolbar">
 
@@ -126,7 +148,12 @@
                 <form>
                     <div class="form-group">
                         <label>Código</label>
-                        <input type="text" [(ngModel)]="form.codigo" name="codigo" required>
+                        <input
+                      type="text"
+                      [(ngModel)]="form.codigo"
+                      (ngModelChange)="form.codigo = ($event || '').toUpperCase()"
+                      name="codigo"
+                      required>
                     </div>
 
                     <div class="form-group">
@@ -141,12 +168,22 @@
 
                     <div class="form-group">
                         <label>Correo</label>
-                        <input type="email" [(ngModel)]="form.correo" name="correo" required>
+                        <input
+                          type="email"
+                          [(ngModel)]="form.correo"
+                          (ngModelChange)="form.correo = ($event || '').toLowerCase()"
+                          name="correo"
+                          required>
                     </div>
 
                     <div class="form-group">
                         <label>Teléfono</label>
-                        <input type="text" [(ngModel)]="form.telefono" name="telefono">
+                <input
+                    type="text"
+                    [(ngModel)]="form.telefono"
+                    (keypress)="soloNumeros($event)"
+                    maxlength="9"
+                    name="telefono">
                     </div>
 
               <div class="form-group">
@@ -177,34 +214,84 @@
 
 <div class="form-group">
     <label>Código Universitario</label>
-    <input
-        type="text"
-        [(ngModel)]="form.codigoUniversitario"
-        name="codigoUniversitario">
+  <input
+              type="text"
+              [(ngModel)]="form.codigoUniversitario"
+              (ngModelChange)="form.codigoUniversitario = ($event || '').toUpperCase()"
+              name="codigoUniversitario">
 </div>
 
-<div class="form-group">
-    <label>Facultad</label>
-    <input
-        type="text"
-        [(ngModel)]="form.facultad"
-        name="facultad">
-</div>
+  <div class="form-group">
+      <label>Facultad</label>
+
+      <select
+          [(ngModel)]="form.facultad"
+          name="facultad">
+
+          <option value="">Seleccione una facultad</option>
+
+          @for(facultad of facultades; track facultad){
+
+              <option [value]="facultad">
+
+                  {{ facultad }}
+
+              </option>
+
+          }
+
+      </select>
+
+  </div>
 
 <div class="form-group">
     <label>Sede</label>
-    <input
-        type="text"
+
+    <select
         [(ngModel)]="form.sede"
         name="sede">
+
+        <option value="">Seleccione una sede</option>
+
+        @for(sede of sedes; track sede){
+
+            <option [value]="sede">
+
+                {{ sede }}
+
+            </option>
+
+        }
+
+    </select>
+
 </div>
 
 <div class="form-group">
     <label>Ciclo</label>
-    <input
-        type="number"
+
+    <select
         [(ngModel)]="form.ciclo"
         name="ciclo">
+
+        <option [ngValue]="undefined">
+
+            Seleccione un ciclo
+
+        </option>
+
+        @for(ciclo of ciclos; track ciclo){
+
+            <option [ngValue]="ciclo">
+
+                {{ ciclo }}
+
+            </option>
+
+        }
+
+    </select>
+
 </div>
 
 }
@@ -217,19 +304,38 @@
 
           <div class="form-group">
               <label>Número de Licencia</label>
-              <input
-                  type="text"
-                  [(ngModel)]="form.numeroLicencia"
-                  name="numeroLicencia">
+          <input
+              type="text"
+              [(ngModel)]="form.numeroLicencia"
+              (ngModelChange)="form.numeroLicencia = ($event || '').toUpperCase()"
+              name="numeroLicencia">
           </div>
 
-          <div class="form-group">
-              <label>Categoría Licencia</label>
-              <input
-                  type="text"
-                  [(ngModel)]="form.categoriaLicencia"
-                  name="categoriaLicencia">
-          </div>
+      <div class="form-group">
+
+          <label>Categoría Licencia</label>
+
+          <select
+              [(ngModel)]="form.categoriaLicencia"
+              name="categoriaLicencia">
+
+              <option value="">
+                  Seleccione una categoría
+              </option>
+
+              @for(categoria of categoriasLicencia; track categoria){
+
+                  <option [value]="categoria">
+
+                      {{ categoria }}
+
+                  </option>
+
+              }
+
+          </select>
+
+      </div>
 
           <div class="form-group">
               <label>Fecha de Vencimiento</label>
@@ -274,3 +380,4 @@
     }
 
 </div>
+

@@ -6,6 +6,7 @@ import { UsuarioService } from '../../service/usuario';
 import { Usuario, ApiResponse } from '../../models/usuario';
 
 import { RolService, Rol } from '../../service/rol';
+import { ChangeDetectorRef } from '@angular/core';
 
 import Swal from 'sweetalert2';
 
@@ -24,6 +25,7 @@ export class UsuariosComponent implements OnInit {
 
   private usuarioService = inject(UsuarioService);
   private rolService = inject(RolService);
+  private cdr = inject(ChangeDetectorRef);
 
   /*=========================================
    * LISTAS
@@ -54,7 +56,9 @@ export class UsuariosComponent implements OnInit {
    * UI
    =========================================*/
 
-  cargando = false;
+ cargando = true;
+
+pantallaLista = false;
   mostrarModal = false;
 
   usuarioEnEdicion: Usuario | null = null;
@@ -74,16 +78,81 @@ export class UsuariosComponent implements OnInit {
   form: Partial<Usuario> = {};
 
   /*=========================================
+ * CATÁLOGOS
+ =========================================*/
+
+facultades: string[] = [
+  'Ingeniería de Sistemas',
+  'Ingeniería Industrial',
+  'Arquitectura',
+  'Administración',
+  'Contabilidad',
+  'Derecho'
+];
+
+sedes: string[] = [
+  'Lima Norte',
+  'Lima Centro',
+  'Lima Sur'
+];
+
+ciclos: number[] = [
+  1,2,3,4,5,6,7,8,9,10
+];
+
+/*=========================================
+ * LICENCIAS
+ =========================================*/
+
+categoriasLicencia: string[] = [
+  'A-I',
+  'A-IIa',
+  'A-IIb',
+  'A-IIIa',
+  'A-IIIb',
+  'A-IIIc'
+];
+
+
+soloNumerosTelefono(evento: string): void {
+
+  this.form.telefono = (evento || '')
+    .replace(/\D/g, '')
+    .substring(0, 9);
+
+}
+
+soloNumeros(event: KeyboardEvent): void {
+
+  const tecla = event.key;
+
+  if (!/^[0-9]$/.test(tecla)) {
+
+    event.preventDefault();
+
+  }
+
+}
+
+  /*=========================================
    * INIT
    =========================================*/
 
-  ngOnInit(): void {
+ngOnInit(): void {
 
-    this.listarUsuarios();
+    this.inicializarPantalla();
+
+}
+
+private inicializarPantalla(): void {
+
+    this.cargando = true;
+
+    this.pantallaLista = false;
 
     this.cargarRoles();
 
-  }
+}
 
   /*=========================================
    * LISTAR
@@ -113,7 +182,31 @@ export class UsuariosComponent implements OnInit {
         this.totalChoferes =
           this.usuariosLista.filter(x => x.nombreRol == 'CHOFER').length;
 
-        this.cargando = false;
+          this.cdr.detectChanges();
+
+
+        console.log('Usuarios:', this.usuariosLista.length);
+        console.log('Activos:', this.totalActivos);
+        console.log('Admins:', this.totalAdministradores);
+        console.log('Alumnos:', this.totalAlumnos);
+        console.log('Choferes:', this.totalChoferes);
+
+
+
+
+
+
+       this.cargando = false;
+
+      this.pantallaLista = true;
+
+      this.cdr.detectChanges();
+
+
+
+
+
+
 
       },
 
@@ -122,6 +215,8 @@ export class UsuariosComponent implements OnInit {
         console.error(err);
 
         this.cargando = false;
+
+        this.cdr.detectChanges();
 
       }
 
@@ -141,11 +236,17 @@ export class UsuariosComponent implements OnInit {
 
         this.roles = response.data;
 
+        this.cdr.detectChanges();
+
+        this.listarUsuarios();
+
       },
 
       error: (err) => {
 
         console.error(err);
+
+        this.cdr.detectChanges();
 
       }
 
@@ -232,6 +333,8 @@ export class UsuariosComponent implements OnInit {
       ciclo: undefined,
 
       /* Chofer */
+
+
 
       numeroLicencia: '',
 

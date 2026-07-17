@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ParaderoService } from '../../service/paradero';
@@ -18,6 +18,7 @@ export class ParaderosComponent implements OnInit {
 
   private paraderoService = inject(ParaderoService);
   private rutaService = inject(RutaService);
+  private cdr = inject(ChangeDetectorRef);
 
   rutas: Ruta[] = [];
   rutaSeleccionada = 0;
@@ -38,8 +39,14 @@ export class ParaderosComponent implements OnInit {
 
   cargarRutas(): void {
     this.rutaService.listar().subscribe({
-      next: (data) => this.rutas = data,
-      error: (err) => console.error(err)
+      next: (data) => {
+        this.rutas = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -55,10 +62,12 @@ export class ParaderosComponent implements OnInit {
         this.paraderosLista = data;
         this.aplicarFiltros();
         this.cargando = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error(error);
         this.cargando = false;
+        this.cdr.detectChanges();
       }
     });
   }

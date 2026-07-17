@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProgramacionViajeService } from '../../service/programacion-viaje';
@@ -29,6 +29,7 @@ export class ProgramacionesComponent implements OnInit {
   private rutaService = inject(RutaService);
   private busService = inject(BusService);
   private choferService = inject(ChoferService);
+  private cdr = inject(ChangeDetectorRef);
 
   dias = DIAS;
 
@@ -50,9 +51,9 @@ export class ProgramacionesComponent implements OnInit {
   formAsignacion: Partial<AsignacionProgramacion> = {};
 
   ngOnInit(): void {
-    this.rutaService.listar().subscribe({ next: (data) => this.rutas = data });
-    this.busService.listar().subscribe({ next: (data) => this.buses = data });
-    this.choferService.listar().subscribe({ next: (respuesta) => this.choferes = respuesta.data });
+    this.rutaService.listar().subscribe({ next: (data) => { this.rutas = data; this.cdr.detectChanges(); } });
+    this.busService.listar().subscribe({ next: (data) => { this.buses = data; this.cdr.detectChanges(); } });
+    this.choferService.listar().subscribe({ next: (respuesta) => { this.choferes = respuesta.data; this.cdr.detectChanges(); } });
     this.listarProgramaciones();
     this.listarAsignaciones();
   }
@@ -63,18 +64,26 @@ export class ProgramacionesComponent implements OnInit {
       next: (data) => {
         this.programacionesLista = data;
         this.cargando = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error(error);
         this.cargando = false;
+        this.cdr.detectChanges();
       }
     });
   }
 
   listarAsignaciones(): void {
     this.asignacionService.listar().subscribe({
-      next: (data) => this.asignaciones = data,
-      error: (err) => console.error(err)
+      next: (data) => {
+        this.asignaciones = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        this.cdr.detectChanges();
+      }
     });
   }
 

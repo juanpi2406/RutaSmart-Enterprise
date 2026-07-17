@@ -43,8 +43,10 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // Actualizar último login
-        usuario.setUltimoLogin(LocalDateTime.now());
-        usuarioRepository.save(usuario);
+
+        
+       // usuario.setUltimoLogin(LocalDateTime.now());
+       // usuarioRepository.save(usuario);
 
         // Generar token JWT
         String token = jwtService.generarToken(usuario);
