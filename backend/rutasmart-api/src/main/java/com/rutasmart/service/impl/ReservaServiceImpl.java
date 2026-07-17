@@ -15,6 +15,7 @@ import com.rutasmart.repository.ViajeRepository;
 import com.rutasmart.service.interfaces.ReservaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -54,6 +55,7 @@ public class ReservaServiceImpl implements ReservaService {
     }
 
     @Override
+    @Transactional
     public ReservaDTO guardar(ReservaDTO dto) {
 
         Alumno alumno = alumnoRepository.findById(dto.getIdAlumno())
@@ -84,9 +86,11 @@ public class ReservaServiceImpl implements ReservaService {
                 viaje.getIdViaje()
         );
 
-        Short capacidad = viaje.getBus().getCapacidadAsientos();
+        Short capacidad = (viaje.getBus() != null)
+                ? viaje.getBus().getCapacidadAsientos()
+                : null;
 
-        if (reservasActuales >= capacidad) {
+        if (capacidad != null && reservasActuales >= capacidad) {
             throw new BusinessException(
                     "No existen cupos disponibles para este viaje."
             );
@@ -99,6 +103,7 @@ public class ReservaServiceImpl implements ReservaService {
     }
 
     @Override
+    @Transactional
     public ReservaDTO actualizar(Long id, ReservaDTO dto) {
 
         Reserva reserva = reservaRepository.findById(id)

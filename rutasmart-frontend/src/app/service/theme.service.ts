@@ -8,16 +8,16 @@ export interface ThemeSettings {
 }
 
 const DEFAULT_THEME: ThemeSettings = {
-  modoOscuro: false,
-  colorPrincipal: '#2563eb',
-  colorSecundario: '#0f766e'
+  modoOscuro: true,
+  colorPrincipal: '#dc2626',
+  colorSecundario: '#991b1b'
 };
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private readonly document = inject(DOCUMENT);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly storageKey = 'rutasmart-theme';
+  private readonly storageKey = 'rutasmart-theme-carmen';
 
   inicializar(): void {
     if (isPlatformBrowser(this.platformId)) {

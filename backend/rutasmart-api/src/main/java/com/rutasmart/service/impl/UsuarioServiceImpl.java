@@ -290,9 +290,9 @@ public class UsuarioServiceImpl implements UsuarioService {
         //=========================================
 
         usuario.setCodigo(dto.getCodigo().trim().toUpperCase());
-        usuario.setCorreo(dto.getCorreo().trim().toLowerCase());
+        usuario.setNombres(dto.getNombres());
         usuario.setApellidos(dto.getApellidos());
-        usuario.setCorreo(dto.getCorreo());
+        usuario.setCorreo(dto.getCorreo().trim().toLowerCase());
         usuario.setTelefono(dto.getTelefono());
         usuario.setEstado(dto.getEstado());
         usuario.setRol(rol);

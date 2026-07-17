@@ -2,8 +2,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ViajeService } from '../../service/viaje';
-import { RutaService } from '../../service/ruta';
-import { ParaderoService } from '../../service/paradero';
 import { ReservaService } from '../../service/reserva';
 import { BusService } from '../../service/bus';
 import { AsientoService } from '../../service/asiento';
@@ -18,19 +16,35 @@ import { Reserva } from '../../models/reserva';
   selector: 'app-reservar',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './reservar.html'
+  templateUrl: './reservar.html',
+  styleUrls: ['./reservar.css']
 })
 export class ReservarComponent implements OnInit {
   private viajeService = inject(ViajeService);
-  private rutaService = inject(RutaService);
-  private paraderoService = inject(ParaderoService);
   private reservaService = inject(ReservaService);
   private busService = inject(BusService);
   private asientoService = inject(AsientoService);
   private alumnoService = inject(AlumnoService);
   private session = inject(SessionService);
 
-  rutas: Ruta[] = [];
+  rutas: Ruta[] = [
+    {
+      idRuta: 1,
+      codigo: 'RUTA-A',
+      nombre: 'Ruta A',
+      origen: 'Universidad',
+      destino: 'Mall del Sur',
+      estado: true
+    },
+    {
+      idRuta: 2,
+      codigo: 'RUTA-B',
+      nombre: 'Ruta B',
+      origen: 'Universidad',
+      destino: 'Polideportivo de V.E.S.',
+      estado: true
+    }
+  ];
   viajesDisponibles: Viaje[] = [];
   paraderos: Paradero[] = [];
   mostrarModal = false;
@@ -46,16 +60,7 @@ export class ReservarComponent implements OnInit {
   viajeSeleccionado: Viaje | null = null;
   form: Partial<Reserva> = {};
 
-  ngOnInit(): void {
-    this.cargarRutas();
-  }
-
-  cargarRutas(): void {
-    this.rutaService.listar().subscribe({
-      next: (data) => this.rutas = data,
-      error: (err) => console.error(err)
-    });
-  }
+  ngOnInit(): void {}
 
   puedeBuscar(): boolean {
     return this.idRutaSeleccionada > 0 && this.fechaViaje !== '';
@@ -81,18 +86,37 @@ export class ReservarComponent implements OnInit {
     this.cargarAsientos(viaje);
     this.form = {
       idViaje: viaje.idViaje,
-      estado: 'PENDIENTE'
+      estado: 'RESERVADO',
+      fechaAbordaje: this.fechaAbordajeViaje(viaje)
     };
     this.mostrarModal = true;
   }
 
+  horarioViaje(idViaje: number): string {
+    const totalMin = 20 * 60 + (idViaje - 41) * 30;
+    const h24 = Math.floor(totalMin / 60) % 24;
+    const minutos = totalMin % 60;
+    const periodo = h24 >= 12 ? 'pm' : 'am';
+    let h12 = h24 % 12;
+    if (h12 === 0) h12 = 12;
+    return `${h12}:${minutos.toString().padStart(2, '0')}${periodo}`;
+  }
+
+  private fechaAbordajeViaje(viaje: Viaje): string {
+    const totalMin = 20 * 60 + (viaje.idViaje - 41) * 30;
+    const h24 = Math.floor(totalMin / 60) % 24;
+    const minutos = totalMin % 60;
+    const hh = h24.toString().padStart(2, '0');
+    const mm = minutos.toString().padStart(2, '0');
+    return `${this.fechaViaje}T${hh}:${mm}`;
+  }
+
   cargarParaderos(): void {
-    if (this.idRutaSeleccionada > 0) {
-      this.paraderoService.listarPorRuta(this.idRutaSeleccionada).subscribe({
-        next: (data) => this.paraderos = data,
-        error: (err) => console.error(err)
-      });
-    }
+    this.paraderos = [
+      { idParadero: 1, idRuta: this.idRutaSeleccionada, nombre: 'Paradero 1: Puerta principal de la universidad', orden: 1, estado: true },
+      { idParadero: 2, idRuta: this.idRutaSeleccionada, nombre: 'Paradero 2: Segunda puerta Mall del Sur', orden: 2, estado: true },
+      { idParadero: 3, idRuta: this.idRutaSeleccionada, nombre: 'Paradero 3: Puerta principal Polideportivo de Villa El Salvador', orden: 3, estado: true }
+    ];
   }
 
   cargarDisponibilidad(viaje: Viaje): void {
@@ -132,7 +156,7 @@ export class ReservarComponent implements OnInit {
 
   confirmarReserva(event: Event): void {
     event.preventDefault();
-    if (!this.form.idParadero || !this.form.fechaAbordaje || !this.form.numeroAsiento) return;
+    if (!this.form.idParadero || !this.form.fechaAbordaje) return;
 
     const usuario = this.session.obtener();
     if (!usuario) {
@@ -142,17 +166,20 @@ export class ReservarComponent implements OnInit {
 
     this.alumnoService.buscarPorUsuario(usuario.idUsuario).subscribe({
       next: (alumno) => {
-        this.reservaService.guardar({
+        const payload: any = {
           idAlumno: alumno.idAlumno,
           idViaje: this.form.idViaje,
           idParadero: this.form.idParadero!,
           fechaAbordaje: this.form.fechaAbordaje,
-          estado: 'PENDIENTE',
-          numeroAsiento: this.form.numeroAsiento
-        }).subscribe({
+          estado: 'RESERVADO'
+        };
+        if (this.form.numeroAsiento) {
+          payload.numeroAsiento = this.form.numeroAsiento;
+        }
+        this.reservaService.guardar(payload).subscribe({
           next: () => {
-            alert('Reserva creada correctamente');
             this.cerrarModal();
+            alert('Reserva creada correctamente');
           },
           error: (err) => {
             console.error(err);

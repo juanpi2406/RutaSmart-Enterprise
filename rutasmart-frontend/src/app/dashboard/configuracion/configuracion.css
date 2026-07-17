@@ -45,17 +45,17 @@
 
 .page-header h2{
     margin:0;
-    color:#1f2937;
+    color:var(--text);
     font-size:30px;
 }
 
 .page-header p{
     margin-top:6px;
-    color:#6b7280;
+    color:var(--muted);
 }
 
 .btn-primary{
-    background:#2563eb;
+    background:var(--blue);
     color:#fff;
     border:none;
     border-radius:10px;
@@ -67,7 +67,7 @@
 }
 
 .btn-primary:hover{
-    background:#1d4ed8;
+    background:var(--blue-dark);
 }
 
 /* ========================================================== */
@@ -80,7 +80,7 @@
 }
 
 .card{
-    background:#fff;
+    background:var(--surface);
     border-radius:16px;
     padding:22px;
     display:flex;
@@ -96,23 +96,23 @@
 
 .card i{
     font-size:42px;
-    color:#2563eb;
+    color:var(--blue);
 }
 
 .card span{
-    color:#6b7280;
+    color:var(--muted);
     font-size:14px;
 }
 
 .card h2{
     margin-top:5px;
-    color:#111827;
+    color:var(--text);
 }
 
 /* ========================================================== */
 
 .toolbar{
-    background:#fff;
+    background:var(--surface);
     border-radius:14px;
     padding:18px;
     display:flex;
@@ -126,20 +126,20 @@
 .toolbar input{
     flex:1;
     padding:12px;
-    border:1px solid #d1d5db;
+    border:1px solid var(--line);
     border-radius:10px;
     outline:none;
     font-size:15px;
 }
 
 .toolbar input:focus{
-    border-color:#2563eb;
+    border-color:var(--blue);
 }
 
 .toolbar select{
     width:220px;
     padding:12px;
-    border:1px solid #d1d5db;
+    border:1px solid var(--line);
     border-radius:10px;
     outline:none;
 }
@@ -147,7 +147,7 @@
 /* ========================================================== */
 
 .tabla-container{
-    background:#fff;
+    background:var(--surface);
     border-radius:16px;
     overflow:hidden;
     box-shadow:0 4px 12px rgba(0,0,0,.08);
@@ -159,7 +159,7 @@ table{
 }
 
 thead{
-    background:#2563eb;
+    background:var(--blue);
     color:#fff;
 }
 
@@ -171,7 +171,7 @@ thead th{
 
 tbody td{
     padding:15px;
-    border-bottom:1px solid #e5e7eb;
+    border-bottom:1px solid var(--line);
 }
 
 tbody tr{
@@ -179,7 +179,7 @@ tbody tr{
 }
 
 tbody tr:hover{
-    background:#f8fafc;
+    background:var(--surface-2);
 }
 
 /* ========================================================== */
@@ -213,12 +213,12 @@ tbody tr:hover{
 }
 
 .edit{
-    background:#dbeafe;
-    color:#2563eb;
+    background:var(--surface-2);
+    color:var(--blue);
 }
 
 .edit:hover{
-    background:#2563eb;
+    background:var(--blue);
     color:white;
 }
 
@@ -272,7 +272,7 @@ tbody tr:hover{
 
     max-width:90%;
 
-    background:white;
+    background:var(--surface);
 
     border-radius:15px;
 
@@ -295,13 +295,13 @@ tbody tr:hover{
     justify-content:space-between;
     align-items:center;
     padding:20px 24px;
-    border-bottom:1px solid #e5e7eb;
+    border-bottom:1px solid var(--line);
 }
 
 .modal-header h3{
     margin:0;
     font-size:20px;
-    color:#111827;
+    color:var(--text);
 }
 
 .btn-close{
@@ -310,7 +310,7 @@ tbody tr:hover{
     font-size:26px;
     line-height:1;
     cursor:pointer;
-    color:#6b7280;
+    color:var(--muted);
 }
 
 .modal-body{
@@ -326,14 +326,14 @@ tbody tr:hover{
     margin-bottom:6px;
     font-size:14px;
     font-weight:600;
-    color:#374151;
+    color:var(--text);
 }
 
 .form-group input,
 .form-group select{
     width:100%;
     padding:10px 12px;
-    border:1px solid #d1d5db;
+    border:1px solid var(--line);
     border-radius:10px;
     outline:none;
     font-size:14px;
@@ -341,7 +341,7 @@ tbody tr:hover{
 
 .form-group input:focus,
 .form-group select:focus{
-    border-color:#2563eb;
+    border-color:var(--blue);
 }
 
 .modal-footer{
@@ -352,8 +352,8 @@ tbody tr:hover{
 }
 
 .btn-secondary{
-    background:#e5e7eb;
-    color:#374151;
+    background:var(--line);
+    color:var(--text);
     border:none;
     border-radius:10px;
     padding:10px 18px;
@@ -362,7 +362,7 @@ tbody tr:hover{
 }
 
 .btn-secondary:hover{
-    background:#d1d5db;
+    background:var(--line);
 }
 
 /* ========================================================== */

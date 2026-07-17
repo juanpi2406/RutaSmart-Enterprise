@@ -85,7 +85,7 @@ export const MENU: MenuItem[] = [
     titulo: 'Reservas',
     icono: 'bi-ticket-perforated-fill',
     ruta: '/dashboard/reservas',
-    roles: ['ADMINISTRADOR', 'ALUMNO']
+    roles: ['ADMINISTRADOR']
   },
 
   {

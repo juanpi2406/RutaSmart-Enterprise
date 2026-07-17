@@ -1,11 +1,11 @@
-/* Paleta global configurable desde Configuración. */
+/* Paleta de Carmen, configurable desde Configuración. */
 :root {
-  --color-principal: #2563eb;
-  --color-secundario: #0f766e;
-  --page-color: #f8fafc;
-  --surface-color: #ffffff;
-  --text-color: #1f2937;
-  --muted-color: #6b7280;
+  --color-principal: #dc2626;
+  --color-secundario: #991b1b;
+  --page-color: #0b0b0b;
+  --surface-color: #161616;
+  --text-color: #f3f4f6;
+  --muted-color: #9ca3af;
 }
 
 html, body { background: var(--page-color); color: var(--text-color); }
@@ -22,10 +22,17 @@ body { transition: background-color .25s ease, color .25s ease; }
 input[type="text"], textarea { text-transform: uppercase; }
 
 :root[data-theme='dark'] {
-  --page-color: #111827;
-  --surface-color: #1f2937;
+  --page-color: #0b0b0b;
+  --surface-color: #161616;
   --text-color: #f3f4f6;
-  --muted-color: #cbd5e1;
+  --muted-color: #9ca3af;
+}
+
+:root[data-theme='light'] {
+  --page-color: #f8fafc;
+  --surface-color: #ffffff;
+  --text-color: #1f2937;
+  --muted-color: #6b7280;
 }
 
 :root[data-theme='dark'] .main,

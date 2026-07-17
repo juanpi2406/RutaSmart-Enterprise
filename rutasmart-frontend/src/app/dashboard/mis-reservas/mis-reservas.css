@@ -1,1 +1,24 @@
-@import '../reservas/reservas.css';
+.btn-cancelar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background .2s, color .2s;
+}
+
+.btn-cancelar:hover:not(:disabled) {
+  background: #dc2626;
+  color: #fff;
+}
+
+.btn-cancelar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
