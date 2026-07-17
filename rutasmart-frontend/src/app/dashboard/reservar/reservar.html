@@ -10,22 +10,47 @@
 <!-- ========================================== -->
 
 <div class="search-card">
-  <div class="search-row">
-    <select [(ngModel)]="idRutaSeleccionada" (change)="buscarViajes()">
-      <option [value]="0">Seleccione una ruta</option>
-      @for(ruta of rutas; track ruta.idRuta){
-        <option [value]="ruta.idRuta">{{ ruta.nombre }} ({{ ruta.origen }} → {{ ruta.destino }})</option>
-      }
-    </select>
-    <input
-      type="date"
-      [(ngModel)]="fechaViaje"
-      (change)="buscarViajes()"
-    >
-    <button class="btn-primary" (click)="buscarViajes()" [disabled]="!puedeBuscar()">
+  <form class="search-row" (ngSubmit)="buscarViajes()">
+    <div class="field">
+      <label>
+        <i class="bi bi-sign-turn-right-fill"></i> Ruta
+      </label>
+      <div class="input-wrap">
+        <select
+          [(ngModel)]="idRutaSeleccionada"
+          name="idRuta"
+          (change)="buscarViajes()">
+          <option [value]="0">Seleccione una ruta</option>
+          @for(ruta of rutas; track ruta.idRuta){
+            <option [value]="ruta.idRuta">{{ ruta.nombre }}: hacia {{ ruta.destino }}</option>
+          }
+        </select>
+        <i class="bi bi-chevron-down select-icon"></i>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>
+        <i class="bi bi-calendar3"></i> Fecha
+      </label>
+      <div class="input-wrap">
+        <i class="bi bi-calendar-event input-icon"></i>
+        <input
+          type="date"
+          [(ngModel)]="fechaViaje"
+          name="fecha"
+          (change)="buscarViajes()"
+        >
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="btn-primary search-btn"
+      [disabled]="!puedeBuscar()">
       <i class="bi bi-search"></i> Buscar
     </button>
-  </div>
+  </form>
 </div>
 
 <!-- ========================================== -->
@@ -44,6 +69,7 @@
       </div>
       <div class="viaje-body">
         <p><strong>Fecha:</strong> {{ viaje.fechaViaje }}</p>
+        <p><strong>Horario:</strong> {{ horarioViaje(viaje.idViaje) }}</p>
         <p><strong>Bus ID:</strong> {{ viaje.idBus }}</p>
         <p><strong>Estado:</strong> {{ viaje.estado }}</p>
       </div>
@@ -81,24 +107,29 @@
           <select [(ngModel)]="form.idParadero" name="idParadero" required>
             <option [value]="0">Seleccione paradero</option>
             @for(paradero of paraderos; track paradero.idParadero){
-              <option [value]="paradero.idParadero">{{ paradero.nombre }} (Orden: {{ paradero.orden }})</option>
+              <option [value]="paradero.idParadero">{{ paradero.nombre }}</option>
             }
           </select>
         </div>
         <div class="form-group">
-          <label>Fecha y Hora de Abordaje</label>
-          <input type="datetime-local" [(ngModel)]="form.fechaAbordaje" name="fechaAbordaje" required>
+          <label>Fecha de Abordaje</label>
+          <input
+            type="text"
+            class="readonly-field"
+            [value]="fechaViaje"
+            readonly
+          >
         </div>
         @if(capacidad > 0){
         <div class="reserva-info">
           <p><strong>Asientos disponibles:</strong> {{ capacidad - reservasOcupadas }} de {{ capacidad }}</p>
           <div class="asientos-visual">
-            @for(i of [].constructor(capacidad); track i){
+            @for(item of [].constructor(capacidad); track $index){
               <span class="asiento"
-                [class.ocupado]="i < reservasOcupadas"
-                [class.libre]="i >= reservasOcupadas"
-                (click)="form.numeroAsiento = i + 1; $event.stopPropagation()">
-                {{ i + 1 }}
+                [class.ocupado]="$index < reservasOcupadas"
+                [class.libre]="$index >= reservasOcupadas"
+                (click)="form.numeroAsiento = $index + 1; $event.stopPropagation()">
+                {{ $index + 1 }}
               </span>
             }
           </div>
@@ -126,7 +157,7 @@
         }
         <div class="modal-footer">
           <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
-          <button type="submit" class="btn-primary" [disabled]="!form.idParadero || !form.numeroAsiento">Confirmar Reserva</button>
+          <button type="submit" class="btn-primary" [disabled]="!form.idParadero || !form.fechaAbordaje">Confirmar Reserva</button>
         </div>
       </form>
     </div>

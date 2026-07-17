@@ -16,5 +16,6 @@ public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
     List<Incidencia> findByViaje(Viaje viaje);
 
     List<Incidencia> findByEstado(String estado);
+    long countByEstado(String estado);
 
 }

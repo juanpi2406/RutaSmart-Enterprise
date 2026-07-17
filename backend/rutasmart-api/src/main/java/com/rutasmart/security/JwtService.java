@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Service
@@ -16,13 +17,17 @@ public class JwtService {
     private final SecretKey key;
     private final long expirationMs;
 
-    public JwtService(@Value("${jwt.secret}") String secret,
-                       @Value("${jwt.expiration-ms}") long expirationMs) {
+    public JwtService(
+            @Value("${jwt.secret}") String secret,
+            @Value("${jwt.expiration}") long expirationMs
+    ) {
+        this.key = Keys.hmacShaKeyFor(
+                secret.getBytes(StandardCharsets.UTF_8)
+        );
 
-        this.key = Keys.hmacShaKeyFor(java.util.Base64.getDecoder().decode(secret));
         this.expirationMs = expirationMs;
-
     }
+
 
     public String generarToken(Usuario usuario) {
 
@@ -37,27 +42,28 @@ public class JwtService {
                 .expiration(expiracion)
                 .signWith(key)
                 .compact();
-
     }
+
 
     public String extraerCodigo(String token) {
         return extraerClaims(token).getSubject();
     }
 
+
     public String extraerRol(String token) {
         return extraerClaims(token).get("rol", String.class);
     }
 
-    public boolean esTokenValido(String token) {
 
+    public boolean esTokenValido(String token) {
         try {
             extraerClaims(token);
             return true;
         } catch (Exception e) {
             return false;
         }
-
     }
+
 
     private Claims extraerClaims(String token) {
 
@@ -66,7 +72,5 @@ public class JwtService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-
     }
-
 }

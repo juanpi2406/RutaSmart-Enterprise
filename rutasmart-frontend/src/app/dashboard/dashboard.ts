@@ -55,11 +55,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.nombreUsuario = this.session.obtenerNombre();
 
-    this.rolUsuario = this.session.obtenerRol();
+    const rolActual = (this.session.obtenerRol() ?? '')
+      .toString()
+      .trim()
+      .toUpperCase();
 
-    this.menu = MENU.filter(item =>
-      item.roles.includes(this.rolUsuario)
-    );
+    this.rolUsuario = rolActual;
+
+    this.menu = MENU
+      .filter(item =>
+        item.roles.some(rol =>
+          rol.toString().trim().toUpperCase() === rolActual
+        )
+      )
+      .filter(item =>
+        item.ruta !== '/dashboard/reportes' || rolActual === 'ADMINISTRADOR'
+      );
+
+    console.log('Dashboard resolved role:', rolActual);
+    console.log('Dashboard menu items:', this.menu.map(item => item.titulo));
 
     this.actualizarFechaHora();
 

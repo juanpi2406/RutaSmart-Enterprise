@@ -39,7 +39,7 @@ public class UsuarioService {
         if (u.getPassword() != null && !u.getPassword().isBlank()) {
             existente.setPassword(u.getPassword());
         }
-        return repository.save(existent);
+        return repository.save(existente);
     }
 
     public void eliminar(Long id) {

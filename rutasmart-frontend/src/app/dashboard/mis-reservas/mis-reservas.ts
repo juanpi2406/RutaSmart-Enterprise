@@ -9,7 +9,8 @@ import { Reserva } from '../../models/reserva';
   selector: 'app-mis-reservas',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './mis-reservas.html'
+  templateUrl: './mis-reservas.html',
+  styleUrls: ['../reservas/reservas.css', './mis-reservas.css']
 })
 export class MisReservasComponent implements OnInit {
   private reservaService = inject(ReservaService);
@@ -46,7 +47,7 @@ export class MisReservasComponent implements OnInit {
     this.reservaService.listarPorAlumno(this.idAlumno).subscribe({
       next: (data) => {
         this.reservasLista = data;
-        this.reservasFiltradas = [...this.reservasLista];
+        this.aplicarFiltros();
       },
       error: (err) => console.error(err)
     });
@@ -69,6 +70,35 @@ export class MisReservasComponent implements OnInit {
       const texto = (r.codigoQr || r.idReserva.toString()).toLowerCase().includes(this.filtroTexto);
       const estado = this.filtroEstado === 'TODOS' || r.estado === this.filtroEstado;
       return texto && estado;
+    });
+  }
+
+  cancelarReserva(reserva: Reserva): void {
+    if (reserva.estado === 'CANCELADO' || reserva.estado === 'NO_ASISTIO') {
+      return;
+    }
+    if (!confirm(`¿Cancelar la reserva #${reserva.idReserva}?`)) {
+      return;
+    }
+    this.reservaService.actualizar(reserva.idReserva, {
+      idAlumno: reserva.idAlumno,
+      idViaje: reserva.idViaje,
+      idParadero: reserva.idParadero,
+      estado: 'CANCELADO'
+    }).subscribe({
+      next: () => {
+        const idx = this.reservasLista.findIndex(r => r.idReserva === reserva.idReserva);
+        if (idx > -1) {
+          this.reservasLista[idx] = { ...this.reservasLista[idx], estado: 'CANCELADO' };
+        }
+        this.aplicarFiltros();
+        this.listarReservas();
+        alert('Reserva cancelada correctamente');
+      },
+      error: (err) => {
+        console.error(err);
+        alert(err?.status ? `Error ${err.status}` : 'Error al cancelar la reserva');
+      }
     });
   }
 }

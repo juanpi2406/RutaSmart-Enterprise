@@ -4,41 +4,123 @@
 
 .page-title h2 {
   margin: 0;
-  color: #1f2937;
+  color: var(--text);
   font-size: 30px;
 }
 
 .page-title p {
   margin-top: 6px;
-  color: #6b7280;
+  color: var(--muted);
 }
 
 .search-card {
-  background: #fff;
-  border-radius: 14px;
-  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
   margin-bottom: 25px;
-  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  box-shadow: 0 4px 18px rgba(0,0,0,.35);
 }
 
 .search-row {
   display: flex;
-  gap: 15px;
+  gap: 18px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.search-row .field {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search-row .field label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.search-row .field label i {
+  color: var(--blue);
+  font-size: 15px;
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
   align-items: center;
 }
 
 .search-row select,
 .search-row input {
-  flex: 1;
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
+  width: 100%;
+  padding: 13px 40px 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
   outline: none;
+  font-size: 15px;
+  background: var(--background);
+  color: var(--text);
+  transition: border-color .25s, box-shadow .25s;
+  color-scheme: dark;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.search-row select:focus,
+.search-row input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(220,38,38,.2);
+}
+
+.select-icon {
+  position: absolute;
+  right: 14px;
+  pointer-events: none;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  pointer-events: none;
+  color: var(--muted);
   font-size: 15px;
 }
 
+.search-row input[type="date"] {
+  padding-left: 40px;
+}
+
+.search-btn {
+  height: 48px;
+  padding: 0 28px;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .search-row .field {
+    min-width: 100%;
+  }
+
+  .search-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 .panel {
-  background: #fff;
+  background: var(--surface);
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0,0,0,.08);
@@ -52,7 +134,7 @@
 }
 
 .viaje-card {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--line);
   border-radius: 14px;
   padding: 20px;
   display: flex;
@@ -69,19 +151,19 @@
 
 .viaje-header h4 {
   margin: 0;
-  color: #111827;
+  color: var(--text);
 }
 
 .viaje-body p {
   margin: 4px 0;
-  color: #374151;
+  color: var(--text);
   font-size: 14px;
 }
 
 .empty {
   text-align: center;
   padding: 60px 20px;
-  color: #6b7280;
+  color: var(--muted);
 }
 
 .status {
@@ -97,7 +179,7 @@
 }
 
 .btn-primary {
-  background: #2563eb;
+  background: var(--blue);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -110,12 +192,12 @@
 }
 
 .btn-primary:hover {
-  background: #1d4ed8;
+  background: var(--blue-dark);
 }
 
 .btn-secondary {
-  background: #e5e7eb;
-  color: #374151;
+  background: var(--line);
+  color: var(--text);
   border: none;
   border-radius: 10px;
   padding: 10px 18px;
@@ -124,7 +206,7 @@
 }
 
 .btn-secondary:hover {
-  background: #d1d5db;
+  background: var(--line);
 }
 
 .btn-close {
@@ -133,7 +215,7 @@
   font-size: 26px;
   line-height: 1;
   cursor: pointer;
-  color: #6b7280;
+  color: var(--muted);
 }
 
 .modal-overlay {
@@ -147,13 +229,18 @@
 }
 
 .modal {
-  background: #fff;
+  display: block;
+  position: relative;
+  top: auto;
+  left: auto;
+  height: auto;
+  background: var(--surface);
   border-radius: 18px;
   width: 100%;
   max-width: 520px;
   max-height: 90vh;
   overflow: auto;
-  box-shadow: 0 25px 50px rgba(0,0,0,.15);
+  box-shadow: 0 25px 50px rgba(0,0,0,.5);
 }
 
 .modal-header {
@@ -161,13 +248,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--line);
 }
 
 .modal-header h3 {
   margin: 0;
   font-size: 20px;
-  color: #111827;
+  color: var(--text);
 }
 
 .modal-body {
@@ -183,22 +270,42 @@
   margin-bottom: 6px;
   font-size: 14px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text);
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #d1d5db;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
   border-radius: 10px;
   outline: none;
   font-size: 14px;
+  background: var(--background);
+  color: var(--text);
+  color-scheme: dark;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  transition: border-color .25s, box-shadow .25s;
+}
+
+.form-group input.readonly-field {
+  background: var(--surface-2);
+  color: var(--muted);
+  cursor: default;
+  opacity: .9;
 }
 
 .form-group input:focus,
 .form-group select:focus {
-  border-color: #2563eb;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(220,38,38,.2);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--blue);
 }
 
 .modal-footer {
@@ -209,7 +316,7 @@
 }
 
 .reserva-info {
-  background: #f8fafc;
+  background: var(--surface-2);
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 18px;
@@ -218,7 +325,7 @@
 .reserva-info p {
   margin: 0 0 10px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text);
 }
 
 .asientos-visual {
@@ -236,8 +343,8 @@
   justify-content: center;
   font-size: 12px;
   font-weight: 700;
-  border: 1px solid #d1d5db;
-  color: #6b7280;
+  border: 1px solid var(--line);
+  color: var(--muted);
 }
 
 .asiento.libre {

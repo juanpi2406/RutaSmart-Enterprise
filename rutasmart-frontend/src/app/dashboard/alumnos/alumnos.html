@@ -1,147 +1,392 @@
 <div class="usuarios-container">
 
+    <!-- ====================================== -->
+    <!-- CABECERA -->
+    <!-- ====================================== -->
+
     <div class="page-header">
 
         <div>
-            <h2>Gestión de Alumnos</h2>
-            <p>Administración de la información académica de los alumnos de RutaSmart.</p>
+
+            <h2>
+
+                Gestión Académica de Alumnos
+
+            </h2>
+
+            <p>
+
+                Administra únicamente la información académica de los alumnos registrados.
+
+            </p>
+
         </div>
 
-        <button class="btn-primary" (click)="abrirModalCrear()">
-            <i class="bi bi-plus-circle-fill"></i> Nuevo Alumno
-        </button>
-
     </div>
+
+    <!-- ====================================== -->
+    <!-- TARJETAS -->
+    <!-- ====================================== -->
 
     <div class="cards">
 
         <div class="card">
+
             <i class="bi bi-mortarboard-fill"></i>
+
             <div>
+
                 <span>Total Alumnos</span>
-                <h2>{{ alumnosLista.length }}</h2>
+
+                <h2>
+
+                    {{ alumnosLista.length }}
+
+                </h2>
+
             </div>
+
         </div>
 
     </div>
 
+    <!-- ====================================== -->
+    <!-- BUSCADOR -->
+    <!-- ====================================== -->
+
     <div class="toolbar">
 
-        <input type="text" placeholder="Buscar por nombre o código..." (input)="filtrarAlumnos($event)">
+        <input
+            type="text"
+            placeholder="Buscar por nombre, código o código universitario..."
+            (input)="filtrarAlumnos($event)">
 
     </div>
+
+    <!-- ====================================== -->
+    <!-- TABLA -->
+    <!-- ====================================== -->
 
     <div class="tabla-container">
 
         <table>
 
             <thead>
+
                 <tr>
-                    <th>Código Usuario</th>
-                    <th>Nombre</th>
+
+                    <th>Código</th>
+
+                    <th>Alumno</th>
+
                     <th>Código Universitario</th>
+
                     <th>Facultad</th>
+
                     <th>Sede</th>
+
                     <th>Ciclo</th>
+
                     <th>Estado</th>
+
                     <th>Acciones</th>
+
                 </tr>
+
             </thead>
 
             <tbody>
+
                 @for(alumno of alumnosFiltrados; track alumno.idAlumno){
+
                 <tr>
-                    <td>{{ alumno.codigoUsuario }}</td>
-                    <td>{{ alumno.nombreCompleto }}</td>
-                    <td>{{ alumno.codigoUniversitario }}</td>
-                    <td>{{ alumno.facultad }}</td>
-                    <td>{{ alumno.sede }}</td>
-                    <td>{{ alumno.ciclo }}</td>
+
                     <td>
+
+                        {{ alumno.codigoUsuario }}
+
+                    </td>
+
+                    <td>
+
+                        {{ alumno.nombreCompleto }}
+
+                    </td>
+
+                    <td>
+
+                        {{ alumno.codigoUniversitario }}
+
+                    </td>
+
+                    <td>
+
+                        {{ alumno.facultad }}
+
+                    </td>
+
+                    <td>
+
+                        {{ alumno.sede }}
+
+                    </td>
+
+                    <td>
+
+                        {{ alumno.ciclo }}
+
+                    </td>
+
+                    <td>
+
                         @if(alumno.estado){
-                            <span class="badge success">Activo</span>
+
+                            <span class="badge success">
+
+                                Activo
+
+                            </span>
+
                         } @else {
-                            <span class="badge danger">Inactivo</span>
+
+                            <span class="badge danger">
+
+                                Inactivo
+
+                            </span>
+
                         }
+
                     </td>
+
                     <td>
-                        <button class="btn-icon edit" (click)="editarAlumno(alumno)">
+
+                        <!-- EDITAR -->
+
+                        <button
+                            class="btn-icon edit"
+                            title="Editar"
+                            (click)="editarAlumno(alumno)">
+
                             <i class="bi bi-pencil-fill"></i>
+
                         </button>
-                        <button class="btn-icon delete" (click)="eliminarAlumno(alumno.idAlumno)">
-                            <i class="bi bi-trash-fill"></i>
+
+                        <!-- ACTIVAR / DESACTIVAR -->
+
+                        <button
+                            class="btn-icon"
+                            [class.delete]="alumno.estado"
+                            [class.edit]="!alumno.estado"
+                            (click)="cambiarEstado(alumno)"
+                            [title]="alumno.estado ? 'Desactivar' : 'Activar'">
+
+                            @if(alumno.estado){
+
+                                <i class="bi bi-pause-circle-fill"></i>
+
+                            } @else {
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                            }
+
                         </button>
+
                     </td>
+
                 </tr>
-                } @empty {
-                <tr>
-                    <td colspan="8" style="text-align: center; color: var(--muted); padding: 30px;">
-                        No se encontraron alumnos registrados.
-                    </td>
-                </tr>
+
                 }
+
+                @empty{
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        style="text-align:center;padding:40px;">
+
+                        No existen alumnos registrados.
+
+                    </td>
+
+                </tr>
+
+                }
+
             </tbody>
 
         </table>
 
     </div>
 
-    @if(mostrarModal){
-    <div class="modal-overlay" (click)="cerrarModal()">
-        <div class="modal" (click)="$event.stopPropagation()">
-            <div class="modal-header">
-                <h3>{{ alumnoEnEdicion?.idAlumno ? 'Editar Alumno' : 'Nuevo Alumno' }}</h3>
-                <button class="btn-close" (click)="cerrarModal()">&times;</button>
-            </div>
+    <!-- ====================================== -->
+    <!-- MODAL -->
+    <!-- ====================================== -->
 
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label>Usuario (rol Alumno)</label>
-                        <select [(ngModel)]="form.idUsuario" name="idUsuario" [disabled]="!!alumnoEnEdicion?.idAlumno">
-                            @for(usuario of usuariosDisponibles; track usuario.idUsuario){
-                                <option [ngValue]="usuario.idUsuario">{{ usuario.codigo }} - {{ usuario.nombres }} {{ usuario.apellidos }}</option>
-                            }
-                        </select>
-                    </div>
+   @if(mostrarModal){
 
-                    <div class="form-group">
-                        <label>Código universitario</label>
-                        <input type="text" [(ngModel)]="form.codigoUniversitario" name="codigoUniversitario" required>
-                    </div>
+<div class="modal-overlay" (click)="cerrarModal()">
 
-                    <div class="form-group">
-                        <label>Facultad</label>
-                        <input type="text" [(ngModel)]="form.facultad" name="facultad" required>
-                    </div>
+    <div class="modal" (click)="$event.stopPropagation()">
 
-                    <div class="form-group">
-                        <label>Sede</label>
-                        <input type="text" [(ngModel)]="form.sede" name="sede" required>
-                    </div>
+        <!-- ====================================== -->
+        <!-- HEADER -->
+        <!-- ====================================== -->
 
-                    <div class="form-group">
-                        <label>Ciclo</label>
-                        <input type="number" [(ngModel)]="form.ciclo" name="ciclo" min="1" max="12" required>
-                    </div>
+        <div class="modal-header">
 
-                    <div class="form-group">
-                        <label>Estado</label>
-                        <select [(ngModel)]="form.estado" name="estado">
-                            <option [ngValue]="true">Activo</option>
-                            <option [ngValue]="false">Inactivo</option>
-                        </select>
-                    </div>
+            <h3>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
-                        <button type="button" class="btn-primary" (click)="guardarAlumno()">Guardar</button>
-                    </div>
-                </form>
-            </div>
+                Editar Información Académica
+
+            </h3>
+
+            <button
+                class="btn-close"
+                (click)="cerrarModal()">
+
+                &times;
+
+            </button>
 
         </div>
+
+        <!-- ====================================== -->
+        <!-- BODY -->
+        <!-- ====================================== -->
+
+        <div class="modal-body">
+
+            <form>
+
+                <div class="form-group">
+
+                    <label>
+
+                        Código Universitario
+
+                    </label>
+
+                    <input
+                        type="text"
+                        [(ngModel)]="form.codigoUniversitario"
+                        name="codigoUniversitario">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+
+                        Facultad
+
+                    </label>
+
+                    <input
+                        type="text"
+                        [(ngModel)]="form.facultad"
+                        name="facultad">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+
+                        Sede
+
+                    </label>
+
+                    <input
+                        type="text"
+                        [(ngModel)]="form.sede"
+                        name="sede">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+
+                        Ciclo
+
+                    </label>
+
+                    <input
+                        type="number"
+                        min="1"
+                        max="12"
+                        [(ngModel)]="form.ciclo"
+                        name="ciclo">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+
+                        Estado
+
+                    </label>
+
+                    <select
+                        [(ngModel)]="form.estado"
+                        name="estado">
+
+                        <option
+                            [ngValue]="true">
+
+                            Activo
+
+                        </option>
+
+                        <option
+                            [ngValue]="false">
+
+                            Inactivo
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- ====================================== -->
+        <!-- FOOTER -->
+        <!-- ====================================== -->
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="btn-secondary"
+                (click)="cerrarModal()">
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="button"
+                class="btn-primary"
+                (click)="guardarAlumno()">
+
+                <i class="bi bi-floppy-fill"></i>
+
+                Guardar Cambios
+
+            </button>
+
+        </div>
+
     </div>
-    }
 
 </div>
+
+}

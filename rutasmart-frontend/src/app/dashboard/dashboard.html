@@ -26,6 +26,8 @@
 
       @for(item of menu; track item.ruta){
 
+      @if(item.roles.includes(rolUsuario) && (item.titulo !== 'Reportes' || rolUsuario === 'ADMINISTRADOR')){
+
       <li>
 
         <a
@@ -44,6 +46,8 @@
         </a>
 
       </li>
+
+      }
 
       }
 

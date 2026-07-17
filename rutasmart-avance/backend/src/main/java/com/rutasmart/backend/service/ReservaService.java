@@ -33,7 +33,7 @@ public class ReservaService {
         existente.setFecha(r.getFecha());
         existente.setHora(r.getHora());
         existente.setEstado(r.getEstado());
-        return repository.save(existent);
+        repository.save(existente);
     }
 
     public void eliminar(Long id) {

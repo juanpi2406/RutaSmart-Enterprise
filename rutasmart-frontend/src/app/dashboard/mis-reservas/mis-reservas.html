@@ -13,10 +13,16 @@
   >
   <select (change)="cambiarFiltroEstado($event)">
     <option value="TODOS">Todos</option>
-    <option value="CONFIRMADA">Confirmadas</option>
-    <option value="PENDIENTE">Pendientes</option>
-    <option value="CANCELADA">Canceladas</option>
+    <option value="RESERVADO">Reservados</option>
+    <option value="ABORDADO">Abordados</option>
+    <option value="CANCELADO">Cancelados</option>
+    <option value="NO_ASISTIO">No asistió</option>
   </select>
+</div>
+
+<div class="nota-importante">
+  <i class="bi bi-info-circle-fill"></i>
+  <span>Por favor, recuerda cancelar tu reserva si no vas a tomar el servicio. Así evitarás posibles sanciones y permitirás que otro usuario aproveche el asiento.</span>
 </div>
 
 <div class="panel">
@@ -28,6 +34,7 @@
         <th>Fecha Abordaje</th>
         <th>Estado</th>
         <th>Código QR</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -38,13 +45,22 @@
           <td>{{ reserva.fechaAbordaje || '-' }}</td>
           <td>
             <span class="status"
-              [class.ok]="reserva.estado === 'CONFIRMADA'"
-              [class.warning]="reserva.estado === 'PENDIENTE'"
-              [class.danger]="reserva.estado === 'CANCELADA'">
+              [class.ok]="reserva.estado === 'RESERVADO' || reserva.estado === 'ABORDADO'"
+              [class.warning]="reserva.estado === 'NO_ASISTIO'"
+              [class.danger]="reserva.estado === 'CANCELADO'">
               {{ reserva.estado }}
             </span>
           </td>
           <td><code>{{ reserva.codigoQr || '-' }}</code></td>
+          <td>
+            <button
+              class="btn-cancelar"
+              (click)="cancelarReserva(reserva)"
+              title="Cancelar reserva"
+              [disabled]="reserva.estado === 'CANCELADO' || reserva.estado === 'NO_ASISTIO'">
+              <i class="bi bi-x-circle-fill"></i> Cancelar
+            </button>
+          </td>
         </tr>
       } @empty {
         <tr>

@@ -33,7 +33,7 @@ public class BusService {
         existente.setRuta(b.getRuta());
         existente.setChofer(b.getChofer());
         existente.setEstado(b.getEstado());
-        return repository.save(existent);
+        return repository.save(existente);
     }
 
     public void eliminar(Long id) {
