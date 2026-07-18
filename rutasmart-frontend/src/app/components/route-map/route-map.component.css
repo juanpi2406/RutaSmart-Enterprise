@@ -167,11 +167,36 @@
 
 @media (max-width: 640px) {
   .live-map__canvas-wrap {
-    height: 300px;
-    min-height: 240px;
+    height: min(45vh, 280px);
+    min-height: 220px;
   }
 
   .live-map__stat--wide {
     min-width: 100%;
+  }
+
+  .live-map__chrome {
+    padding: 10px 12px 8px;
+  }
+
+  .live-map__stats {
+    width: 100%;
+  }
+
+  .live-map__stat {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 380px) {
+  .live-map__codigo {
+    min-width: 44px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .live-map__badge-txt strong {
+    font-size: 12px;
   }
 }

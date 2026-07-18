@@ -47,6 +47,13 @@ type LeafletNS = typeof import('leaflet');
       align-items: center;
       gap: 6px;
     }
+    @media (max-width: 768px) {
+      .route-editor-map__canvas { height: 260px; }
+    }
+    @media (max-width: 480px) {
+      .route-editor-map__canvas { height: 220px; }
+      .route-editor-map__hint { font-size: 11px; }
+    }
   `]
 })
 export class RouteEditorMapComponent implements AfterViewInit, OnChanges, OnDestroy {

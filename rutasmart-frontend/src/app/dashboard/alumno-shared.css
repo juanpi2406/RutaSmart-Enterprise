@@ -677,4 +677,16 @@
 @media (max-width: 700px) {
   .alumno-kpis { grid-template-columns: 1fr 1fr; }
   .viaje-meta { grid-template-columns: 1fr; }
+  .route-cards { grid-template-columns: 1fr !important; }
+  .viajes-grid { grid-template-columns: 1fr !important; }
+  .alumno-page .page-header { flex-direction: column; align-items: flex-start; }
+  .asientos-grid { grid-template-columns: repeat(4, 1fr) !important; }
+}
+
+@media (max-width: 480px) {
+  .alumno-kpis { grid-template-columns: 1fr !important; }
+  .route-card { padding: 14px !important; }
+  .viaje-card { padding: 14px !important; }
+  .asientos-grid { grid-template-columns: repeat(3, 1fr) !important; }
+  .perfil-avatar-block { flex-direction: column; text-align: center; }
 }

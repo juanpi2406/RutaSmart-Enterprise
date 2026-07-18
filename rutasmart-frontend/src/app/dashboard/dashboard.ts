@@ -57,6 +57,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   panelMensajesAbierto = false;
   notificacionesRecientes: Notificacion[] = [];
   sidebarColapsado = false;
+  sidebarAbierto = false;
 
   private reloj: any;
   private pollSub?: Subscription;
@@ -118,10 +119,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.panelMensajesAbierto = false;
   }
 
+  @HostListener('window:resize')
+  onResize(): void {
+    if (window.innerWidth > 900) {
+      this.sidebarAbierto = false;
+    }
+  }
+
   toggleSidebar(event: Event): void {
     event.stopPropagation();
-    this.sidebarColapsado = !this.sidebarColapsado;
+    if (window.innerWidth <= 900) {
+      this.sidebarAbierto = !this.sidebarAbierto;
+    } else {
+      this.sidebarColapsado = !this.sidebarColapsado;
+    }
     document.body.classList.toggle('sidebar-collapsed', this.sidebarColapsado);
+  }
+
+  cerrarSidebarMobile(): void {
+    if (window.innerWidth <= 900) {
+      this.sidebarAbierto = false;
+    }
   }
 
   toggleNotificaciones(event: Event): void {
