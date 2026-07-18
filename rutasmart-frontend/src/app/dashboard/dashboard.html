@@ -1,7 +1,11 @@
 <div class="layout">
 
+  @if(sidebarAbierto){
+  <div class="sidebar-backdrop" (click)="cerrarSidebarMobile()" aria-hidden="true"></div>
+  }
+
   <!-- Sidebar -->
-  <aside class="sidebar" [class.open]="!sidebarColapsado">
+  <aside class="sidebar" [class.open]="sidebarAbierto">
 
     <!-- Logo UTP -->
     <div class="logo">
@@ -22,7 +26,8 @@
         <a
           [routerLink]="item.ruta"
           routerLinkActive="active"
-          [routerLinkActiveOptions]="{exact:true}">
+          [routerLinkActiveOptions]="{exact:true}"
+          (click)="cerrarSidebarMobile()">
           <i class="bi" [ngClass]="item.icono"></i>
           <span>{{item.titulo}}</span>
         </a>

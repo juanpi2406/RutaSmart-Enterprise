@@ -79,3 +79,32 @@
   margin-top: 3px;
   accent-color: #22c55e;
 }
+
+@media (max-width: 768px) {
+  .sancion-banner {
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .sancion-banner__icon {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .sancion-banner strong {
+    font-size: 14px;
+  }
+
+  .sancion-banner p {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .confirm-asistencia {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+}

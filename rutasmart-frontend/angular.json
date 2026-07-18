@@ -24,6 +24,7 @@
         "styles": [
           "node_modules/leaflet/dist/leaflet.css",
           "src/styles.css",
+          "src/responsive.css",
           "./public/css/style.css",
           "./public/css/navbar.css",
           "./public/css/sidebar.css",
