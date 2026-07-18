@@ -56,9 +56,10 @@ export class UsuariosComponent implements OnInit {
    * UI
    =========================================*/
 
- cargando = true;
+  cargaInicial = true;
+  actualizando = false;
 
-pantallaLista = false;
+  pantallaLista = false;
   mostrarModal = false;
 
   usuarioEnEdicion: Usuario | null = null;
@@ -145,13 +146,9 @@ ngOnInit(): void {
 }
 
 private inicializarPantalla(): void {
-
-    this.cargando = true;
-
+    this.cargaInicial = true;
     this.pantallaLista = false;
-
     this.cargarRoles();
-
 }
 
   /*=========================================
@@ -159,8 +156,11 @@ private inicializarPantalla(): void {
    =========================================*/
 
   listarUsuarios(): void {
-
-    this.cargando = true;
+    if (this.usuariosLista.length === 0) {
+      this.cargaInicial = true;
+    } else {
+      this.actualizando = true;
+    }
 
     this.usuarioService.listar().subscribe({
 
@@ -196,7 +196,8 @@ private inicializarPantalla(): void {
 
 
 
-       this.cargando = false;
+       this.cargaInicial = false;
+       this.actualizando = false;
 
       this.pantallaLista = true;
 
@@ -214,8 +215,8 @@ private inicializarPantalla(): void {
 
         console.error(err);
 
-        this.cargando = false;
-
+        this.cargaInicial = false;
+        this.actualizando = false;
         this.cdr.detectChanges();
 
       }
@@ -410,6 +411,12 @@ private inicializarPantalla(): void {
 
     this.aplicarFiltros();
 
+  }
+
+  filtrarPorRol(rol: string): void {
+    this.filtroRol = rol;
+    this.aplicarFiltros();
+    this.cdr.detectChanges();
   }
 
   aplicarFiltros(): void {

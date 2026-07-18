@@ -1,193 +1,126 @@
 <div class="layout">
 
-  <app-loading-overlay></app-loading-overlay>
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.open]="!sidebarColapsado">
 
-  <!-- ========================= -->
-  <!-- SIDEBAR -->
-  <!-- ========================= -->
-
-  <aside class="sidebar">
-
+    <!-- Logo UTP -->
     <div class="logo">
-
-      <i class="bi bi-bus-front-fill"></i>
-
-      <div>
-
-        <h2>RutaSmart</h2>
-
-        <span>Enterprise</span>
-
+      <div class="logo-utp">
+        <span>U</span><span class="utp-sep">T</span><span>P</span>
       </div>
-
+      <div class="logo-text">
+        <span class="logo-title">RutaSmart</span>
+        <span class="logo-sub">UTP</span>
+      </div>
     </div>
 
-    <!-- MENÚ DINÁMICO -->
-
+    <!-- Navegación -->
     <ul class="menu">
-
       @for(item of menu; track item.ruta){
-
       @if(item.roles.includes(rolUsuario) && (item.titulo !== 'Reportes' || rolUsuario === 'ADMINISTRADOR')){
-
       <li>
-
         <a
           [routerLink]="item.ruta"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{exact:true}">
-
           <i class="bi" [ngClass]="item.icono"></i>
-
-          <span>
-
-            {{item.titulo}}
-
-          </span>
-
+          <span>{{item.titulo}}</span>
         </a>
-
       </li>
-
       }
-
       }
-
     </ul>
 
-    <!-- FOOTER SIDEBAR -->
-
+    <!-- Footer: Cerrar sesión -->
     <div class="sidebar-footer">
-
-      <img
-        src="img/avatar.png"
-        alt="Avatar"
-        id="userAvatar">
-
-      <div>
-
-        <strong>
-
-          {{nombreUsuario}}
-
-        </strong>
-
-        <small>
-
-          {{rolUsuario}}
-
-        </small>
-
-      </div>
-
-      <button
-        class="logout-btn"
-        (click)="logout()"
-        title="Cerrar sesión">
-
-        <i class="bi bi-box-arrow-right"></i>
-
+      <button class="logout-btn-full" (click)="logout()">
+        <i class="bi bi-box-arrow-left"></i>
+        <span>Cerrar sesión</span>
       </button>
-
     </div>
 
   </aside>
 
-  <!-- ========================= -->
-  <!-- CONTENIDO -->
-  <!-- ========================= -->
-
+  <!-- Área principal -->
   <div class="main">
 
-    <!-- NAVBAR -->
-
+    <!-- Navbar superior -->
     <header class="navbar">
 
       <div class="left">
-
-        <button class="menu-btn">
-
+        <button class="menu-btn" type="button" (click)="toggleSidebar($event)" title="Menú">
           <i class="bi bi-list"></i>
-
         </button>
-
-        <h1>
-
-          Dashboard
-
-        </h1>
-
+        <!-- Logo UTP mini en navbar -->
+        <div class="navbar-brand">
+          <div class="navbar-utp">U<span>T</span>P</div>
+          <span class="navbar-name">RutaSmart UTP</span>
+        </div>
       </div>
 
       <div class="right">
 
-        <div class="search">
+        <!-- Campana de notificaciones -->
+        <div class="notif-wrap" (click)="$event.stopPropagation()">
+          <button class="icon" type="button" (click)="toggleNotificaciones($event)" title="Notificaciones">
+            <i class="bi bi-bell-fill"></i>
+            <span class="badge" [class.oculto]="notificacionesNoLeidas === 0">
+              {{ notificacionesNoLeidas > 9 ? '9+' : notificacionesNoLeidas }}
+            </span>
+          </button>
 
-          <i class="bi bi-search"></i>
-
-          <input
-            type="text"
-            placeholder="Buscar...">
-
-        </div>
-
-        <button class="icon">
-
-          <i class="bi bi-bell-fill"></i>
-
-          <span class="badge">
-
-            3
-
-          </span>
-
-        </button>
-
-        <button class="icon">
-
-          <i class="bi bi-envelope-fill"></i>
-
-          <span class="badge">
-
-            5
-
-          </span>
-
-        </button>
-
-        <div class="clock">
-
-          <div>
-
-            {{currentTime}}
-
+          @if(panelNotificacionesAbierto){
+          <div class="dropdown-panel">
+            <h4>Notificaciones</h4>
+            @if(notificacionesRecientes.length === 0){
+            <div class="dropdown-empty">Sin notificaciones</div>
+            } @else {
+            @for(n of notificacionesRecientes; track n.idNotificacion){
+            <button
+              type="button"
+              class="dropdown-item"
+              [class.no-leida]="!n.leido"
+              (click)="abrirNotificacion(n, $event)">
+              <div class="dropdown-item__row">
+                <span class="dropdown-item__icon" [attr.data-tipo]="n.tipo">
+                  <i class="bi" [ngClass]="iconoNotificacion(n.tipo)"></i>
+                </span>
+                <div class="dropdown-item__body">
+                  <strong>{{ n.titulo }}</strong>
+                  <span>{{ n.mensaje }}</span>
+                  <small>{{ tiempoRelativo(n.fechaEnvio) }}</small>
+                </div>
+              </div>
+            </button>
+            }
+            }
+            @if(rolUsuario === 'ALUMNO' || rolUsuario === 'CHOFER'){
+            <div class="dropdown-footer">
+              <button type="button" (click)="irANotificaciones()">Ver todas</button>
+            </div>
+            }
           </div>
-
-          <small>
-
-            {{currentDate}}
-
-          </small>
-
+          }
         </div>
 
-        <img
-          src="img/avatar.png"
-          class="avatar"
-          alt="Avatar">
+        <!-- Avatar con código -->
+        <div class="user-chip">
+          <div class="avatar-iniciales">{{ iniciales }}</div>
+          <span class="user-code">{{nombreUsuario}}</span>
+          <i class="bi bi-chevron-down user-chevron"></i>
+        </div>
 
       </div>
 
     </header>
 
-    <!-- CONTENIDO DINÁMICO -->
-
+    <!-- Contenido -->
     <main class="dashboard">
-
       <router-outlet></router-outlet>
-
     </main>
 
   </div>
 
 </div>
+
+<app-onboarding-tour [rol]="rolUsuario"></app-onboarding-tour>

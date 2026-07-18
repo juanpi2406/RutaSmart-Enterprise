@@ -8,4 +8,9 @@ export interface Viaje {
     horaFinReal?: string;
     estado: string;
     observaciones?: string;
+    horaSalida?: string;
+    horaLlegadaEstimada?: string;
+    idRuta?: number;
+    codigoRuta?: string;
+    nombreRuta?: string;
 }

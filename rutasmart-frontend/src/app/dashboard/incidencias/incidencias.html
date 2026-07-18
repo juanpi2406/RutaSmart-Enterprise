@@ -1,121 +1,164 @@
-<div class="usuarios-container">
+<div class="alumno-page usuarios-container">
 
-    <div class="page-header">
+  <div class="page-header">
+    <div>
+      <h2>{{ tituloPagina() }}</h2>
+      <p>{{ subtituloPagina() }}</p>
+    </div>
+    <button type="button" class="btn-primary" (click)="abrirModalReportar()">
+      <i class="bi bi-plus-circle-fill"></i> Reportar Incidencia
+    </button>
+  </div>
 
-        <div>
-            <h2>{{ esAdmin ? 'Gestión de Incidencias' : 'Reportar Incidencia' }}</h2>
-            <p>
-                @if(esAdmin){
-                    Administración de incidencias reportadas por los choferes.
-                } @else {
-                    Reporta incidencias durante tus viajes y consulta tu historial.
+  @if(!esAdmin){
+  <div class="alumno-kpis">
+    <div class="alumno-kpi">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <div>
+        <span>Total</span>
+        <strong>{{ totalIncidencias }}</strong>
+      </div>
+    </div>
+    <div class="alumno-kpi">
+      <i class="bi bi-hourglass-split"></i>
+      <div>
+        <span>Pendientes</span>
+        <strong>{{ pendientes }}</strong>
+      </div>
+    </div>
+    <div class="alumno-kpi">
+      <i class="bi bi-check-circle-fill"></i>
+      <div>
+        <span>Resueltas</span>
+        <strong>{{ resueltas }}</strong>
+      </div>
+    </div>
+    <div class="alumno-kpi">
+      <i class="bi bi-bus-front-fill"></i>
+      <div>
+        <span>Viajes vinculados</span>
+        <strong>{{ viajes.length }}</strong>
+      </div>
+    </div>
+  </div>
+  }
+
+  @if(cargando){
+  <div class="loading-inline">
+    <i class="bi bi-arrow-repeat spin"></i> Cargando incidencias...
+  </div>
+  } @else {
+
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Descripción</th>
+          <th>Viaje</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          @if(esAdmin){ <th>Acciones</th> }
+        </tr>
+      </thead>
+      <tbody>
+        @for(incidencia of incidenciasFiltradas; track incidencia.idIncidencia){
+        <tr>
+          <td><span class="badge info">{{ incidencia.tipo }}</span></td>
+          <td>{{ incidencia.descripcion }}</td>
+          <td>{{ incidencia.idViaje ? ('#' + incidencia.idViaje) : '—' }}</td>
+          <td>
+            @if(esAdmin){
+              <select [ngModel]="incidencia.estado" (ngModelChange)="cambiarEstado(incidencia, $event)">
+                @for(estado of estados; track estado){
+                  <option [ngValue]="estado">{{ estado }}</option>
                 }
-            </p>
-        </div>
+              </select>
+            } @else {
+              <span class="badge"
+                [class.success]="incidencia.estado === 'RESUELTA'"
+                [class.danger]="incidencia.estado === 'PENDIENTE' || incidencia.estado === 'REPORTADA'"
+                [class.warning]="incidencia.estado === 'EN_REVISION'">
+                {{ incidencia.estado }}
+              </span>
+            }
+          </td>
+          <td>{{ incidencia.fechaRegistro ?? '—' }}</td>
+          @if(esAdmin){
+          <td>
+            <button type="button" class="btn-icon delete" (click)="eliminarIncidencia(incidencia.idIncidencia)">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </td>
+          }
+        </tr>
+        } @empty {
+        <tr>
+          <td [attr.colspan]="esAdmin ? 6 : 5" style="text-align:center;color:var(--muted);padding:30px;">
+            <i class="bi bi-shield-check" style="font-size:36px;display:block;margin-bottom:10px;opacity:.5;"></i>
+            No tienes incidencias registradas. Usa el botón superior para reportar una.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 
-        <button class="btn-primary" (click)="abrirModalReportar()">
-            <i class="bi bi-plus-circle-fill"></i> Reportar Incidencia
-        </button>
-
-    </div>
-
-    <div class="tabla-container">
-
-        <table>
-
-            <thead>
-                <tr>
-                    <th>Tipo</th>
-                    <th>Descripción</th>
-                    <th>Viaje</th>
-                    <th>Estado</th>
-                    <th>Fecha</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @for(incidencia of incidenciasFiltradas; track incidencia.idIncidencia){
-                <tr>
-                    <td>{{ incidencia.tipo }}</td>
-                    <td>{{ incidencia.descripcion }}</td>
-                    <td>{{ incidencia.idViaje ?? '-' }}</td>
-                    <td>
-                        @if(esAdmin){
-                            <select [ngModel]="incidencia.estado" (ngModelChange)="cambiarEstado(incidencia, $event)">
-                                @for(estado of estados; track estado){
-                                    <option [ngValue]="estado">{{ estado }}</option>
-                                }
-                            </select>
-                        } @else {
-                            <span class="badge" [class.success]="incidencia.estado === 'RESUELTA'">{{ incidencia.estado }}</span>
-                        }
-                    </td>
-                    <td>{{ incidencia.fechaRegistro ?? '-' }}</td>
-                    <td>
-                        @if(esAdmin){
-                            <button class="btn-icon delete" (click)="eliminarIncidencia(incidencia.idIncidencia)">
-                                <i class="bi bi-trash-fill"></i>
-                            </button>
-                        }
-                    </td>
-                </tr>
-                } @empty {
-                <tr>
-                    <td colspan="6" style="text-align: center; color: var(--muted); padding: 30px;">
-                        No se encontraron incidencias registradas.
-                    </td>
-                </tr>
-                }
-            </tbody>
-
-        </table>
-
-    </div>
-
-    @if(mostrarModal){
-    <div class="modal-overlay" (click)="cerrarModal()">
-        <div class="modal" (click)="$event.stopPropagation()">
-            <div class="modal-header">
-                <h3>Reportar Incidencia</h3>
-                <button class="btn-close" (click)="cerrarModal()">&times;</button>
-            </div>
-
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label>Tipo</label>
-                        <select [(ngModel)]="form.tipo" name="tipo">
-                            @for(tipo of tipos; track tipo){
-                                <option [ngValue]="tipo">{{ tipo }}</option>
-                            }
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Viaje relacionado (opcional)</label>
-                        <select [(ngModel)]="form.idViaje" name="idViaje">
-                            <option [ngValue]="undefined">Ninguno</option>
-                            @for(viaje of viajes; track viaje.idViaje){
-                                <option [ngValue]="viaje.idViaje">Viaje #{{ viaje.idViaje }} - {{ viaje.fechaViaje }}</option>
-                            }
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Descripción</label>
-                        <input type="text" [(ngModel)]="form.descripcion" name="descripcion" required>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
-                        <button type="button" class="btn-primary" (click)="reportarIncidencia()">Reportar</button>
-                    </div>
-                </form>
-            </div>
-
-        </div>
-    </div>
-    }
+  }
 
 </div>
+
+@if(mostrarModal){
+<div class="modal-overlay" (click)="cerrarModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Reportar Incidencia</h3>
+      <button type="button" class="btn-close" (click)="cerrarModal()">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Tipo de incidencia</label>
+        <select [(ngModel)]="form.tipo" name="tipo">
+          @for(tipo of tipos; track tipo){
+            <option [ngValue]="tipo">{{ tipo }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Viaje relacionado (opcional)</label>
+        <select [(ngModel)]="form.idViaje" name="idViaje">
+          <option [ngValue]="undefined">Ninguno / General</option>
+          @for(viaje of viajes; track viaje.idViaje){
+            <option [ngValue]="viaje.idViaje">
+              Viaje #{{ viaje.idViaje }}@if(viaje.fechaViaje){ — {{ viaje.fechaViaje }}}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea [(ngModel)]="form.descripcion" name="descripcion" rows="4"
+          placeholder="Ej.: El bus llegó tarde, aire acondicionado fallando, conductor no se detuvo en mi paradero..." required></textarea>
+      </div>
+
+      @if(errorModal){
+      <div class="modal-error">{{ errorModal }}</div>
+      }
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-secondary" (click)="cerrarModal()" [disabled]="guardando">Cancelar</button>
+      <button type="button" class="btn-primary" (click)="reportarIncidencia()" [disabled]="guardando">
+        @if(guardando){
+          <i class="bi bi-arrow-repeat spin"></i> Enviando...
+        } @else {
+          Enviar reporte
+        }
+      </button>
+    </div>
+  </div>
+</div>
+}

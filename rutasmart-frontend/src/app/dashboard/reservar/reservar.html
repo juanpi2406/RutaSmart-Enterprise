@@ -1,163 +1,239 @@
-<div class="page-title">
-  <div>
-    <h2>Reservar Viaje</h2>
-    <p>Selecciona una ruta y fecha para ver los viajes disponibles.</p>
+<div class="alumno-page">
+
+  <div class="page-header">
+    <div>
+      <h2>Reservar Viaje</h2>
+      <p>Elige tu ruta, fecha y horario. Reserva tu asiento en segundos.</p>
+    </div>
+    <div class="page-header__actions">
+      <a routerLink="/dashboard/mis-reservas" class="btn-secondary">
+        <i class="bi bi-journal-bookmark-fill"></i> Mis Reservas
+      </a>
+    </div>
   </div>
-</div>
 
-<!-- ========================================== -->
-<!-- BUSQUEDA -->
-<!-- ========================================== -->
-
-<div class="search-card">
-  <form class="search-row" (ngSubmit)="buscarViajes()">
-    <div class="field">
-      <label>
-        <i class="bi bi-sign-turn-right-fill"></i> Ruta
-      </label>
-      <div class="input-wrap">
-        <select
-          [(ngModel)]="idRutaSeleccionada"
-          name="idRuta"
-          (change)="buscarViajes()">
-          <option [value]="0">Seleccione una ruta</option>
-          @for(ruta of rutas; track ruta.idRuta){
-            <option [value]="ruta.idRuta">{{ ruta.nombre }}: hacia {{ ruta.destino }}</option>
-          }
-        </select>
-        <i class="bi bi-chevron-down select-icon"></i>
-      </div>
+  @if(alumnoPerfil && bloqueado){
+  <div class="sancion-banner">
+    <div class="sancion-banner__icon"><i class="bi bi-shield-lock-fill"></i></div>
+    <div>
+      <strong>Reservas suspendidas por inasistencias</strong>
+      <p>
+        Tienes <strong>{{ alumnoPerfil.inasistencias ?? 3 }} inasistencias</strong>.
+        No puedes reservar hasta el <strong>{{ fechaSancionFormateada }}</strong>.
+      </p>
+      <small>Solo podrás reservar de nuevo cuando termine la sanción de 7 días.</small>
     </div>
+  </div>
+  }
 
-    <div class="field">
-      <label>
-        <i class="bi bi-calendar3"></i> Fecha
-      </label>
-      <div class="input-wrap">
-        <i class="bi bi-calendar-event input-icon"></i>
-        <input
-          type="date"
-          [(ngModel)]="fechaViaje"
-          name="fecha"
-          (change)="buscarViajes()"
-        >
-      </div>
+  <div class="reservar-workspace" [class.reservar-workspace--bloqueado]="bloqueado">
+
+  @if(!cargandoRutas && rutas.length === 0){
+  <div class="hint-banner">
+    <i class="bi bi-exclamation-circle-fill"></i>
+    <span>No hay rutas activas disponibles en este momento. Contacta al administrador del servicio.</span>
+  </div>
+  }
+
+  @if(rutas.length > 0){
+  <section>
+    <div class="panel-header" style="margin-bottom: 12px;">
+      <h3><i class="bi bi-sign-turn-right-fill"></i> Selecciona tu ruta</h3>
     </div>
-
-    <button
-      type="submit"
-      class="btn-primary search-btn"
-      [disabled]="!puedeBuscar()">
-      <i class="bi bi-search"></i> Buscar
-    </button>
-  </form>
-</div>
-
-<!-- ========================================== -->
-<!-- VIAJES DISPONIBLES -->
-<!-- ========================================== -->
-
-@if(viajesDisponibles.length > 0){
-<div class="panel">
-  <h3>Viajes Disponibles</h3>
-  <div class="viajes-grid">
-    @for(viaje of viajesDisponibles; track viaje.idViaje){
-    <div class="viaje-card">
-      <div class="viaje-header">
-        <h4>Viaje #{{ viaje.idViaje }}</h4>
-        <span class="status ok">Disponible</span>
-      </div>
-      <div class="viaje-body">
-        <p><strong>Fecha:</strong> {{ viaje.fechaViaje }}</p>
-        <p><strong>Horario:</strong> {{ horarioViaje(viaje.idViaje) }}</p>
-        <p><strong>Bus ID:</strong> {{ viaje.idBus }}</p>
-        <p><strong>Estado:</strong> {{ viaje.estado }}</p>
-      </div>
-      <button class="btn-primary" (click)="seleccionarViaje(viaje)">
-        <i class="bi bi-ticket-perforated-fill"></i> Reservar
+    <div class="route-cards">
+      @for(ruta of rutas; track ruta.idRuta){
+      <button
+        type="button"
+        class="route-card"
+        [class.active]="idRutaSeleccionada === ruta.idRuta"
+        [disabled]="bloqueado"
+        (click)="seleccionarRuta(ruta.idRuta)">
+        <span class="route-card__code">{{ ruta.codigo }}</span>
+        <strong>{{ ruta.nombre }}</strong>
+        <small>{{ ruta.origen }} → {{ ruta.destino }}</small>
       </button>
+      }
     </div>
-    }
+  </section>
+  }
+
+  <div class="search-card">
+    <p class="search-card__title"><i class="bi bi-funnel-fill"></i> Buscar horarios disponibles</p>
+    <form class="search-row" (ngSubmit)="buscarViajes()">
+      <div class="field">
+        <label><i class="bi bi-sign-turn-right-fill"></i> Ruta</label>
+        <div class="input-wrap">
+          <select [(ngModel)]="idRutaSeleccionada" name="idRuta" (change)="buscarViajes()" [disabled]="bloqueado">
+            <option [ngValue]="0">Seleccione una ruta</option>
+            @for(ruta of rutas; track ruta.idRuta){
+              <option [ngValue]="ruta.idRuta">{{ ruta.codigo }} — {{ ruta.nombre }}</option>
+            }
+          </select>
+          <i class="bi bi-chevron-down select-icon"></i>
+        </div>
+      </div>
+
+      <div class="field">
+        <label><i class="bi bi-calendar3"></i> Fecha</label>
+        <div class="input-wrap">
+          <i class="bi bi-calendar-event input-icon"></i>
+          <input type="date" [(ngModel)]="fechaViaje" name="fecha" (change)="buscarViajes()" [disabled]="bloqueado">
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary search-btn" [disabled]="!puedeBuscar() || cargando || bloqueado">
+        @if(cargando){
+          <i class="bi bi-arrow-repeat spin"></i> Buscando...
+        } @else {
+          <i class="bi bi-search"></i> Buscar
+        }
+      </button>
+    </form>
+  </div>
+
+  @if(rutaActiva() && !busco && !cargando && !bloqueado){
+  <div class="hint-banner">
+    <i class="bi bi-lightbulb-fill"></i>
+    <span>
+      Ruta seleccionada: <strong>{{ rutaActiva()?.nombre }}</strong>.
+      Elige la fecha y pulsa Buscar para ver los viajes del día.
+    </span>
+  </div>
+  }
+
+  @if(cargando){
+  <div class="loading-inline">
+    <i class="bi bi-arrow-repeat spin"></i> Consultando viajes disponibles...
+  </div>
+  }
+
+  @if(!cargando && viajesDisponibles.length > 0){
+  <div class="panel">
+    <div class="panel-header">
+      <h3><i class="bi bi-bus-front-fill"></i> Viajes disponibles</h3>
+      <span class="panel-count">{{ viajesDisponibles.length }} horario(s)</span>
+    </div>
+    <div class="viajes-grid">
+      @for(viaje of viajesDisponibles; track viaje.idViaje){
+      <article class="viaje-card">
+        <div class="viaje-header">
+          <h4>Viaje #{{ viaje.idViaje }}</h4>
+          <span class="status ok">Disponible</span>
+        </div>
+        <div class="viaje-meta">
+          <div class="viaje-meta__item">
+            <span>Fecha</span>
+            <strong>{{ viaje.fechaViaje }}</strong>
+          </div>
+          <div class="viaje-meta__item">
+            <span>Horario</span>
+            <strong>{{ horarioViaje(viaje) }}</strong>
+          </div>
+          <div class="viaje-meta__item">
+            <span>Bus</span>
+            <strong>#{{ viaje.idBus }}</strong>
+          </div>
+          <div class="viaje-meta__item">
+            <span>Estado</span>
+            <strong>{{ viaje.estado }}</strong>
+          </div>
+        </div>
+        <button type="button" class="btn-primary" (click)="seleccionarViaje(viaje)" [disabled]="bloqueado">
+          <i class="bi bi-ticket-perforated-fill"></i> Reservar asiento
+        </button>
+      </article>
+      }
+    </div>
+  </div>
+  }
+
+  @if(!cargando && viajesDisponibles.length === 0 && busco){
+  <div class="empty-state">
+    <i class="bi bi-bus-front"></i>
+    <h4>Sin viajes para esta fecha</h4>
+    <p>No hay horarios disponibles en {{ rutaActiva()?.nombre ?? 'la ruta' }} para el {{ fechaViaje }}.</p>
+  </div>
+  }
+
   </div>
 </div>
-}
-
-@if(viajesDisponibles.length === 0 && busco){
-<div class="empty">
-  <i class="bi bi-bus-front" style="font-size: 50px;"></i>
-  <p>No hay viajes disponibles para esta ruta y fecha.</p>
-</div>
-}
-
-<!-- ========================================== -->
-<!-- MODAL RESERVA -->
-<!-- ========================================== -->
 
 @if(mostrarModal && viajeSeleccionado){
 <div class="modal-overlay" (click)="cerrarModal()">
   <div class="modal" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3>Confirmar Reserva - Viaje #{{ viajeSeleccionado.idViaje }}</h3>
-      <button class="btn-close" (click)="cerrarModal()">&times;</button>
+      <h3>Confirmar reserva — Viaje #{{ viajeSeleccionado.idViaje }}</h3>
+      <button type="button" class="btn-close" (click)="cerrarModal()">&times;</button>
     </div>
     <div class="modal-body">
       <form (submit)="confirmarReserva($event)">
         <div class="form-group">
-          <label>Paradero de Abordaje</label>
+          <label>Paradero de abordaje</label>
           <select [(ngModel)]="form.idParadero" name="idParadero" required>
-            <option [value]="0">Seleccione paradero</option>
+            <option [ngValue]="undefined">Seleccione paradero</option>
             @for(paradero of paraderos; track paradero.idParadero){
-              <option [value]="paradero.idParadero">{{ paradero.nombre }}</option>
+              <option [ngValue]="paradero.idParadero">{{ paradero.nombre }}</option>
             }
           </select>
         </div>
+
         <div class="form-group">
-          <label>Fecha de Abordaje</label>
-          <input
-            type="text"
-            class="readonly-field"
-            [value]="fechaViaje"
-            readonly
-          >
+          <label>Fecha de abordaje</label>
+          <input type="text" class="readonly-field" [value]="fechaViaje" readonly>
         </div>
-        @if(capacidad > 0){
+
+        @if(cargandoBus){
+          <p class="text-muted"><i class="bi bi-arrow-repeat spin"></i> Cargando capacidad del bus...</p>
+        } @else if(capacidad > 0){
         <div class="reserva-info">
-          <p><strong>Asientos disponibles:</strong> {{ capacidad - reservasOcupadas }} de {{ capacidad }}</p>
+          <p><strong>Asientos libres:</strong> {{ asientosLibres() }} de {{ capacidad }}</p>
           <div class="asientos-visual">
             @for(item of [].constructor(capacidad); track $index){
-              <span class="asiento"
+              <span
+                class="asiento"
                 [class.ocupado]="$index < reservasOcupadas"
                 [class.libre]="$index >= reservasOcupadas"
-                (click)="form.numeroAsiento = $index + 1; $event.stopPropagation()">
+                [class.seleccionado]="form.numeroAsiento === $index + 1"
+                (click)="seleccionarAsiento($index + 1, $index)">
                 {{ $index + 1 }}
               </span>
             }
           </div>
         </div>
-        } @else {
-          <p class="text-muted">Cargando información del bus...</p>
         }
+
         @if(asientos.length > 0){
         <div class="form-group" style="margin-top: 14px;">
-          <label>Asiento</label>
-          <select [(ngModel)]="form.numeroAsiento" name="numeroAsiento" required>
-            <option [value]="0">Seleccione asiento</option>
+          <label>Asiento (lista)</label>
+          <select [(ngModel)]="form.numeroAsiento" name="numeroAsiento">
+            <option [ngValue]="undefined">Seleccione asiento</option>
             @for(asiento of asientos; track asiento.numeroAsiento){
-              <option [value]="asiento.numeroAsiento" [disabled]="!asiento.estado">
+              <option [ngValue]="asiento.numeroAsiento" [disabled]="!asiento.estado">
                 Asiento {{ asiento.numeroAsiento }} {{ asiento.estado ? '(Libre)' : '(Ocupado)' }}
               </option>
             }
           </select>
         </div>
-        } @else if (capacidad > 0) {
-          <p class="text-muted">No hay detalle de asientos disponible. Use el mapa visual para elegir.</p>
         }
+
         @if(form.numeroAsiento){
         <p class="text-muted">Asiento seleccionado: <strong>{{ form.numeroAsiento }}</strong></p>
         }
+
+        <label class="confirm-asistencia">
+          <input type="checkbox" [(ngModel)]="confirmoAsistencia" name="confirmoAsistencia">
+          <span>Confirmo que asistiré a este viaje. Entiendo que si no abordo se registrará inasistencia.</span>
+        </label>
+
         <div class="modal-footer">
-          <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
-          <button type="submit" class="btn-primary" [disabled]="!form.idParadero || !form.fechaAbordaje">Confirmar Reserva</button>
+          <button type="button" class="btn-secondary" (click)="cerrarModal()" [disabled]="guardando">Cancelar</button>
+          <button type="submit" class="btn-primary" [disabled]="guardando || !form.idParadero || !confirmoAsistencia">
+            @if(guardando){
+              <i class="bi bi-arrow-repeat spin"></i> Reservando...
+            } @else {
+              Confirmar reserva
+            }
+          </button>
         </div>
       </form>
     </div>

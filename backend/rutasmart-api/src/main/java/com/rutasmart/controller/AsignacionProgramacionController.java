@@ -13,33 +13,43 @@ import java.util.List;
 @RequestMapping("/api/asignaciones")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
-@PreAuthorize("hasRole('ADMINISTRADOR')")
 public class AsignacionProgramacionController {
 
     private final AsignacionProgramacionService service;
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
     public List<AsignacionProgramacionDTO> listar() {
         return service.listar();
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CHOFER')")
+    @GetMapping("/chofer/{idChofer}")
+    public List<AsignacionProgramacionDTO> listarPorChofer(@PathVariable Long idChofer) {
+        return service.listarPorChofer(idChofer);
+    }
+
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/{id}")
     public AsignacionProgramacionDTO buscar(@PathVariable Long id) {
         return service.buscarPorId(id);
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AsignacionProgramacionDTO guardar(@RequestBody AsignacionProgramacionDTO dto) {
         return service.guardar(dto);
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{id}")
     public AsignacionProgramacionDTO actualizar(@PathVariable Long id,
                                                 @RequestBody AsignacionProgramacionDTO dto) {
         return service.actualizar(id, dto);
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {

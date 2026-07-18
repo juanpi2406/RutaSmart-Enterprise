@@ -1,6 +1,8 @@
 package com.rutasmart.controller;
 
+import com.rutasmart.dto.CapacidadViajeDTO;
 import com.rutasmart.dto.ReservaDTO;
+import com.rutasmart.dto.ValidacionQrDTO;
 import com.rutasmart.service.interfaces.ReservaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -62,6 +64,20 @@ public class ReservaController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
         reservaService.eliminar(id);
+    }
+
+    @PreAuthorize("hasAnyRole('CHOFER', 'ADMINISTRADOR')")
+    @PostMapping("/validar-qr")
+    public ValidacionQrDTO validarQr(
+            @RequestParam String codigo,
+            @RequestParam Long idViaje) {
+        return reservaService.validarQr(codigo, idViaje);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/viaje/{idViaje}/capacidad")
+    public CapacidadViajeDTO capacidad(@PathVariable Long idViaje) {
+        return reservaService.obtenerCapacidad(idViaje);
     }
 
 }

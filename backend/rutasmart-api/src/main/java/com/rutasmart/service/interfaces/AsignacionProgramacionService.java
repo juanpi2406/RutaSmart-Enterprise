@@ -8,6 +8,8 @@ public interface AsignacionProgramacionService {
 
     List<AsignacionProgramacionDTO> listar();
 
+    List<AsignacionProgramacionDTO> listarPorChofer(Long idChofer);
+
     AsignacionProgramacionDTO buscarPorId(Long id);
 
     AsignacionProgramacionDTO guardar(AsignacionProgramacionDTO dto);

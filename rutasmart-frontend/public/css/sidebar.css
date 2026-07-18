@@ -193,7 +193,8 @@
     color:var(--red);
 }
 
-.sidebar-footer img{
+.sidebar-footer img,
+.sidebar-footer .avatar-iniciales{
 
     width:52px;
 

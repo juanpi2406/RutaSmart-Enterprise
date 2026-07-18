@@ -1,75 +1,114 @@
-<div class="page-title">
-  <div>
-    <h2>Mis Reservas</h2>
-    <p>Historial y estado de tus reservas de viajes.</p>
+<div class="alumno-page">
+
+  <div class="page-header">
+    <div>
+      <h2>Mis Reservas</h2>
+      <p>Consulta, filtra y administra tus reservas de transporte.</p>
+    </div>
+    <div class="page-header__actions">
+      <a routerLink="/dashboard/reservar" class="btn-primary">
+        <i class="bi bi-plus-circle-fill"></i> Nueva reserva
+      </a>
+    </div>
   </div>
-</div>
 
-<div class="toolbar">
-  <input
-    type="text"
-    placeholder="Buscar por código o ruta..."
-    (input)="filtrarReservas($event)"
-  >
-  <select (change)="cambiarFiltroEstado($event)">
-    <option value="TODOS">Todos</option>
-    <option value="RESERVADO">Reservados</option>
-    <option value="ABORDADO">Abordados</option>
-    <option value="CANCELADO">Cancelados</option>
-    <option value="NO_ASISTIO">No asistió</option>
-  </select>
-</div>
+  <div class="alumno-kpis">
+    <div class="alumno-kpi">
+      <i class="bi bi-journal-bookmark-fill"></i>
+      <div>
+        <span>Total</span>
+        <strong>{{ totalReservas }}</strong>
+      </div>
+    </div>
+    <div class="alumno-kpi">
+      <i class="bi bi-check-circle-fill"></i>
+      <div>
+        <span>Activas</span>
+        <strong>{{ reservasActivas }}</strong>
+      </div>
+    </div>
+    <div class="alumno-kpi">
+      <i class="bi bi-x-circle-fill"></i>
+      <div>
+        <span>Canceladas</span>
+        <strong>{{ reservasCanceladas }}</strong>
+      </div>
+    </div>
+    <a routerLink="/dashboard/reservar" class="alumno-kpi alumno-kpi--clickable" style="text-decoration:none;color:inherit;">
+      <i class="bi bi-ticket-perforated-fill"></i>
+      <div>
+        <span>Acción</span>
+        <strong style="font-size:15px;">Reservar</strong>
+      </div>
+    </a>
+  </div>
 
-<div class="nota-importante">
-  <i class="bi bi-info-circle-fill"></i>
-  <span>Por favor, recuerda cancelar tu reserva si no vas a tomar el servicio. Así evitarás posibles sanciones y permitirás que otro usuario aproveche el asiento.</span>
-</div>
+  <div class="toolbar">
+    <input type="text" placeholder="Buscar por código QR o ID..." (input)="filtrarReservas($event)">
+    <select (change)="cambiarFiltroEstado($event)">
+      <option value="TODOS">Todos los estados</option>
+      <option value="RESERVADO">Reservados</option>
+      <option value="ABORDADO">Abordados</option>
+      <option value="CANCELADO">Cancelados</option>
+      <option value="NO_ASISTIO">No asistió</option>
+    </select>
+  </div>
 
-<div class="panel">
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Fecha Reserva</th>
-        <th>Fecha Abordaje</th>
-        <th>Estado</th>
-        <th>Código QR</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (reserva of reservasFiltradas; track reserva.idReserva) {
-        <tr>
-          <td>{{ reserva.idReserva }}</td>
-          <td>{{ reserva.fechaReserva || '-' }}</td>
-          <td>{{ reserva.fechaAbordaje || '-' }}</td>
-          <td>
-            <span class="status"
-              [class.ok]="reserva.estado === 'RESERVADO' || reserva.estado === 'ABORDADO'"
-              [class.warning]="reserva.estado === 'NO_ASISTIO'"
-              [class.danger]="reserva.estado === 'CANCELADO'">
-              {{ reserva.estado }}
-            </span>
-          </td>
-          <td><code>{{ reserva.codigoQr || '-' }}</code></td>
-          <td>
-            <button
-              class="btn-cancelar"
-              (click)="cancelarReserva(reserva)"
-              title="Cancelar reserva"
-              [disabled]="reserva.estado === 'CANCELADO' || reserva.estado === 'NO_ASISTIO'">
-              <i class="bi bi-x-circle-fill"></i> Cancelar
-            </button>
-          </td>
-        </tr>
-      } @empty {
-        <tr>
-          <td colspan="5" style="text-align: center; color: var(--muted); padding: 30px;">
-            <i class="bi bi-journal-bookmark" style="font-size: 40px; display: block; margin-bottom: 10px;"></i>
-            No tienes reservas registradas.
-          </td>
-        </tr>
+  <div class="nota-importante">
+    <i class="bi bi-info-circle-fill"></i>
+    <span>Cancela tu reserva si no usarás el servicio. Así liberas el asiento para otro estudiante.</span>
+  </div>
+
+  @if(cargando){
+  <div class="loading-inline">
+    <i class="bi bi-arrow-repeat spin"></i> Cargando tus reservas...
+  </div>
+  } @else if(reservasFiltradas.length === 0){
+  <div class="empty-state">
+    <i class="bi bi-journal-bookmark"></i>
+    <h4>Sin reservas</h4>
+    <p>No tienes reservas registradas con los filtros actuales.</p>
+    <a routerLink="/dashboard/reservar" class="btn-primary" style="margin-top:16px;display:inline-flex;">
+      <i class="bi bi-ticket-perforated-fill"></i> Reservar ahora
+    </a>
+  </div>
+  } @else {
+  <div class="reservas-grid">
+    @for(reserva of reservasFiltradas; track reserva.idReserva){
+    <article class="reserva-card">
+      <div class="reserva-card__top">
+        <div>
+          <strong>Reserva #{{ reserva.idReserva }}</strong>
+          <p class="text-muted" style="margin:4px 0 0;">Viaje #{{ reserva.idViaje }}</p>
+        </div>
+        <span class="badge-estado" [ngClass]="claseEstado(reserva.estado)">{{ reserva.estado }}</span>
+      </div>
+
+      @if(reserva.codigoQr){
+      <div class="reserva-card__qr">{{ reserva.codigoQr }}</div>
       }
-    </tbody>
-  </table>
+
+      <div class="reserva-card__meta">
+        <div>
+          <span>Fecha reserva</span>
+          {{ reserva.fechaReserva || '—' }}
+        </div>
+        <div>
+          <span>Abordaje</span>
+          {{ reserva.fechaAbordaje || '—' }}
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="btn-cancelar"
+        (click)="cancelarReserva(reserva)"
+        [disabled]="reserva.estado === 'CANCELADO' || reserva.estado === 'NO_ASISTIO'">
+        <i class="bi bi-x-circle-fill"></i> Cancelar reserva
+      </button>
+    </article>
+    }
+  </div>
+  }
+
 </div>

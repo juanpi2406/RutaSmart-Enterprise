@@ -1,5 +1,6 @@
 package com.rutasmart.controller;
 
+import com.rutasmart.dto.EstadoViajeDTO;
 import com.rutasmart.dto.ViajeDTO;
 import com.rutasmart.service.interfaces.ViajeService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,12 @@ public class ViajeController {
     @GetMapping
     public List<ViajeDTO> listar() {
         return service.listar();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/chofer/{idChofer}")
+    public List<ViajeDTO> listarPorChofer(@PathVariable Long idChofer) {
+        return service.listarPorChofer(idChofer);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -51,11 +58,24 @@ public class ViajeController {
         return service.actualizar(id, dto);
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CHOFER')")
+    @PatchMapping("/{id}/estado")
+    public ViajeDTO actualizarEstado(@PathVariable Long id,
+                                     @RequestBody EstadoViajeDTO dto) {
+        return service.actualizarEstado(id, dto.getEstado());
+    }
+
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
         service.eliminar(id);
+    }
+
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @GetMapping("/historial")
+    public List<ViajeDTO> historial() {
+        return service.listarHistorial();
     }
 
 }

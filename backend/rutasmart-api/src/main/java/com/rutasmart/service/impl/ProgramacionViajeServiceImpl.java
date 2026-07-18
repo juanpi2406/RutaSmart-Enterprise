@@ -7,9 +7,11 @@ import com.rutasmart.exception.ResourceNotFoundException;
 import com.rutasmart.mapper.ProgramacionViajeMapper;
 import com.rutasmart.repository.ProgramacionViajeRepository;
 import com.rutasmart.repository.RutaRepository;
+import com.rutasmart.service.DependenciasEliminacionService;
 import com.rutasmart.service.interfaces.ProgramacionViajeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +22,7 @@ public class ProgramacionViajeServiceImpl implements ProgramacionViajeService {
     private final ProgramacionViajeRepository repository;
     private final RutaRepository rutaRepository;
     private final ProgramacionViajeMapper mapper;
+    private final DependenciasEliminacionService dependenciasEliminacionService;
 
     @Override
     public List<ProgramacionViajeDTO> listar() {
@@ -75,12 +78,14 @@ public class ProgramacionViajeServiceImpl implements ProgramacionViajeService {
     }
 
     @Override
+    @Transactional
     public void eliminar(Long id) {
 
         ProgramacionViaje entity = repository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Programación no encontrada."));
 
+        dependenciasEliminacionService.eliminarDependenciasProgramacion(entity);
         repository.delete(entity);
 
     }

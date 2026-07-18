@@ -45,6 +45,26 @@ public class ChoferController {
     }
 
     /**
+     * Buscar chofer por ID de usuario (perfil propio).
+     */
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/usuario/{idUsuario}")
+    @Operation(summary = "Obtener chofer por ID de usuario")
+    public ResponseEntity<ApiResponse<ChoferResponseDTO>> obtenerPorUsuario(
+            @PathVariable Long idUsuario) {
+
+        ChoferResponseDTO data = choferService.obtenerPorIdUsuario(idUsuario);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        data,
+                        "Chofer encontrado."
+                )
+        );
+
+    }
+
+    /**
      * Buscar chofer por ID
      */
     @PreAuthorize("isAuthenticated()")

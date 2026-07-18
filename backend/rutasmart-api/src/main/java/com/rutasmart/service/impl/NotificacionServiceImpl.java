@@ -105,4 +105,48 @@ public class NotificacionServiceImpl implements NotificacionService {
 
     }
 
+    @Override
+    public List<NotificacionDTO> listarPorUsuario(Long idUsuario) {
+        return notificacionMapper.toDTOList(
+                notificacionRepository.findByUsuario_IdUsuarioOrderByFechaEnvioDesc(idUsuario)
+        );
+    }
+
+    @Override
+    public long contarNoLeidas(Long idUsuario) {
+        return notificacionRepository.countByUsuario_IdUsuarioAndLeido(idUsuario, false);
+    }
+
+    @Override
+    public long contarNoLeidasGlobales() {
+        return notificacionRepository.countByLeido(false);
+    }
+
+    @Override
+    public NotificacionDTO marcarLeida(Long id) {
+        Notificacion notificacion = notificacionRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Notificación no encontrada."));
+        notificacion.setLeido(true);
+        return notificacionMapper.toDTO(notificacionRepository.save(notificacion));
+    }
+
+    @Override
+    public List<NotificacionDTO> listarRecientes() {
+        return notificacionMapper.toDTOList(
+                notificacionRepository.findTop10ByOrderByFechaEnvioDesc()
+        );
+    }
+
+    @Override
+    public NotificacionDTO enviar(Long idUsuario, String titulo, String mensaje, String tipo) {
+        NotificacionDTO dto = new NotificacionDTO();
+        dto.setIdUsuario(idUsuario);
+        dto.setTitulo(titulo);
+        dto.setMensaje(mensaje);
+        dto.setTipo(tipo);
+        dto.setLeido(false);
+        return guardar(dto);
+    }
+
 }

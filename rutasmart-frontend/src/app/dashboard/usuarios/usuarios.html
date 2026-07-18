@@ -25,10 +25,23 @@
         </button>
 
     </div>
-    @if(!cargando){
-    <div class="cards">
 
-        <div class="card">
+    @if(cargaInicial){
+    <div class="cards">
+        @for (s of [1, 2, 3, 4, 5]; track s) {
+        <div class="card skeleton-card">
+            <div class="skeleton skeleton-icon"></div>
+            <div class="skeleton-body">
+                <div class="skeleton skeleton-text sm"></div>
+                <div class="skeleton skeleton-text lg"></div>
+            </div>
+        </div>
+        }
+    </div>
+    } @else {
+    <div class="cards" [class.is-refreshing]="actualizando">
+        <div class="card card-filter" [class.active]="filtroRol === 'TODOS'" role="button" tabindex="0"
+            (click)="filtrarPorRol('TODOS')" (keyup.enter)="filtrarPorRol('TODOS')">
             <i class="bi bi-people-fill"></i>
             <div>
                 <span>Total Usuarios</span>
@@ -36,7 +49,8 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card card-filter" [class.active]="filtroRol === 'TODOS' && filtroTexto === ''" role="button" tabindex="0"
+            (click)="filtrarPorRol('TODOS')" (keyup.enter)="filtrarPorRol('TODOS')">
             <i class="bi bi-person-check-fill"></i>
             <div>
                 <span>Activos</span>
@@ -44,7 +58,8 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card card-filter" [class.active]="filtroRol === 'ADMINISTRADOR'" role="button" tabindex="0"
+            (click)="filtrarPorRol('ADMINISTRADOR')" (keyup.enter)="filtrarPorRol('ADMINISTRADOR')">
             <i class="bi bi-shield-lock-fill"></i>
             <div>
                 <span>Administradores</span>
@@ -52,7 +67,8 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card card-filter" [class.active]="filtroRol === 'ALUMNO'" role="button" tabindex="0"
+            (click)="filtrarPorRol('ALUMNO')" (keyup.enter)="filtrarPorRol('ALUMNO')">
             <i class="bi bi-mortarboard-fill"></i>
             <div>
                 <span>Alumnos</span>
@@ -60,25 +76,22 @@
             </div>
         </div>
 
-    </div>}
-
-    @if(cargando){
-
-<div class="loading-cards">
-
-    <i class="bi bi-arrow-repeat spinner"></i>
-
-    <span>Cargando estadísticas...</span>
-
-</div>
-
-}
+        <div class="card card-filter" [class.active]="filtroRol === 'CHOFER'" role="button" tabindex="0"
+            (click)="filtrarPorRol('CHOFER')" (keyup.enter)="filtrarPorRol('CHOFER')">
+            <i class="bi bi-person-badge-fill"></i>
+            <div>
+                <span>Choferes</span>
+                <h2>{{ totalChoferes }}</h2>
+            </div>
+        </div>
+    </div>
+    }
 
     <div class="toolbar">
 
         <input type="text" placeholder="Buscar usuario..." (input)="filtrarUsuarios($event)">
 
-        <select (change)="cambiarFiltroRol($event)">
+        <select [value]="filtroRol" (change)="cambiarFiltroRol($event)">
             <option value="TODOS">Todos</option>
             <option value="ADMINISTRADOR">Administrador</option>
             <option value="ALUMNO">Alumno</option>
@@ -87,7 +100,7 @@
 
     </div>
 
-    <div class="tabla-container">
+    <div class="tabla-container" [class.is-refreshing]="actualizando">
 
         <table>
 

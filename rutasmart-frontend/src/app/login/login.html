@@ -1,47 +1,106 @@
-<div class="login-container">
-  <div class="login-card">
-    <div class="login-header">
-      <i class="bi bi-bus-front-fill"></i>
-      <h1>RutaSmart</h1>
-      <span>Enterprise</span>
-    </div>
+<div class="login-shell">
 
+  <!-- Fondo: imagen sede UTP con overlay degradado -->
+  <div class="login-bg">
+    <div class="login-bg-overlay"></div>
+  </div>
 
-    <form (ngSubmit)="onLogin()" #loginForm="ngForm" class="login-form">
-      <div class="input-group">
-        <i class="bi bi-person-fill"></i>
-        <input
-          type="text"
-          name="username"
-          [(ngModel)]="credentials.username"
-          placeholder="Usuario"
-          required
-        >
+  <!-- Formulario centrado -->
+  <div class="login-center">
+
+    <div class="login-card">
+
+      <!-- Logo circular -->
+      <div class="login-logo">
+        <i class="bi bi-bus-front-fill"></i>
       </div>
 
-      <div class="input-group">
-        <i class="bi bi-lock-fill"></i>
-        <input
-          type="password"
-          name="password"
-          [(ngModel)]="credentials.password"
-          placeholder="Contraseña"
-          required
-        >
-      </div>
-      @if (errorMessage) {
-  <div style="color: #ef4444; text-align: center; font-size: 14px; margin-bottom: 15px; font-weight: 500;">
-    {{ errorMessage }}
-  </div>
-}
-      <button type="submit" class="login-btn" [disabled]="!loginForm.form.valid">
-        Ingresar al Sistema
-        <i class="bi bi-arrow-right"></i>
-      </button>
-    </form>
+      <h1 class="login-title">RutaSmart UTP</h1>
+      <p class="login-subtitle">Sistema de Seguimiento de Buses</p>
 
-    <div class="login-footer">
-      <p>© 2026 RutaSmart Enterprise</p>
+      @if(sesionActivaNombre){
+      <div class="login-session-hint">
+        <span><i class="bi bi-person-check-fill"></i> Sesión en esta pestaña: <strong>{{ sesionActivaNombre }}</strong></span>
+        <button type="button" class="login-session-clear" (click)="cerrarSesionPestana()">Cerrar aquí</button>
+      </div>
+      }
+
+      <form (ngSubmit)="onLogin()" #loginForm="ngForm" class="login-form">
+
+        <div class="field">
+          <label>Código de usuario</label>
+          <div class="input-wrap">
+            <input
+              type="text"
+              name="username"
+              [(ngModel)]="credentials.username"
+              placeholder="u23331087"
+              required
+              [disabled]="cargando"
+              autocomplete="username"
+            >
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Contraseña</label>
+          <div class="input-wrap input-wrap-pw">
+            <input
+              [type]="showPw ? 'text' : 'password'"
+              name="password"
+              [(ngModel)]="credentials.password"
+              placeholder="••••••••••"
+              required
+              [disabled]="cargando"
+              autocomplete="current-password"
+            >
+            <button type="button" class="pw-toggle" (click)="showPw = !showPw">
+              <i class="bi" [class.bi-eye-fill]="!showPw" [class.bi-eye-slash-fill]="showPw"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="login-options">
+          <label class="remember-label">
+            <input type="checkbox" name="remember"> Recordarme
+          </label>
+          <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        @if (errorMessage) {
+          <div class="login-error">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            {{ errorMessage }}
+          </div>
+        }
+
+        <button
+          type="submit"
+          class="login-btn"
+          [class.is-loading]="cargando"
+          [disabled]="!loginForm.form.valid || cargando">
+          @if (cargando) {
+            <span class="login-spinner" aria-hidden="true"></span>
+            Verificando...
+          } @else {
+            Iniciar sesión
+          }
+        </button>
+
+      </form>
+
+      <div class="login-footer">
+        <p>¿No tienes una cuenta? <a href="#">Contacta con soporte</a></p>
+      </div>
+
+      <!-- Logo UTP inferior -->
+      <div class="login-brand-bottom">
+        <span class="utp-badge">U T P</span>
+        <span class="utp-label">Universidad Tecnológica del Perú</span>
+      </div>
+
     </div>
+
   </div>
+
 </div>

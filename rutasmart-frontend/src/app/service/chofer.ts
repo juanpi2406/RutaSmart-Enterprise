@@ -16,6 +16,10 @@ export class ChoferService {
     return this.http.get<ApiResponse<ChoferResponse[]>>(this.API);
   }
 
+  obtenerPorUsuario(idUsuario: number): Observable<ApiResponse<ChoferResponse>> {
+    return this.http.get<ApiResponse<ChoferResponse>>(`${this.API}/usuario/${idUsuario}`);
+  }
+
   obtenerPorId(id: number): Observable<ApiResponse<ChoferResponse>> {
     return this.http.get<ApiResponse<ChoferResponse>>(`${this.API}/${id}`);
   }

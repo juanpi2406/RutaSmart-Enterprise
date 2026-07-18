@@ -16,4 +16,8 @@ public interface UbicacionBusService {
 
     void eliminar(Long id);
 
+    List<UbicacionBusDTO> listarActivas();
+
+    UbicacionBusDTO ultimaPorViaje(Long idViaje);
+
 }

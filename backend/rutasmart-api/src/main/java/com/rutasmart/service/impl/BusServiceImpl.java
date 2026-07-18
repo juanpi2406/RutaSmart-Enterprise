@@ -6,9 +6,11 @@ import com.rutasmart.exception.BusinessException;
 import com.rutasmart.exception.ResourceNotFoundException;
 import com.rutasmart.mapper.BusMapper;
 import com.rutasmart.repository.BusRepository;
+import com.rutasmart.repository.ViajeRepository;
 import com.rutasmart.service.interfaces.BusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ public class BusServiceImpl implements BusService {
 
     private final BusRepository busRepository;
     private final BusMapper busMapper;
+    private final ViajeRepository viajeRepository;
 
     @Override
     public List<BusDTO> listar() {
@@ -87,11 +90,17 @@ public class BusServiceImpl implements BusService {
     }
 
     @Override
+    @Transactional
     public void eliminar(Long id) {
 
         Bus bus = busRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Bus no encontrado."));
+
+        if (viajeRepository.countByBus_IdBus(id) > 0) {
+            throw new BusinessException(
+                    "No se puede eliminar el bus porque tiene viajes registrados. Elimina los viajes primero.");
+        }
 
         busRepository.delete(bus);
 

@@ -1,885 +1,465 @@
-<div class="home-container">
+<div class="home-container" aria-label="dashboard">
 
-    <!-- ====================================== -->
-    <!-- BIENVENIDA -->
-    <!-- ====================================== -->
+  <section class="welcome">
+    <div>
+      <h2>Bienvenido {{nombre}}</h2>
+      <p>{{rol}}</p>
+    </div>
+    <div class="fecha">{{fecha}}</div>
+  </section>
 
-    <section class="welcome">
+  @if(rol=='ADMINISTRADOR'){
 
-        <div>
+  <section class="kpis">
+    <!-- Rutas activas -->
+    <div class="kpi-card green" role="button" tabindex="0" (click)="irA('/dashboard/rutas')" (keyup.enter)="irA('/dashboard/rutas')">
+      <span class="kpi-label">Rutas activas</span>
+      <span class="kpi-val">{{ busesOperativos || 3 }}</span>
+      <span class="kpi-sub up">+ 1 respecto a ayer</span>
+      <i class="bi bi-sign-turn-right-fill kpi-icon"></i>
+    </div>
 
-            <h2>
+    <!-- Buses en ruta -->
+    <div class="kpi-card blue" role="button" tabindex="0" (click)="irA('/dashboard/buses')" (keyup.enter)="irA('/dashboard/buses')">
+      <span class="kpi-label">Buses en ruta</span>
+      <span class="kpi-val">{{ busesEnRuta || 12 }}</span>
+      <span class="kpi-sub">En tiempo real</span>
+      <i class="bi bi-bus-front-fill kpi-icon"></i>
+    </div>
 
-                Bienvenido {{nombre}}
+    <!-- Alertas activas -->
+    <div class="kpi-card red" role="button" tabindex="0" (click)="irA('/dashboard/incidencias')" (keyup.enter)="irA('/dashboard/incidencias')">
+      <span class="kpi-label">Alertas activas</span>
+      <span class="kpi-val">{{ busesMantenimiento || 2 }}</span>
+      <span class="kpi-sub down">Requieren atención</span>
+      <i class="bi bi-exclamation-triangle-fill kpi-icon"></i>
+    </div>
 
-            </h2>
+    <!-- Viajes hoy -->
+    <div class="kpi-card yellow" role="button" tabindex="0" (click)="irA('/dashboard/viajes')" (keyup.enter)="irA('/dashboard/viajes')">
+      <span class="kpi-label">Viajes hoy</span>
+      <span class="kpi-val">{{ totalReservas || 28 }}</span>
+      <span class="kpi-sub up">+ 5 respecto a ayer</span>
+      <i class="bi bi-calendar-check-fill kpi-icon"></i>
+    </div>
+  </section>
 
+
+  <section class="main-grid">
+    <!-- Buses en tiempo real -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Buses en tiempo real</h3>
+        <button class="ver-todos" (click)="irA('/dashboard/buses')">
+          Ver todos <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+      <div class="panel-body" style="padding: 8px 12px;">
+        <div class="bus-list">
+          <div class="bus-row">
+            <div class="bus-info">
+              <span class="bus-code">BUS-001</span>
+              <span class="bus-route">Ruta 1</span>
+            </div>
+            <span class="bus-status en-ruta">En ruta</span>
+          </div>
+          <div class="bus-row">
+            <div class="bus-info">
+              <span class="bus-code">BUS-002</span>
+              <span class="bus-route">Ruta 2</span>
+            </div>
+            <span class="bus-status en-ruta">En ruta</span>
+          </div>
+          <div class="bus-row">
+            <div class="bus-info">
+              <span class="bus-code">BUS-003</span>
+              <span class="bus-route">Ruta 1</span>
+            </div>
+            <span class="bus-status demorado">Demorado</span>
+          </div>
+          <div class="bus-row">
+            <div class="bus-info">
+              <span class="bus-code">BUS-004</span>
+              <span class="bus-route">Ruta 3</span>
+            </div>
+            <span class="bus-status en-ruta">En ruta</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado de flota -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Estado de Flota</h3>
+        <button class="ver-todos" (click)="irA('/dashboard/buses')">Ver buses <i class="bi bi-chevron-right"></i></button>
+      </div>
+      <div class="panel-body">
+        <div class="estado-flota">
+          <div class="estado">
+            <span class="dot verde"></span>
+            <span class="estado-label">Operativos</span>
+            <strong>{{ busesOperativos || 0 }}</strong>
+          </div>
+          <div class="estado">
+            <span class="dot azul"></span>
+            <span class="estado-label">En Ruta</span>
+            <strong>{{ busesEnRuta || 0 }}</strong>
+          </div>
+          <div class="estado">
+            <span class="dot rojo"></span>
+            <span class="estado-label">Mantenimiento</span>
+            <strong>{{ busesMantenimiento || 0 }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="panel monitoreo-panel">
+    <div class="panel-header">
+      <h3>Monitoreo en Tiempo Real</h3>
+      <span class="tracking-status" [class.activo]="viajeIniciado">
+        <i class="bi bi-broadcast"></i>
+        {{ textoEstadoMapa() }}
+      </span>
+    </div>
+    <div class="rutas-dual-grid">
+      @if(cargandoMapas){
+        <p class="mapa-loading">Cargando rutas georreferenciadas…</p>
+      } @else if(rutasMapa.length === 0){
+        <p class="mapa-loading">No hay rutas con paraderos GPS. Configura paraderos en Rutas.</p>
+      } @else {
+        @for(r of rutasMapa; track r.idRuta){
+        <div class="ruta-col">
+          <app-route-map
+            [autoDemo]="false"
+            [rutaPuntos]="r.puntos"
+            [marcadores]="r.marcadores"
+            [rutaCodigo]="r.codigo"
+            [rutaNombre]="r.nombre"
+            [colorPrimario]="r.colorPrimario"
+            [colorDestino]="r.colorDestino"
+            [rutaId]="r.codigo">
+          </app-route-map>
+        </div>
+        }
+      }
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h3>Actividad Reciente</h3>
+    </div>
+    <div class="panel-body">
+      <table class="tabla-actividad">
+        <thead>
+          <tr>
+            <th>Hora</th>
+            <th>Evento</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if(actividadReciente.length === 0){
+          <tr>
+            <td colspan="3">Sin actividad reciente</td>
+          </tr>
+          } @else {
+          @for(item of actividadReciente; track item.hora + item.evento){
+          <tr>
+            <td>{{ item.hora }}</td>
+            <td>{{ item.evento }}</td>
+            <td>
+              <span class="badge" [ngClass]="claseEstado(item.estado)">
+                {{ item.estado }}
+              </span>
+            </td>
+          </tr>
+          }
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  }
+
+  @else if(rol=='ALUMNO'){
+
+  @if(alumnoSancionado){
+  <section class="sancion-home-banner">
+    <i class="bi bi-shield-lock-fill"></i>
+    <div>
+      <strong>Estás sancionado — no puedes reservar</strong>
+      <p>
+        {{ alumnoPerfil?.inasistencias ?? 3 }} inasistencias registradas.
+        Podrás reservar nuevamente el {{ fechaSancionAlumno() }}.
+      </p>
+    </div>
+  </section>
+  }
+
+  <section class="kpis">
+    <div class="kpi-card reservas">
+      <div>
+        <span>Próximo Viaje</span>
+        <h3>{{proximoViaje}}</h3>
+      </div>
+      <i class="bi bi-calendar-check-fill"></i>
+    </div>
+    <div class="kpi-card buses">
+      <div>
+        <span>Estado del Bus</span>
+        <h3>{{estadoBus}}</h3>
+      </div>
+      <i class="bi bi-bus-front-fill"></i>
+    </div>
+    <div class="kpi-card alumnos" role="button" (click)="irA('/dashboard/mis-reservas')">
+      <div>
+        <span>Mis Reservas</span>
+        <h2>{{misReservas}}</h2>
+      </div>
+      <i class="bi bi-ticket-perforated-fill"></i>
+    </div>
+    <div class="kpi-card usuarios" role="button" (click)="irA('/dashboard/incidencias')">
+      <div>
+        <span>Incidencias</span>
+        <h2>{{misNotificaciones}}</h2>
+      </div>
+      <i class="bi bi-exclamation-triangle-fill"></i>
+    </div>
+  </section>
+
+  <section class="dashboard-grid">
+    <div class="panel panel-large">
+      <div class="panel-header"><h3>Mi Ruta de Hoy</h3></div>
+      <div class="panel-body">
+        <div style="padding:20px;">
+          <p><strong>Ruta:</strong> {{ ruta || 'Ruta Universitaria' }}</p>
+          <p><strong>Paradero:</strong> {{ paradero }}</p>
+          <p><strong>Estado:</strong> {{estadoBus}}</p>
+          <p><strong>Próximo viaje:</strong> {{proximoViaje}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><h3>Accesos Rápidos</h3></div>
+      <div class="panel-body">
+        <div class="estado" role="button" (click)="irA('/dashboard/reservar')" [class.estado--disabled]="alumnoSancionado">
+          <i class="bi bi-ticket-perforated-fill"></i>
+          @if(alumnoSancionado){ Reservas suspendidas } @else { Reservar Viaje }
+        </div>
+        <div class="estado" role="button" (click)="irA('/dashboard/mis-reservas')">
+          <i class="bi bi-calendar-x-fill"></i> Mis Reservas
+        </div>
+        <div class="estado" role="button" (click)="irA('/dashboard/incidencias')">
+          <i class="bi bi-exclamation-triangle-fill"></i> Reportar incidencia
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel mapa">
+    <div class="panel-header">
+      <h3>Mi Bus en Tiempo Real</h3>
+      <span class="tracking-status" [class.activo]="viajeIniciado">
+        <i class="bi bi-broadcast"></i>
+        {{ viajeIniciado ? 'Ubicación en vivo' : 'Esperando al chofer' }}
+        @if(etaInfo?.minutosEstimados){
+          · ETA ~{{ etaInfo!.minutosEstimados }} min
+        }
+      </span>
+    </div>
+    <div class="panel-body">
+      @if(cargandoMapas){
+        <p class="mapa-loading">Cargando mapa de tu ruta…</p>
+      } @else if(!rutaMapaActiva?.mapeable){
+        <p class="mapa-loading">{{ rutaMapaActiva?.mensaje || 'Tu ruta aún no tiene paraderos con GPS.' }}</p>
+      } @else {
+        <app-route-map
+          [autoDemo]="false"
+          [rutaPuntos]="rutaMapaActiva!.puntos"
+          [marcadores]="rutaMapaActiva!.marcadores"
+          [rutaCodigo]="rutaMapaActiva!.codigo"
+          [rutaNombre]="rutaMapaActiva!.nombre"
+          [colorPrimario]="rutaMapaActiva!.colorPrimario"
+          [colorDestino]="rutaMapaActiva!.colorDestino"
+          [rutaId]="rutaMapaActiva!.codigo">
+        </app-route-map>
+      }
+    </div>
+  </section>
+
+  }
+
+  @else if(rol=='CHOFER'){
+
+  <section class="kpis">
+    <div class="kpi-card buses">
+      <div>
+        <span>Bus Asignado</span>
+        <h3>{{busAsignado}}</h3>
+      </div>
+      <i class="bi bi-bus-front-fill"></i>
+    </div>
+    <div class="kpi-card usuarios">
+      <div>
+        <span>Estado del Viaje</span>
+        <h3>{{estadoViaje}}</h3>
+      </div>
+      <i class="bi bi-sign-turn-right-fill"></i>
+    </div>
+    <div class="kpi-card alumnos">
+      <div>
+        <span>Pasajeros</span>
+        <h2>{{pasajeros}}</h2>
+      </div>
+      <i class="bi bi-people-fill"></i>
+    </div>
+    <div class="kpi-card reservas" role="button" (click)="irA('/dashboard/reportar-incidencia')">
+      <div>
+        <span>Incidencias</span>
+        <h2>{{incidenciasHoy}}</h2>
+      </div>
+      <i class="bi bi-exclamation-triangle-fill"></i>
+    </div>
+  </section>
+
+  <section class="dashboard-grid">
+    <div class="panel panel-large">
+      <div class="panel-header"><h3>Jornada de Hoy</h3></div>
+      <div class="panel-body">
+        <div class="jornada-body">
+          <div class="jornada-info">
+            <p><i class="bi bi-bus-front-fill"></i> <strong>Bus:</strong> {{busAsignado}}</p>
+            <p><i class="bi bi-sign-turn-right-fill"></i> <strong>Ruta:</strong> {{ ruta || rutaMapaActiva?.nombre || 'Sin asignar' }}</p>
             <p>
-
-                {{rol}}
-
+              <i class="bi bi-circle-fill"
+                [style.color]="viajeIniciado ? '#22c55e' : (choferSinViajesPendientes && viajesCompletadosHoy > 0 ? '#60a5fa' : '#94a3b8')"></i>
+              <strong>Estado:</strong>
+              @if(estadoViaje === 'JORNADA_COMPLETA'){
+                Jornada completada
+              } @else if(estadoViaje === 'SIN VIAJE' && viajesCompletadosHoy > 0){
+                Sin viajes pendientes
+              } @else {
+                {{ estadoViaje }}
+              }
             </p>
+            @if(!choferSinViajesPendientes){
+            <p><i class="bi bi-people-fill"></i> <strong>Pasajeros:</strong> {{pasajeros}}</p>
+            }
+            @if(mensajeJornada){
+            <p class="jornada-msg" [class.jornada-msg--ok]="choferSinViajesPendientes && viajesCompletadosHoy > 0">
+              <i class="bi" [class.bi-check-circle-fill]="choferSinViajesPendientes && viajesCompletadosHoy > 0"
+                [class.bi-info-circle-fill]="!(choferSinViajesPendientes && viajesCompletadosHoy > 0)"></i>
+              {{ mensajeJornada }}
+            </p>
+            }
+          </div>
 
-        </div>
+          @if(choferSinViajesPendientes){
+          <div class="jornada-completa-banner">
+            <i class="bi bi-flag-fill"></i>
+            @if(viajesCompletadosHoy > 0){
+              Completaste {{ viajesCompletadosHoy }} viaje(s) hoy. No tienes más pendientes.
+            } @else {
+              No tienes viajes programados para hoy.
+            }
+          </div>
+          } @else {
 
-        <div class="fecha">
+          @if(!rutaMapaActiva?.mapeable){
+          <div class="hint-ruta-sin-gps">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            La ruta asignada no tiene paraderos con GPS. Contacta al administrador.
+          </div>
+          }
 
-            {{fecha}}
-
-        </div>
-
-    </section>
-
-    <!-- ===================================================== -->
-    <!-- DASHBOARD ADMINISTRADOR -->
-    <!-- ===================================================== -->
-
-    @if(rol=='ADMINISTRADOR'){
-
-    <!-- ====================================== -->
-    <!-- KPI -->
-    <!-- ====================================== -->
-
-    <section class="kpis">
-
-        <div class="kpi-card usuarios">
-
-            <div>
-
-                <span>Usuarios</span>
-
-                <h2>{{totalUsuarios}}</h2>
-
+          <div class="qr-chofer-block">
+            <label>Validar embarque (QR)</label>
+            <div class="qr-row">
+              <input type="text" [(ngModel)]="codigoQrInput" placeholder="RS-XXXXXXXX" name="codigoQr">
+              <button type="button" class="btn-iniciar btn-iniciar--sm" (click)="validarQrEmbarque()">
+                <i class="bi bi-qr-code-scan"></i> Validar
+              </button>
             </div>
+          </div>
 
-            <i class="bi bi-people-fill"></i>
+          <button class="btn-iniciar" (click)="iniciarViaje()"
+            [disabled]="viajeIniciado || !rutaMapaActiva?.mapeable">
+            <i class="bi" [class.bi-play-circle-fill]="!viajeIniciado" [class.bi-broadcast]="viajeIniciado"></i>
+            {{ viajeIniciado ? 'Transmitiendo · ' + codigoRutaActivo : 'Iniciar Viaje' }}
+          </button>
 
+          @if(viajeIniciado){
+          <button type="button" class="btn-iniciar btn-iniciar--finish" (click)="finalizarViaje()">
+            <i class="bi bi-flag-fill"></i> Finalizar viaje
+          </button>
+          } @else {
+          <button type="button" class="btn-cerrar-viaje" (click)="confirmarCierreViaje()">
+            <i class="bi bi-check2-circle"></i> Ya terminé — cerrar viaje del día
+          </button>
+          }
+          }
         </div>
-
-        <div class="kpi-card alumnos">
-
-            <div>
-
-                <span>Alumnos</span>
-
-                <h2>{{totalAlumnos}}</h2>
-
-            </div>
-
-            <i class="bi bi-mortarboard-fill"></i>
-
-        </div>
-
-        <div class="kpi-card buses">
-
-            <div>
-
-                <span>Buses</span>
-
-                <h2>{{totalBuses}}</h2>
-
-            </div>
-
-            <i class="bi bi-bus-front-fill"></i>
-
-        </div>
-
-        <div class="kpi-card reservas">
-
-            <div>
-
-                <span>Reservas</span>
-
-                <h2>{{totalReservas}}</h2>
-
-            </div>
-
-            <i class="bi bi-ticket-perforated-fill"></i>
-
-        </div>
-
-    </section>
-
-    <!-- ====================================== -->
-    <!-- DASHBOARD -->
-    <!-- ====================================== -->
-
-    <section class="dashboard-grid">
-
-        <!-- ========================= -->
-
-        <div class="panel panel-large">
-
-            <div class="panel-header">
-
-                <h3>
-
-                    Reservas por día
-
-                </h3>
-
-            </div>
-
-            <div class="panel-body">
-
-                <canvas id="chartReservas"></canvas>
-
-            </div>
-
-        </div>
-
-        <!-- ========================= -->
-
-        <div class="panel">
-
-            <div class="panel-header">
-
-                <h3>
-
-                    Estado de Flota
-
-                </h3>
-
-            </div>
-
-            <div class="panel-body estado-flota">
-
-                <div class="estado">
-
-                    <span class="dot verde"></span>
-
-                    Operativos
-
-                    <strong>
-
-                        {{busesOperativos}}
-
-                    </strong>
-
-                </div>
-
-                <div class="estado">
-
-                    <span class="dot azul"></span>
-
-                    En Ruta
-
-                    <strong>
-
-                        {{busesEnRuta}}
-
-                    </strong>
-
-                </div>
-
-                <div class="estado">
-
-                    <span class="dot rojo"></span>
-
-                    Mantenimiento
-
-                    <strong>
-
-                        {{busesMantenimiento}}
-
-                    </strong>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- ====================================== -->
-    <!-- MAPA -->
-    <!-- ====================================== -->
-<!-- ====================================== -->
-<!-- MAPA -->
-<!-- ====================================== -->
-
-<section class="panel">
-
-    <div class="panel-header">
-        <h3>Monitoreo en Tiempo Real</h3>
-        <span class="tracking-status" [class.activo]="viajeIniciado">
-            <i class="bi bi-broadcast"></i>
-            {{ viajeIniciado ? 'Bus en ruta' : 'Esperando inicio del viaje' }}
-        </span>
+      </div>
     </div>
-
-    <div class="panel-body">
-
-        <div class="mapa-container">
-
-            <!-- Imagen de la ruta -->
-            <img
-                     src="/mapa-utp.png"
-                    class="mapa-img"
-                    alt="Ruta Javier Prado - UTP">
-
-            <!-- Bus -->
-<i
-
-          class="bi bi-bus-front-fill bus"
-
-          [style.left.%]="busLeft"
-
-          [style.top.%]="busTop">
-
-          </i>
-
-        </div>
-
-    </div>
-
-</section>
-
-    <!-- ====================================== -->
-    <!-- ACTIVIDAD -->
-    <!-- ====================================== -->
-
-    <section class="panel">
-
-        <div class="panel-header">
-
-            <h3>
-
-                Actividad Reciente
-
-            </h3>
-
-        </div>
-
-        <div class="panel-body">
-
-            <table class="tabla-actividad">
-
-                <thead>
-
-                    <tr>
-
-                        <th>Hora</th>
-
-                        <th>Evento</th>
-
-                        <th>Estado</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    <tr>
-
-                        <td>08:15</td>
-
-                        <td>Reserva registrada</td>
-
-                        <td>
-
-                            <span class="badge ok">
-
-                                Correcto
-
-                            </span>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>09:30</td>
-
-                        <td>Bus asignado</td>
-
-                        <td>
-
-                            <span class="badge info">
-
-                                Ruta
-
-                            </span>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>10:10</td>
-
-                        <td>Incidencia reportada</td>
-
-                        <td>
-
-                            <span class="badge danger">
-
-                                Atención
-
-                            </span>
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
-    }
-
-    <!-- ===================================================== -->
-<!-- DASHBOARD ALUMNO -->
-<!-- ===================================================== -->
-
-@else if(rol=='ALUMNO'){
-
-<!-- ====================================== -->
-<!-- KPI -->
-<!-- ====================================== -->
-
-<section class="kpis">
-
-    <div class="kpi-card reservas">
-
-        <div>
-
-            <span>Próximo Viaje</span>
-
-            <h3>{{proximoViaje}}</h3>
-
-        </div>
-
-        <i class="bi bi-calendar-check-fill"></i>
-
-    </div>
-
-    <div class="kpi-card buses">
-
-        <div>
-
-            <span>Estado del Bus</span>
-
-            <h3>{{estadoBus}}</h3>
-
-        </div>
-
-        <i class="bi bi-bus-front-fill"></i>
-
-    </div>
-
-    <div class="kpi-card alumnos">
-
-        <div>
-
-            <span>Mis Reservas</span>
-
-            <h2>{{misReservas}}</h2>
-
-        </div>
-
-        <i class="bi bi-ticket-perforated-fill"></i>
-
-    </div>
-
-    <div class="kpi-card usuarios">
-
-        <div>
-
-            <span>Notificaciones</span>
-
-            <h2>{{misNotificaciones}}</h2>
-
-        </div>
-
-        <i class="bi bi-bell-fill"></i>
-
-    </div>
-
-</section>
-
-<!-- ====================================== -->
-<!-- PANEL PRINCIPAL -->
-<!-- ====================================== -->
-
-<section class="dashboard-grid">
-
-    <div class="panel panel-large">
-
-        <div class="panel-header">
-
-            <h3>
-
-                Mi Ruta de Hoy
-
-            </h3>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div style="padding:20px;">
-
-                <p>
-
-                    <strong>Ruta:</strong>
-
-                    Ruta Universitaria
-
-                </p>
-
-                <p>
-
-                    <strong>Estado:</strong>
-
-                    {{estadoBus}}
-
-                </p>
-
-                <p>
-
-                    <strong>Próximo viaje:</strong>
-
-                    {{proximoViaje}}
-
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
     <div class="panel">
-
-        <div class="panel-header">
-
-            <h3>
-
-                Accesos Rápidos
-
-            </h3>
-
+      <div class="panel-header"><h3>Accesos Rápidos</h3></div>
+      <div class="panel-body">
+        <div class="estado" role="button" (click)="irA('/dashboard/reportar-incidencia')">
+          <i class="bi bi-exclamation-circle-fill"></i> Reportar incidencia
         </div>
-
-        <div class="panel-body">
-
-            <div class="estado">
-
-                <i class="bi bi-ticket-perforated-fill"></i>
-
-                Reservar Viaje
-
-            </div>
-
-            <div class="estado">
-
-                <i class="bi bi-calendar-x-fill"></i>
-
-                Cancelar Reserva
-
-            </div>
-
-            <div class="estado">
-
-                <i class="bi bi-bell-fill"></i>
-
-                Ver Notificaciones
-
-            </div>
-
-            <div class="estado">
-
-                <i class="bi bi-person-circle"></i>
-
-                Mi Perfil
-
-            </div>
-
+        <div class="estado" role="button" (click)="irA('/dashboard/mi-programacion')">
+          <i class="bi bi-geo-alt-fill"></i> Ver viajes
         </div>
-
+      </div>
     </div>
+  </section>
 
-</section>
-
-<!-- ====================================== -->
-<!-- MAPA -->
-<!-- ====================================== -->
-
-<section class="panel mapa">
-
+  <section class="panel mapa">
     <div class="panel-header">
-
-        <h3>
-
-            Mi Bus en Tiempo Real
-
-        </h3>
-        <span class="tracking-status" [class.activo]="viajeIniciado">
-            <i class="bi bi-broadcast"></i>
-            {{ viajeIniciado ? 'Ubicación en vivo' : 'Esperando al chofer' }}
-        </span>
-
+      <h3>Mi Ruta en Vivo</h3>
+      <span class="tracking-status" [class.activo]="viajeIniciado">
+        <i class="bi bi-broadcast"></i>
+        @if(choferSinViajesPendientes && viajesCompletadosHoy > 0){
+          Jornada completada
+        } @else {
+          {{ viajeIniciado ? 'Transmitiendo · ' + codigoRutaActivo : 'Inicia el viaje para activar' }}
+        }
+      </span>
     </div>
-
-   <div class="panel-body">
-
-    <div class="mapa-container">
-
-        <img
-            src="/mapa-utp.png"
-            class="mapa-img"
-            alt="Mi Bus">
-
-        <i
-            class="bi bi-bus-front-fill bus"
-            [style.left.%]="busLeft"
-            [style.top.%]="busTop">
-        </i>
-
+    <div class="panel-body" style="padding:0;">
+      @if(cargandoMapas){
+        <p class="mapa-loading" style="padding:24px;">Cargando ruta asignada…</p>
+      } @else if(choferSinViajesPendientes){
+        <p class="mapa-loading" style="padding:24px;">
+          @if(viajesCompletadosHoy > 0){
+            <i class="bi bi-check-circle-fill"></i> Jornada completada. Mañana verás tus nuevas programaciones.
+          } @else {
+            {{ mensajeJornada || 'No tienes viajes programados para hoy.' }}
+          }
+        </p>
+      } @else if(!rutaMapaActiva?.mapeable){
+        <p class="mapa-loading" style="padding:24px;">{{ rutaMapaActiva?.mensaje || 'Ruta sin coordenadas GPS.' }}</p>
+      } @else {
+      <app-route-map
+        [autoDemo]="false"
+        [rutaPuntos]="rutaMapaActiva!.puntos"
+        [marcadores]="rutaMapaActiva!.marcadores"
+        [rutaCodigo]="rutaMapaActiva!.codigo"
+        [rutaNombre]="rutaMapaActiva!.nombre"
+        [colorPrimario]="rutaMapaActiva!.colorPrimario"
+        [colorDestino]="rutaMapaActiva!.colorDestino"
+        [rutaId]="rutaMapaActiva!.codigo">
+      </app-route-map>
+      }
     </div>
+  </section>
 
-</div>
-
-</section>
-
-<!-- ====================================== -->
-<!-- NOTIFICACIONES -->
-<!-- ====================================== -->
-
-<section class="panel">
-
-    <div class="panel-header">
-
-        <h3>
-
-            Últimas Notificaciones
-
-        </h3>
-
-    </div>
-
-    <div class="panel-body">
-
-        <table class="tabla-actividad">
-
-            <thead>
-
-                <tr>
-
-                    <th>Hora</th>
-
-                    <th>Mensaje</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                <tr>
-
-                    <td>08:00</td>
-
-                    <td>No existen notificaciones nuevas.</td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</section>
-
-}
-<!-- ===================================================== -->
-<!-- DASHBOARD CHOFER -->
-<!-- ===================================================== -->
-
-@else if(rol=='CHOFER'){
-
-<!-- ====================================== -->
-<!-- KPI -->
-<!-- ====================================== -->
-
-<section class="kpis">
-
-    <div class="kpi-card buses">
-
-        <div>
-
-            <span>Bus Asignado</span>
-
-            <h3>{{busAsignado}}</h3>
-
-        </div>
-
-        <i class="bi bi-bus-front-fill"></i>
-
-    </div>
-
-    <div class="kpi-card usuarios">
-
-        <div>
-
-            <span>Estado del Viaje</span>
-
-            <h3>{{estadoViaje}}</h3>
-
-        </div>
-
-        <i class="bi bi-sign-turn-right-fill"></i>
-
-    </div>
-
-    <div class="kpi-card alumnos">
-
-        <div>
-
-            <span>Pasajeros</span>
-
-            <h2>{{pasajeros}}</h2>
-
-        </div>
-
-        <i class="bi bi-people-fill"></i>
-
-    </div>
-
-    <div class="kpi-card reservas">
-
-        <div>
-
-            <span>Incidencias</span>
-
-            <h2>{{incidenciasHoy}}</h2>
-
-        </div>
-
-        <i class="bi bi-exclamation-triangle-fill"></i>
-
-    </div>
-
-</section>
-
-<!-- ====================================== -->
-<!-- PANEL PRINCIPAL -->
-<!-- ====================================== -->
-
-<section class="dashboard-grid">
-
-    <div class="panel panel-large">
-
-        <div class="panel-header">
-
-            <h3>
-
-                Jornada de Hoy
-
-            </h3>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div style="padding:20px;line-height:2;">
-
-                <p>
-
-                    <strong>Bus:</strong>
-
-                    {{busAsignado}}
-
-                </p>
-
-                <p>
-
-                    <strong>Estado:</strong>
-
-                    {{estadoViaje}}
-
-                </p>
-
-                <p>
-
-                    <strong>Pasajeros:</strong>
-
-                    {{pasajeros}}
-
-                </p>
-
-                <br>
-
-      <button
-          class="btn-primary"
-          (click)="iniciarViaje()"
-          [disabled]="viajeIniciado">
-
-          <i class="bi bi-play-circle-fill"></i>
-
-          {{ viajeIniciado ? 'Viaje en Curso' : 'Iniciar Viaje' }}
-
-      </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="panel">
-
-        <div class="panel-header">
-
-            <h3>
-
-                Accesos Rápidos
-
-            </h3>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div class="estado">
-
-                <i class="bi bi-geo-alt-fill"></i>
-
-                Actualizar ubicación
-
-            </div>
-
-            <div class="estado">
-
-                <i class="bi bi-people-fill"></i>
-
-                Registrar pasajeros
-
-            </div>
-
-            <div class="estado">
-
-                <i class="bi bi-exclamation-circle-fill"></i>
-
-                Reportar incidencia
-
-            </div>
-
-            <div class="estado">
-
-                <i class="bi bi-stop-circle-fill"></i>
-
-                Finalizar viaje
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-<!-- ====================================== -->
-<!-- MAPA -->
-<!-- ====================================== -->
-
-<section class="panel mapa">
-
-    <div class="panel-header">
-
-        <h3>
-
-            Miruta
-
-        </h3>
-        <span class="tracking-status" [class.activo]="viajeIniciado">
-            <i class="bi bi-broadcast"></i>
-            {{ viajeIniciado ? 'Transmitiendo ubicación' : 'Viaje pendiente' }}
-        </span>
-
-    </div>
-
-<div class="panel-body">
-
-    <div class="mapa-container">
-
-        <img
-            src="/mapa-utp.png"
-            class="mapa-img"
-            alt="Mi Ruta">
-
-        <i
-            class="bi bi-bus-front-fill bus"
-            [style.left.%]="busLeft"
-            [style.top.%]="busTop">
-        </i>
-
-    </div>
-
-</div>
-
-</section>
-
-<!-- ====================================== -->
-<!-- ACTIVIDAD -->
-<!-- ====================================== -->
-
-<section class="panel">
-
-    <div class="panel-header">
-
-        <h3>
-
-            Actividad del Viaje
-
-        </h3>
-
-    </div>
-
-    <div class="panel-body">
-
-        <table class="tabla-actividad">
-
-            <thead>
-
-                <tr>
-
-                    <th>Hora</th>
-
-                    <th>Evento</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                <tr>
-
-                    <td>07:45</td>
-
-                    <td>Esperando inicio de jornada.</td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</section>
-
-}
+  }
 
 </div>

@@ -18,6 +18,8 @@ public interface ChoferService {
      */
     ChoferResponseDTO obtenerPorId(Long id);
 
+    ChoferResponseDTO obtenerPorIdUsuario(Long idUsuario);
+
     /**
      * Registrar un nuevo chofer.
      */

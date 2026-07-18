@@ -54,4 +54,8 @@ public class DashboardAlumnoDTO {
      */
     private String horaLlegadaBus;
 
+    private Long idRuta;
+    private String codigoRuta;
+    private Long idViaje;
+
 }

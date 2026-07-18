@@ -1,24 +1,6 @@
-.btn-cancelar {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #fee2e2;
-  color: #dc2626;
-  border: none;
-  cursor: pointer;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  transition: background .2s, color .2s;
-}
+.spin { animation: alumno-spin .8s linear infinite; }
 
-.btn-cancelar:hover:not(:disabled) {
-  background: #dc2626;
-  color: #fff;
-}
-
-.btn-cancelar:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+.badge-estado.reservado,
+.badge-estado.abordado { background: rgba(34,197,94,.12); color: #4ade80; border: 1px solid rgba(34,197,94,.22); }
+.badge-estado.cancelado { background: rgba(220,38,38,.12); color: #f87171; border: 1px solid rgba(220,38,38,.22); }
+.badge-estado.no_asistio { background: rgba(234,179,8,.12); color: #facc15; border: 1px solid rgba(234,179,8,.22); }

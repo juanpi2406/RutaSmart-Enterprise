@@ -5,12 +5,16 @@ import { ParaderoService } from '../../service/paradero';
 import { RutaService } from '../../service/ruta';
 import { Paradero } from '../../models/paradero';
 import { Ruta } from '../../models/ruta';
+import { RutaMapaService } from '../../service/ruta-mapa.service';
+import { RouteMapComponent } from '../../components/route-map/route-map.component';
+import { SkeletonLoaderComponent } from '../../components/skeleton-loader/skeleton-loader';
+import { RutaMapaView } from '../../models/ruta-geometria';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-paraderos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouteMapComponent, SkeletonLoaderComponent],
   templateUrl: './paraderos.html',
   styleUrls: ['./paraderos.css']
 })
@@ -18,6 +22,7 @@ export class ParaderosComponent implements OnInit {
 
   private paraderoService = inject(ParaderoService);
   private rutaService = inject(RutaService);
+  private rutaMapaService = inject(RutaMapaService);
   private cdr = inject(ChangeDetectorRef);
 
   rutas: Ruta[] = [];
@@ -31,6 +36,8 @@ export class ParaderosComponent implements OnInit {
   mostrarModal = false;
   paraderoEnEdicion: Paradero | null = null;
   form: Partial<Paradero> = {};
+  previewMapa: RutaMapaView | null = null;
+  cargandoPreview = false;
 
   ngOnInit(): void {
     this.cargarRutas();
@@ -105,12 +112,14 @@ export class ParaderosComponent implements OnInit {
       estado: true
     };
     this.mostrarModal = true;
+    this.cargarPreviewMapa(this.form.idRuta);
   }
 
   editarParadero(paradero: Paradero): void {
     this.paraderoEnEdicion = paradero;
     this.form = { ...paradero };
     this.mostrarModal = true;
+    this.cargarPreviewMapa(paradero.idRuta);
   }
 
   cerrarModal(): void {
@@ -120,7 +129,7 @@ export class ParaderosComponent implements OnInit {
   }
 
   guardarParadero(): void {
-
+    if (!this.validarCoords()) return;
     if (this.paraderoEnEdicion?.idParadero) {
 
       this.paraderoService.actualizar(this.paraderoEnEdicion.idParadero, this.form).subscribe({
@@ -189,6 +198,34 @@ export class ParaderosComponent implements OnInit {
 
     });
 
+  }
+
+  onRutaFormChange(): void {
+    this.cargarPreviewMapa(this.form.idRuta);
+  }
+
+  private cargarPreviewMapa(idRuta?: number): void {
+    if (!idRuta) { this.previewMapa = null; return; }
+    this.cargandoPreview = true;
+    this.rutaMapaService.invalidarCache(idRuta);
+    this.rutaMapaService.cargarMapa(idRuta).subscribe({
+      next: (m) => { this.previewMapa = m; this.cargandoPreview = false; this.cdr.markForCheck(); },
+      error: () => { this.cargandoPreview = false; this.cdr.markForCheck(); }
+    });
+  }
+
+  private validarCoords(): boolean {
+    const lat = Number(this.form.latitud);
+    const lng = Number(this.form.longitud);
+    if (!lat || !lng || lat === 0 || lng === 0) {
+      Swal.fire({ icon: 'warning', title: 'GPS requerido', text: 'Ingresa latitud y longitud válidas (zona Lima Sur).' });
+      return false;
+    }
+    if (lat > -11 || lat < -13.5 || lng > -76 || lng < -78) {
+      Swal.fire({ icon: 'warning', title: 'Fuera de zona UTP', text: 'Las coordenadas deben estar en el área Lima Sur / UTP.' });
+      return false;
+    }
+    return true;
   }
 
 }

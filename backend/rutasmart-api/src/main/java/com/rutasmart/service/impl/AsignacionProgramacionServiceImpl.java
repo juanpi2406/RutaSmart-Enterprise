@@ -33,6 +33,11 @@ public class AsignacionProgramacionServiceImpl implements AsignacionProgramacion
     }
 
     @Override
+    public List<AsignacionProgramacionDTO> listarPorChofer(Long idChofer) {
+        return mapper.toDTOList(repository.findByChofer_IdChofer(idChofer));
+    }
+
+    @Override
     public AsignacionProgramacionDTO buscarPorId(Long id) {
 
         AsignacionProgramacion entity = repository.findById(id)

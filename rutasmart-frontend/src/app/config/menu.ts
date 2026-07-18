@@ -24,20 +24,6 @@ export const MENU: MenuItem[] = [
     roles: ['ADMINISTRADOR']
   },
 
-  {
-    titulo: 'Alumnos',
-    icono: 'bi-mortarboard-fill',
-    ruta: '/dashboard/alumnos',
-    roles: ['ADMINISTRADOR']
-  },
-
-  {
-    titulo: 'Choferes',
-    icono: 'bi-person-badge-fill',
-    ruta: '/dashboard/choferes',
-    roles: ['ADMINISTRADOR']
-  },
-
   // =====================================================
   // TRANSPORTE
   // =====================================================
@@ -53,13 +39,6 @@ export const MENU: MenuItem[] = [
     titulo: 'Rutas',
     icono: 'bi-sign-turn-right-fill',
     ruta: '/dashboard/rutas',
-    roles: ['ADMINISTRADOR']
-  },
-
-  {
-    titulo: 'Paraderos',
-    icono: 'bi-geo-alt-fill',
-    ruta: '/dashboard/paraderos',
     roles: ['ADMINISTRADOR']
   },
 
@@ -139,17 +118,24 @@ export const MENU: MenuItem[] = [
   },
 
   {
+    titulo: 'Incidencias',
+    icono: 'bi-exclamation-triangle-fill',
+    ruta: '/dashboard/incidencias',
+    roles: ['ALUMNO']
+  },
+
+  {
     titulo: 'Notificaciones',
     icono: 'bi-bell-fill',
     ruta: '/dashboard/notificaciones',
-    roles: ['ALUMNO']
+    roles: ['CHOFER']
   },
 
   {
     titulo: 'Mi Perfil',
     icono: 'bi-person-circle',
     ruta: '/dashboard/perfil',
-    roles: ['ALUMNO', 'CHOFER']
+    roles: ['ADMINISTRADOR', 'ALUMNO', 'CHOFER']
   },
 
   // =====================================================

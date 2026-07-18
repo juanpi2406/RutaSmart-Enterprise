@@ -7,11 +7,8 @@ import { DashboardHomeComponent } from './dashboard/home/home';
 /* ======== MÓDULOS ADMINISTRACIÓN ======== */
 
 import { UsuariosComponent } from './dashboard/usuarios/usuarios';
-import { AlumnosComponent } from './dashboard/alumnos/alumnos';
-import { ChoferesComponent } from './dashboard/choferes/choferes';
 import { BusesComponent } from './dashboard/buses/buses';
 import { RutasComponent } from './dashboard/rutas/rutas';
-import { ParaderosComponent } from './dashboard/paraderos/paraderos';
 import { ProgramacionesComponent } from './dashboard/programaciones/programaciones';
 import { ViajesComponent } from './dashboard/viajes/viajes';
 import { ReservasComponent } from './dashboard/reservas/reservas';
@@ -81,16 +78,20 @@ export const routes: Routes = [
 
       {
         path: 'alumnos',
-        component: AlumnosComponent,
-        canActivate: [rolGuard],
-        data: { roles: ['ADMINISTRADOR'] }
+        redirectTo: 'usuarios',
+        pathMatch: 'full'
       },
 
       {
         path: 'choferes',
-        component: ChoferesComponent,
-        canActivate: [rolGuard],
-        data: { roles: ['ADMINISTRADOR'] }
+        redirectTo: 'usuarios',
+        pathMatch: 'full'
+      },
+
+      {
+        path: 'paraderos',
+        redirectTo: 'rutas',
+        pathMatch: 'full'
       },
 
       {
@@ -103,13 +104,6 @@ export const routes: Routes = [
       {
         path: 'rutas',
         component: RutasComponent,
-        canActivate: [rolGuard],
-        data: { roles: ['ADMINISTRADOR'] }
-      },
-
-      {
-        path: 'paraderos',
-        component: ParaderosComponent,
         canActivate: [rolGuard],
         data: { roles: ['ADMINISTRADOR'] }
       },
@@ -147,14 +141,14 @@ export const routes: Routes = [
         path: 'incidencias',
         component: IncidenciasComponent,
         canActivate: [rolGuard],
-        data: { roles: ['ADMINISTRADOR', 'CHOFER'] }
+        data: { roles: ['ADMINISTRADOR', 'CHOFER', 'ALUMNO'] }
       },
 
       {
         path: 'reportar-incidencia',
         component: IncidenciasComponent,
         canActivate: [rolGuard],
-        data: { roles: ['CHOFER'] }
+        data: { roles: ['CHOFER', 'ALUMNO'] }
       },
 
       // =============================
@@ -197,7 +191,7 @@ export const routes: Routes = [
         path: 'notificaciones',
         component: NotificacionesComponent,
         canActivate: [rolGuard],
-        data: { roles: ['ALUMNO'] }
+        data: { roles: ['CHOFER'] }
       },
 
       // =============================
@@ -208,7 +202,7 @@ export const routes: Routes = [
         path: 'perfil',
         component: PerfilComponent,
         canActivate: [rolGuard],
-        data: { roles: ['ALUMNO', 'CHOFER'] }
+        data: { roles: ['ADMINISTRADOR', 'ALUMNO', 'CHOFER'] }
       },
 
       // =============================

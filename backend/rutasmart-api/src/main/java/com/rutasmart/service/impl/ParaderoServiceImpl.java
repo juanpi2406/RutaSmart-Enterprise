@@ -8,6 +8,7 @@ import com.rutasmart.mapper.ParaderoMapper;
 import com.rutasmart.repository.ParaderoRepository;
 import com.rutasmart.repository.RutaRepository;
 import com.rutasmart.service.interfaces.ParaderoService;
+import com.rutasmart.service.interfaces.RutaGeometriaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class ParaderoServiceImpl implements ParaderoService {
     private final ParaderoRepository repository;
     private final RutaRepository rutaRepository;
     private final ParaderoMapper mapper;
+    private final RutaGeometriaService rutaGeometriaService;
 
     @Override
     public List<ParaderoDTO> listar() {
@@ -34,39 +36,31 @@ public class ParaderoServiceImpl implements ParaderoService {
 
     @Override
     public ParaderoDTO buscarPorId(Long id) {
-
         Paradero entity = repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Paradero no encontrado."));
-
+                .orElseThrow(() -> new ResourceNotFoundException("Paradero no encontrado."));
         return mapper.toDTO(entity);
     }
 
     @Override
     public ParaderoDTO guardar(ParaderoDTO dto) {
-
         Ruta ruta = rutaRepository.findById(dto.getIdRuta())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Ruta no encontrada."));
+                .orElseThrow(() -> new ResourceNotFoundException("Ruta no encontrada."));
 
         Paradero entity = mapper.toEntity(dto);
-
         entity.setRuta(ruta);
 
-        return mapper.toDTO(repository.save(entity));
-
+        Paradero guardado = repository.save(entity);
+        invalidarGeometria(ruta);
+        return mapper.toDTO(guardado);
     }
 
     @Override
     public ParaderoDTO actualizar(Long id, ParaderoDTO dto) {
-
         Paradero entity = repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Paradero no encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Paradero no encontrado."));
 
         Ruta ruta = rutaRepository.findById(dto.getIdRuta())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Ruta no encontrada."));
+                .orElseThrow(() -> new ResourceNotFoundException("Ruta no encontrada."));
 
         entity.setRuta(ruta);
         entity.setNombre(dto.getNombre());
@@ -77,19 +71,26 @@ public class ParaderoServiceImpl implements ParaderoService {
         entity.setTiempoEstimadoMin(dto.getTiempoEstimadoMin());
         entity.setEstado(dto.getEstado());
 
-        return mapper.toDTO(repository.save(entity));
-
+        Paradero actualizado = repository.save(entity);
+        invalidarGeometria(ruta);
+        return mapper.toDTO(actualizado);
     }
 
     @Override
     public void eliminar(Long id) {
-
         Paradero entity = repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Paradero no encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Paradero no encontrado."));
 
+        Ruta ruta = entity.getRuta();
         repository.delete(entity);
-
+        if (ruta != null) {
+            invalidarGeometria(ruta);
+        }
     }
 
+    private void invalidarGeometria(Ruta ruta) {
+        if (ruta != null && ruta.getIdRuta() != null) {
+            rutaGeometriaService.invalidarCache(ruta.getIdRuta());
+        }
+    }
 }

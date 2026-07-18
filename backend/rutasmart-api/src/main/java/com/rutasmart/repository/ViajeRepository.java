@@ -2,6 +2,9 @@ package com.rutasmart.repository;
 
 import com.rutasmart.entity.Viaje;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -38,6 +41,29 @@ public interface ViajeRepository extends JpaRepository<Viaje, Long> {
     Optional<Viaje> findFirstByChofer_IdChoferOrderByFechaViajeDesc(
             Long idChofer
     );
+
+    List<Viaje> findByChofer_IdChoferOrderByFechaViajeDesc(Long idChofer);
+
     long countByEstado(String estado);
+
+    List<Viaje> findByEstadoIn(List<String> estados);
+
+    List<Viaje> findByProgramacion_IdProgramacion(Long idProgramacion);
+
+    long countByBus_IdBus(Long idBus);
+
+    long countByChofer_IdChofer(Long idChofer);
+
+    boolean existsByProgramacion_IdProgramacionAndFechaViaje(Long idProgramacion, LocalDate fechaViaje);
+
+    List<Viaje> findByChofer_IdChoferAndFechaViajeOrderByProgramacion_HoraSalidaAsc(
+            Long idChofer, LocalDate fechaViaje);
+
+    long countByChofer_IdChoferAndFechaViajeAndEstadoIn(
+            Long idChofer, LocalDate fechaViaje, List<String> estados);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("DELETE FROM Viaje v WHERE v.programacion.idProgramacion = :idProgramacion")
+    void deleteAllByProgramacionId(@Param("idProgramacion") Long idProgramacion);
 
 }

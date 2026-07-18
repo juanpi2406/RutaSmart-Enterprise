@@ -1,6 +1,10 @@
 package com.rutasmart.controller;
 
 import com.rutasmart.dto.RutaDTO;
+import com.rutasmart.dto.RutaGeometriaDTO;
+import com.rutasmart.dto.LimpiezaSinGpsDTO;
+import com.rutasmart.service.LimpiarSinGpsService;
+import com.rutasmart.service.interfaces.RutaGeometriaService;
 import com.rutasmart.service.interfaces.RutaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +20,8 @@ import java.util.List;
 public class RutaController {
 
     private final RutaService rutaService;
+    private final RutaGeometriaService rutaGeometriaService;
+    private final LimpiarSinGpsService limpiarSinGpsService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping
@@ -27,6 +33,12 @@ public class RutaController {
     @GetMapping("/{id}")
     public RutaDTO buscarPorId(@PathVariable Long id) {
         return rutaService.buscarPorId(id);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/geometria")
+    public RutaGeometriaDTO geometria(@PathVariable Long id) {
+        return rutaGeometriaService.obtenerGeometria(id);
     }
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
@@ -50,6 +62,12 @@ public class RutaController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
         rutaService.eliminar(id);
+    }
+
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PostMapping("/limpiar-sin-gps")
+    public LimpiezaSinGpsDTO limpiarSinGps() {
+        return limpiarSinGpsService.limpiar();
     }
 
 }

@@ -15,6 +15,10 @@ export class ViajeService {
     return this.http.get<Viaje[]>(this.API);
   }
 
+  listarPorChofer(idChofer: number): Observable<Viaje[]> {
+    return this.http.get<Viaje[]>(`${this.API}/chofer/${idChofer}`);
+  }
+
   listarPorRutaYFecha(idRuta: number, fechaViaje: string): Observable<Viaje[]> {
     return this.http.get<Viaje[]>(`${this.API}/buscar`, {
       params: {
@@ -36,7 +40,15 @@ export class ViajeService {
     return this.http.put<Viaje>(`${this.API}/${id}`, viaje);
   }
 
+  actualizarEstado(id: number, estado: string): Observable<Viaje> {
+    return this.http.patch<Viaje>(`${this.API}/${id}/estado`, { estado });
+  }
+
   eliminar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.API}/${id}`);
+  }
+
+  listarHistorial(): Observable<Viaje[]> {
+    return this.http.get<Viaje[]>(`${this.API}/historial`);
   }
 }

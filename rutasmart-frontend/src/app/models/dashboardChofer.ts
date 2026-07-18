@@ -45,4 +45,15 @@ export interface DashboardChofer {
    */
   incidenciasHoy: number;
 
+  /**
+   * ID del viaje activo o más reciente.
+   */
+  idViaje?: number;
+
+  idRuta?: number;
+  codigoRuta?: string;
+  viajesPendientesHoy?: number;
+  viajesCompletadosHoy?: number;
+  mensajeJornada?: string;
+
 }

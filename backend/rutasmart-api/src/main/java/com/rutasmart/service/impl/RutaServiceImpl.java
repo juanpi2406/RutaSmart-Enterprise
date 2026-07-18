@@ -6,9 +6,11 @@ import com.rutasmart.exception.BusinessException;
 import com.rutasmart.exception.ResourceNotFoundException;
 import com.rutasmart.mapper.RutaMapper;
 import com.rutasmart.repository.RutaRepository;
+import com.rutasmart.service.DependenciasEliminacionService;
 import com.rutasmart.service.interfaces.RutaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ public class RutaServiceImpl implements RutaService {
 
     private final RutaRepository rutaRepository;
     private final RutaMapper rutaMapper;
+    private final DependenciasEliminacionService dependenciasEliminacionService;
 
     @Override
     public List<RutaDTO> listar() {
@@ -79,12 +82,14 @@ public class RutaServiceImpl implements RutaService {
     }
 
     @Override
+    @Transactional
     public void eliminar(Long id) {
 
         Ruta ruta = rutaRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Ruta no encontrada."));
 
+        dependenciasEliminacionService.eliminarDependenciasRuta(ruta);
         rutaRepository.delete(ruta);
 
     }

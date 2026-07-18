@@ -45,7 +45,9 @@ public class SecurityConfig {
                                 "/api-docs/**",
                                 "/v3/api-docs/**",
                                 "/api/health/**",
-                                "/api/ubicaciones/**"
+                                "/api/ubicaciones/**",
+                                "/api/notificaciones/**",
+                                "/ws/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -69,7 +71,7 @@ public class SecurityConfig {
         ));
         
         // Permite los métodos necesarios para tu login y transacciones
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         
         // Permite enviar cabeceras estándar de autenticación (como el token JWT en "Authorization")
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));

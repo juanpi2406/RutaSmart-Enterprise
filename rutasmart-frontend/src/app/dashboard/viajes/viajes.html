@@ -26,6 +26,32 @@
 
     </div>
 
+    <div class="toolbar" style="margin-bottom:12px;">
+      <button type="button" class="btn-secondary" [class.active]="tabViajes === 'activos'" (click)="cambiarTab('activos')">Viajes activos</button>
+      <button type="button" class="btn-secondary" [class.active]="tabViajes === 'historial'" (click)="cambiarTab('historial')">Historial</button>
+    </div>
+
+    @if(tabViajes === 'historial'){
+    <div class="tabla-container">
+      <table>
+        <thead><tr><th>Ruta</th><th>Fecha</th><th>Estado</th><th>Salida real</th><th>Llegada real</th></tr></thead>
+        <tbody>
+          @for(v of historialViajes; track v.idViaje){
+          <tr>
+            <td>{{ nombreRuta(v.idProgramacion) }}</td>
+            <td>{{ v.fechaViaje }}</td>
+            <td>{{ v.estado }}</td>
+            <td>{{ v.horaInicioReal || '—' }}</td>
+            <td>{{ v.horaFinReal || '—' }}</td>
+          </tr>
+          } @empty {
+          <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted);">Sin viajes finalizados</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    } @else {
+
     <div class="tabla-container">
 
         <table>
@@ -76,6 +102,7 @@
         </table>
 
     </div>
+    }
 
     @if(mostrarModal){
     <div class="modal-overlay" (click)="cerrarModal()">

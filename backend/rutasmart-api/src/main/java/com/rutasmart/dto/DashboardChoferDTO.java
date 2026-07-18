@@ -60,4 +60,22 @@ public class DashboardChoferDTO {
      */
     private Long incidenciasHoy;
 
+    /** ID del viaje activo o más reciente. */
+    private Long idViaje;
+
+    /** ID de la ruta asignada. */
+    private Long idRuta;
+
+    /** Código de la ruta (ej. R-03). */
+    private String codigoRuta;
+
+    /** Viajes pendientes hoy (PROGRAMADO / EN_CURSO). */
+    private Long viajesPendientesHoy;
+
+    /** Viajes finalizados hoy. */
+    private Long viajesCompletadosHoy;
+
+    /** Mensaje de estado de la jornada. */
+    private String mensajeJornada;
+
 }

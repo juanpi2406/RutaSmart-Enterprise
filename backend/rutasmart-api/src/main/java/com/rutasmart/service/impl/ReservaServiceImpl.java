@@ -1,6 +1,8 @@
 package com.rutasmart.service.impl;
 
 import com.rutasmart.dto.ReservaDTO;
+import com.rutasmart.dto.ValidacionQrDTO;
+import com.rutasmart.dto.CapacidadViajeDTO;
 import com.rutasmart.entity.Alumno;
 import com.rutasmart.entity.Paradero;
 import com.rutasmart.entity.Reserva;
@@ -12,12 +14,15 @@ import com.rutasmart.repository.AlumnoRepository;
 import com.rutasmart.repository.ParaderoRepository;
 import com.rutasmart.repository.ReservaRepository;
 import com.rutasmart.repository.ViajeRepository;
+import com.rutasmart.service.AsistenciaReservaService;
 import com.rutasmart.service.interfaces.ReservaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +33,7 @@ public class ReservaServiceImpl implements ReservaService {
     private final ViajeRepository viajeRepository;
     private final ParaderoRepository paraderoRepository;
     private final ReservaMapper reservaMapper;
+    private final AsistenciaReservaService asistenciaReservaService;
 
     @Override
     public List<ReservaDTO> listar() {
@@ -76,11 +82,25 @@ public class ReservaServiceImpl implements ReservaService {
             );
         }
 
+        asistenciaReservaService.validarPuedeReservar(alumno);
+
         Reserva reserva = reservaMapper.toEntity(dto);
 
         reserva.setAlumno(alumno);
         reserva.setViaje(viaje);
         reserva.setParadero(paradero);
+
+        if (reserva.getEstado() == null || reserva.getEstado().isBlank()) {
+            reserva.setEstado("RESERVADO");
+        }
+        if (reserva.getCodigoQr() == null || reserva.getCodigoQr().isBlank()) {
+            reserva.setCodigoQr("RS-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        }
+
+        LocalDateTime horaProgramada = asistenciaReservaService.horaAbordajeProgramada(viaje);
+        if (horaProgramada != null) {
+            reserva.setFechaAbordaje(horaProgramada);
+        }
 
         Long reservasActuales = reservaRepository.countByViaje_IdViaje(
                 viaje.getIdViaje()
@@ -145,6 +165,63 @@ public class ReservaServiceImpl implements ReservaService {
 
         reservaRepository.delete(reserva);
 
+    }
+
+    @Override
+    @Transactional
+    public ValidacionQrDTO validarQr(String codigoQr, Long idViaje) {
+        Reserva reserva = reservaRepository.findByCodigoQrAndViaje_IdViaje(codigoQr, idViaje)
+                .orElse(null);
+
+        if (reserva == null) {
+            return ValidacionQrDTO.builder()
+                    .valido(false)
+                    .mensaje("Código QR no válido para este viaje.")
+                    .build();
+        }
+
+        if ("CANCELADO".equalsIgnoreCase(reserva.getEstado())
+                || "CANCELADA".equalsIgnoreCase(reserva.getEstado())) {
+            return ValidacionQrDTO.builder()
+                    .valido(false)
+                    .mensaje("La reserva está cancelada.")
+                    .build();
+        }
+
+        if ("ABORDADO".equalsIgnoreCase(reserva.getEstado())) {
+            return ValidacionQrDTO.builder()
+                    .valido(false)
+                    .mensaje("El alumno ya abordó.")
+                    .reserva(reservaMapper.toDTO(reserva))
+                    .build();
+        }
+
+        reserva.setFechaAbordaje(LocalDateTime.now());
+        reserva.setEstado("ABORDADO");
+        Reserva actualizada = reservaRepository.save(reserva);
+
+        return ValidacionQrDTO.builder()
+                .valido(true)
+                .mensaje("Embarque confirmado.")
+                .reserva(reservaMapper.toDTO(actualizada))
+                .build();
+    }
+
+    @Override
+    public CapacidadViajeDTO obtenerCapacidad(Long idViaje) {
+        Viaje viaje = viajeRepository.findById(idViaje)
+                .orElseThrow(() -> new ResourceNotFoundException("Viaje no encontrado."));
+
+        Long ocupados = reservaRepository.countByViaje_IdViaje(idViaje);
+        Short capacidad = viaje.getBus() != null ? viaje.getBus().getCapacidadAsientos() : 0;
+        long disp = Math.max(0, (capacidad != null ? capacidad : 0) - ocupados);
+
+        return CapacidadViajeDTO.builder()
+                .idViaje(idViaje)
+                .capacidad(capacidad)
+                .ocupados(ocupados)
+                .disponibles(disp)
+                .build();
     }
 
 

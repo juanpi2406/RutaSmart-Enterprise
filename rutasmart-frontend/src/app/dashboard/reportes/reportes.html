@@ -1,43 +1,99 @@
-<div class="page-title">
-  <div>
-    <h2>Reportes Estadísticos e Incidencias</h2>
-    <p>Visualiza el rendimiento de las rutas, asistencias e incidencias críticas reportadas por los chóferes.</p>
-  </div>
-  <button class="btn-primary" (click)="exportarPDF()">
-    <i class="bi bi-file-earmark-pdf-fill"></i> Exportar Reporte
-  </button>
-</div>
+<div class="usuarios-container">
 
-<div class="info-grid">
-  <!-- Tarjeta de Resumen -->
-  <div class="panel">
-    <div class="panel-title">
-      <h3><i class="bi bi-graph-up-arrow"></i> Resumen Operativo Semanal</h3>
+  <div class="page-header">
+    <div>
+      <h2>Reportes Estadísticos e Incidencias</h2>
+      <p>Rendimiento operativo, reservas e incidencias reportadas por los choferes.</p>
     </div>
-    <div style="padding: 20px; color: var(--muted); text-align: center; border: 2px dashed var(--line); border-radius: 12px; margin-top: 15px;">
-      <p style="font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 5px;">Buses activos: {{ eficiencia }}%</p>
-      <small>{{ busesActivos }} de {{ totalBuses }} buses activos. Total de reservas: {{ totalReservas }}.</small>
-    </div>
+    <button class="btn-primary" (click)="exportarPDF()">
+      <i class="bi bi-file-earmark-pdf-fill"></i> Exportar Reporte
+    </button>
   </div>
 
-  <!-- Historial de Incidencias -->
-  <div class="panel">
-    <div class="panel-title">
-      <h3><i class="bi bi-exclamation-triangle-fill"></i> Últimas Incidencias</h3>
-    </div>
-    <div class="timeline" style="margin-top: 15px;">
-      @for(incidencia of ultimasIncidencias; track incidencia.idIncidencia){
-      <div class="item">
-        <div class="dot" [class.danger]="incidencia.estado === 'REPORTADA'" [class.warning]="incidencia.estado === 'EN_REVISION'"></div>
-        <div>
-          <strong>{{ incidencia.tipo }}</strong>
-          <p>{{ incidencia.descripcion }}</p>
-          <small>{{ incidencia.fechaRegistro ?? '-' }}</small>
-        </div>
+  @if(cargando){
+  <div class="loading-inline">
+    <i class="bi bi-arrow-repeat spin"></i> Cargando reportes...
+  </div>
+  } @else {
+
+  <div class="cards">
+    <div class="card">
+      <i class="bi bi-ticket-perforated-fill"></i>
+      <div>
+        <span>Total reservas</span>
+        <h2>{{ totalReservas }}</h2>
       </div>
-      } @empty {
-      <p style="color: var(--muted);">No hay incidencias registradas.</p>
+    </div>
+    <div class="card">
+      <i class="bi bi-bus-front-fill"></i>
+      <div>
+        <span>Buses activos</span>
+        <h2>{{ busesActivos }}/{{ totalBuses }}</h2>
+      </div>
+    </div>
+    <div class="card">
+      <i class="bi bi-graph-up-arrow"></i>
+      <div>
+        <span>Eficiencia flota</span>
+        <h2>{{ eficiencia }}%</h2>
+      </div>
+    </div>
+    <div class="card">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <div>
+        <span>Incidencias</span>
+        <h2>{{ ultimasIncidencias.length }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="reportes-grid">
+    <div class="tabla-container">
+      <div class="panel-header-inline">
+        <h3><i class="bi bi-graph-up-arrow"></i> Resumen operativo</h3>
+      </div>
+      <div class="resumen-body">
+        <p><strong>{{ eficiencia }}%</strong> de la flota está activa.</p>
+        <p>{{ busesActivos }} de {{ totalBuses }} buses operativos.</p>
+        <p>{{ totalReservas }} reservas registradas en el sistema.</p>
+      </div>
+    </div>
+
+    <div class="tabla-container">
+      <div class="panel-header-inline">
+        <h3><i class="bi bi-exclamation-triangle-fill"></i> Últimas incidencias</h3>
+      </div>
+      @if(ultimasIncidencias.length){
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(incidencia of ultimasIncidencias; track incidencia.idIncidencia){
+          <tr>
+            <td>{{ incidencia.tipo }}</td>
+            <td>{{ incidencia.descripcion }}</td>
+            <td><span class="badge" [class]="incidencia.estado">{{ incidencia.estado }}</span></td>
+            <td>{{ incidencia.fechaRegistro ?? '—' }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      } @else {
+      <div class="empty-state">
+        <i class="bi bi-check-circle"></i>
+        <h4>Sin incidencias recientes</h4>
+        <p>No hay reportes críticos en este momento.</p>
+      </div>
       }
     </div>
   </div>
+
+  }
+
 </div>

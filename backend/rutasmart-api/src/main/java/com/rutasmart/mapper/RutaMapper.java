@@ -2,8 +2,10 @@ package com.rutasmart.mapper;
 
 import com.rutasmart.dto.RutaDTO;
 import com.rutasmart.entity.Ruta;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
@@ -21,5 +23,13 @@ public interface RutaMapper {
     List<RutaDTO> toDTOList(List<Ruta> entityList);
 
     List<Ruta> toEntityList(List<RutaDTO> dtoList);
+
+    /** Campo virtual en API: no existe columna sede en Supabase. */
+    @AfterMapping
+    default void completarSede(Ruta entity, @MappingTarget RutaDTO dto) {
+        if (dto.getSede() == null || dto.getSede().isBlank()) {
+            dto.setSede(entity.getOrigen());
+        }
+    }
 
 }

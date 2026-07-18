@@ -49,4 +49,12 @@ public class DashboardAdminDTO {
      */
     private Long incidenciasPendientes;
 
+    private Long busesOperativos;
+
+    private Long busesMantenimiento;
+
+    private java.util.List<ReservaPorDiaDTO> reservasPorDia;
+
+    private java.util.List<ActividadRecienteDTO> actividadReciente;
+
 }

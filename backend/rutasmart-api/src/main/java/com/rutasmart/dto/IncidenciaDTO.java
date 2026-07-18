@@ -25,4 +25,8 @@ public class IncidenciaDTO {
 
     private LocalDateTime fechaRegistro;
 
+    private java.math.BigDecimal latitud;
+
+    private java.math.BigDecimal longitud;
+
 }

@@ -8,6 +8,8 @@ import com.rutasmart.mapper.UbicacionBusMapper;
 import com.rutasmart.repository.UbicacionBusRepository;
 import com.rutasmart.repository.ViajeRepository;
 import com.rutasmart.service.interfaces.UbicacionBusService;
+import com.rutasmart.service.ArrivalNotificationService;
+import com.rutasmart.websocket.TrackingBroadcastService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,8 @@ public class UbicacionBusServiceImpl implements UbicacionBusService {
     private final UbicacionBusRepository ubicacionBusRepository;
     private final ViajeRepository viajeRepository;
     private final UbicacionBusMapper ubicacionBusMapper;
+    private final TrackingBroadcastService trackingBroadcastService;
+    private final ArrivalNotificationService arrivalNotificationService;
 
     @Override
     public List<UbicacionBusDTO> listar() {
@@ -58,7 +62,12 @@ public class UbicacionBusServiceImpl implements UbicacionBusService {
         UbicacionBus guardada =
                 ubicacionBusRepository.save(ubicacion);
 
-        return ubicacionBusMapper.toDTO(guardada);
+        UbicacionBusDTO result = enriquecerCodigoRuta(ubicacionBusMapper.toDTO(guardada));
+        trackingBroadcastService.broadcast("UBICACION", result);
+        try {
+            arrivalNotificationService.evaluarLlegada(guardada);
+        } catch (Exception ignored) { }
+        return result;
 
     }
 
@@ -103,6 +112,38 @@ public class UbicacionBusServiceImpl implements UbicacionBusService {
 
         ubicacionBusRepository.delete(ubicacion);
 
+    }
+
+    @Override
+    public List<UbicacionBusDTO> listarActivas() {
+        return ubicacionBusRepository.findUltimasDeViajesActivos().stream()
+                .map(ubicacionBusMapper::toDTO)
+                .map(this::enriquecerCodigoRuta)
+                .toList();
+    }
+
+    @Override
+    public UbicacionBusDTO ultimaPorViaje(Long idViaje) {
+        return ubicacionBusRepository
+                .findFirstByViaje_IdViajeOrderByFechaHoraDesc(idViaje)
+                .map(ubicacionBusMapper::toDTO)
+                .map(this::enriquecerCodigoRuta)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "No hay ubicaciones para el viaje."
+                        ));
+    }
+
+    private UbicacionBusDTO enriquecerCodigoRuta(UbicacionBusDTO dto) {
+        if (dto.getIdViaje() == null) {
+            return dto;
+        }
+        viajeRepository.findById(dto.getIdViaje()).ifPresent(viaje -> {
+            if (viaje.getProgramacion() != null && viaje.getProgramacion().getRuta() != null) {
+                dto.setCodigoRuta(viaje.getProgramacion().getRuta().getCodigo());
+            }
+        });
+        return dto;
     }
 
 }
