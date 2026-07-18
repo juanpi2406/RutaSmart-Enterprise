@@ -123,6 +123,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   onResize(): void {
     if (window.innerWidth > 900) {
       this.sidebarAbierto = false;
+      document.body.classList.remove('nav-open');
     }
   }
 
@@ -134,11 +135,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.sidebarColapsado = !this.sidebarColapsado;
     }
     document.body.classList.toggle('sidebar-collapsed', this.sidebarColapsado);
+    document.body.classList.toggle('nav-open', this.sidebarAbierto);
   }
 
   cerrarSidebarMobile(): void {
     if (window.innerWidth <= 900) {
       this.sidebarAbierto = false;
+      document.body.classList.remove('nav-open');
     }
   }
 
@@ -253,6 +256,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   logout(): void {
     this.session.eliminar();
     sessionStorage.removeItem('rutasmart-mostrar-sancion');
+    document.body.classList.remove('nav-open');
     this.router.navigate(['/login']);
   }
 

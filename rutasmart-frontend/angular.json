@@ -24,12 +24,9 @@
         "styles": [
           "node_modules/leaflet/dist/leaflet.css",
           "src/styles.css",
-          "src/responsive.css",
           "./public/css/style.css",
-          "./public/css/navbar.css",
-          "./public/css/sidebar.css",
-          "./public/css/dashboard.css",
-          "./public/css/login.css"
+          "./public/css/login.css",
+          "src/responsive.css"
         ],
           "server": "src/main.server.ts",
             "outputMode": "server",
