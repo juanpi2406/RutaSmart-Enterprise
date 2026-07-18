@@ -17,4 +17,6 @@ public interface BusRepository extends JpaRepository<Bus, Long> {
 
     boolean existsByPlaca(String placa);
 
+    long countByEstado(Boolean estado);
+
 }

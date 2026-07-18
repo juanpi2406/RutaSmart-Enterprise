@@ -30,4 +30,14 @@ public class ViajeDTO {
 
     private String observaciones;
 
+    private String horaSalida;
+
+    private String horaLlegadaEstimada;
+
+    private Long idRuta;
+
+    private String codigoRuta;
+
+    private String nombreRuta;
+
 }

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Notificacion } from '../models/notificacion';
 import { API_BASE_URL } from '../config/api.config';
 
@@ -13,6 +13,30 @@ export class NotificacionService {
 
   listar(): Observable<Notificacion[]> {
     return this.http.get<Notificacion[]>(this.API);
+  }
+
+  recientes(): Observable<Notificacion[]> {
+    return this.http.get<Notificacion[]>(`${this.API}/recientes`);
+  }
+
+  listarPorUsuario(idUsuario: number): Observable<Notificacion[]> {
+    return this.http.get<Notificacion[]>(`${this.API}/usuario/${idUsuario}`);
+  }
+
+  contarNoLeidasUsuario(idUsuario: number): Observable<number> {
+    return this.http
+      .get<{ total: number }>(`${this.API}/usuario/${idUsuario}/no-leidas`)
+      .pipe(map((r) => r.total));
+  }
+
+  contarNoLeidasGlobales(): Observable<number> {
+    return this.http
+      .get<{ total: number }>(`${this.API}/no-leidas`)
+      .pipe(map((r) => r.total));
+  }
+
+  marcarLeida(id: number): Observable<Notificacion> {
+    return this.http.patch<Notificacion>(`${this.API}/${id}/leer`, {});
   }
 
   buscarPorId(id: number): Observable<Notificacion> {

@@ -1,0 +1,553 @@
+/* ================================================================
+   LOGIN PAGE — RUTASMART UTP — UI/UX PRO MAX
+================================================================ */
+
+/* ── Shell pantalla completa ── */
+.login-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: #050508;
+}
+
+/* ═══════════════════════════════════════
+   FONDO: IMAGEN UTP + OVERLAYS PREMIUM
+═══════════════════════════════════════ */
+.login-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('/utp-sede.jpg');
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+  z-index: 0;
+  transform: scale(1.08);
+  animation: subtle-zoom 20s ease-in-out infinite alternate;
+  filter: brightness(0.65) saturate(1.2);
+}
+
+@keyframes subtle-zoom {
+  from { transform: scale(1.05); }
+  to   { transform: scale(1.12); }
+}
+
+/* Overlay multicapa: oscuro + rojo dramático + viñeta */
+.login-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    /* Oscurecido base */
+    linear-gradient(
+      180deg,
+      rgba(3, 1, 8, 0.55) 0%,
+      rgba(5, 2, 10, 0.65) 40%,
+      rgba(8, 3, 12, 0.80) 100%
+    ),
+    /* Glow rojo dramático inferior-izquierda */
+    radial-gradient(
+      ellipse 80% 60% at 15% 90%,
+      rgba(180, 10, 10, 0.45) 0%,
+      rgba(140, 5, 5, 0.20) 45%,
+      transparent 70%
+    ),
+    /* Glow rojo suave superior-derecha */
+    radial-gradient(
+      ellipse 60% 50% at 85% 5%,
+      rgba(220, 38, 38, 0.22) 0%,
+      transparent 60%
+    ),
+    /* Viñeta negra bordes */
+    radial-gradient(
+      ellipse 120% 120% at 50% 50%,
+      transparent 40%,
+      rgba(0,0,0, 0.55) 100%
+    );
+  z-index: 1;
+}
+
+/* Partículas de luz flotantes (pseudo-elementos decorativos) */
+.login-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20% 30%, rgba(255,255,255,.18) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 15%, rgba(255,255,255,.12) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 60% 70%, rgba(255,200,200,.10) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 85%, rgba(255,255,255,.08) 0%, transparent 100%),
+    radial-gradient(2px 2px at 90% 55%, rgba(255,255,255,.07) 0%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
+  animation: twinkle 6s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  from { opacity: 0.4; }
+  to   { opacity: 1; }
+}
+
+/* Línea de acento rojo horizontal (efecto arquitectónico) */
+.login-bg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(220,38,38,.6) 20%,
+    rgba(255,80,80,.9) 50%,
+    rgba(220,38,38,.6) 80%,
+    transparent 100%
+  );
+  z-index: 3;
+  box-shadow: 0 0 30px rgba(220,38,38,.5), 0 0 60px rgba(220,38,38,.3);
+}
+
+/* ═══════════════════════════════════════
+   CONTENEDOR CENTRAL
+═══════════════════════════════════════ */
+.login-center {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 32px 16px;
+}
+
+/* ═══════════════════════════════════════
+   CARD: GLASSMORPHISM PREMIUM
+═══════════════════════════════════════ */
+.login-card {
+  background: linear-gradient(
+    145deg,
+    rgba(12, 10, 20, 0.88) 0%,
+    rgba(8, 5, 15, 0.92) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-left: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 24px;
+  padding: 44px 40px 36px;
+  width: 100%;
+  max-width: 390px;
+  backdrop-filter: blur(40px) saturate(1.4);
+  -webkit-backdrop-filter: blur(40px) saturate(1.4);
+  box-shadow:
+    0 0 0 1px rgba(220, 38, 38, 0.12),
+    0 40px 100px rgba(0, 0, 0, 0.80),
+    0 0 80px rgba(220, 38, 38, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: card-enter .6s cubic-bezier(.22,.68,0,1.2) both;
+}
+
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ═══════════════════════════════════════
+   LOGO CIRCULAR PREMIUM
+═══════════════════════════════════════ */
+.login-logo {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #fff;
+  margin-bottom: 20px;
+  position: relative;
+  box-shadow:
+    0 0 0 8px rgba(220, 38, 38, 0.12),
+    0 0 0 16px rgba(220, 38, 38, 0.05),
+    0 16px 48px rgba(220, 38, 38, 0.55);
+  animation: logo-pulse 3s ease-in-out infinite;
+}
+
+@keyframes logo-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 8px rgba(220, 38, 38, 0.12),
+      0 0 0 16px rgba(220, 38, 38, 0.05),
+      0 16px 48px rgba(220, 38, 38, 0.55);
+  }
+  50% {
+    box-shadow:
+      0 0 0 10px rgba(220, 38, 38, 0.18),
+      0 0 0 20px rgba(220, 38, 38, 0.08),
+      0 16px 64px rgba(220, 38, 38, 0.70);
+  }
+}
+
+/* Shimmer en el logo */
+.login-logo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,.25) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+/* ── Título ── */
+.login-title {
+  margin: 0 0 5px;
+  font-size: 24px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -.02em;
+  text-shadow: 0 2px 20px rgba(220,38,38,.25);
+}
+
+.login-subtitle {
+  margin: 0 0 30px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.38);
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════
+   FORMULARIO
+═══════════════════════════════════════ */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  text-align: left;
+}
+
+.field { display: flex; flex-direction: column; }
+
+.field label {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 8px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+/* Input wrap glassmorphism */
+.input-wrap {
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 12px;
+  padding: 0 16px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  transition: border-color .25s, box-shadow .25s, background .25s;
+  position: relative;
+}
+
+.input-wrap:focus-within {
+  background: rgba(220, 38, 38, 0.06);
+  border-color: rgba(220, 38, 38, 0.50);
+  box-shadow:
+    0 0 0 3px rgba(220, 38, 38, 0.10),
+    0 4px 20px rgba(220, 38, 38, 0.12);
+}
+
+.input-wrap input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #f0f2f8;
+  font-size: 14px;
+  font-family: inherit;
+  text-transform: none !important;
+}
+.input-wrap input::placeholder { color: rgba(255,255,255,.20); }
+.input-wrap input:disabled { opacity: .5; }
+
+.input-wrap-pw { position: relative; }
+
+.pw-toggle {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  padding: 4px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  transition: color .15s;
+  flex-shrink: 0;
+}
+.pw-toggle:hover { color: rgba(255,255,255,.55); }
+
+/* ── Opciones: recordarme + olvidaste ── */
+.login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: -4px;
+}
+
+.remember-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: rgba(255,255,255,.40);
+  cursor: pointer;
+  user-select: none;
+}
+.remember-label input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: #dc2626;
+  cursor: pointer;
+}
+
+.forgot-link {
+  font-size: 12px;
+  color: #f87171;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color .15s;
+}
+.forgot-link:hover { color: #fca5a5; text-shadow: 0 0 12px rgba(248,113,113,.4); }
+
+/* ── Error ── */
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(220,38,38,.12);
+  border: 1px solid rgba(220,38,38,.28);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #fca5a5;
+  font-weight: 500;
+  animation: shake .4s ease;
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%,60%  { transform: translateX(-5px); }
+  40%,80%  { transform: translateX(5px); }
+}
+
+.login-session-hint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  font-size: 12px;
+  color: #86efac;
+}
+
+.login-session-hint strong { color: #bbf7d0; }
+
+.login-session-clear {
+  flex-shrink: 0;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  background: rgba(220, 38, 38, 0.12);
+  color: #fca5a5;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.login-session-clear:hover {
+  background: rgba(220, 38, 38, 0.22);
+}
+
+/* ═══════════════════════════════════════
+   BOTÓN INICIAR SESIÓN — PREMIUM
+═══════════════════════════════════════ */
+.login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 50px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 60%, #991b1b 100%);
+  color: #fff;
+  font-size: 14.5px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: all .25s cubic-bezier(.22,.68,0,1.2);
+  box-shadow:
+    0 8px 28px rgba(220, 38, 38, 0.50),
+    0 0 0 1px rgba(255,255,255,.06) inset;
+  letter-spacing: .04em;
+  font-family: inherit;
+  margin-top: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer animado en el botón */
+.login-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.15),
+    transparent
+  );
+  transition: left .5s ease;
+}
+
+.login-btn:hover:not(:disabled)::before {
+  left: 150%;
+}
+
+.login-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 60%, #b91c1c 100%);
+  box-shadow:
+    0 12px 40px rgba(220, 38, 38, 0.70),
+    0 0 0 1px rgba(255,255,255,.08) inset;
+  transform: translateY(-2px) scale(1.01);
+}
+
+.login-btn:active:not(:disabled) {
+  transform: translateY(0) scale(.99);
+}
+
+.login-btn:disabled {
+  opacity: .65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Spinner ── */
+.login-spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .65s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+.login-footer {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  width: 100%;
+  text-align: center;
+}
+.login-footer p { margin: 0; font-size: 12px; color: rgba(255,255,255,.28); }
+.login-footer a {
+  color: #f87171;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color .15s;
+}
+.login-footer a:hover { color: #fca5a5; }
+
+/* ── Badge UTP inferior ── */
+.login-brand-bottom {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.utp-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .16em;
+  padding: 4px 10px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(220,38,38,.35);
+}
+
+.utp-label {
+  font-size: 10px;
+  color: rgba(255,255,255,.22);
+  font-weight: 500;
+  letter-spacing: .02em;
+}
+
+/* ═══════════════════════════════════════
+   DETALLE DECORATIVO — ESQUINAS GLOW
+═══════════════════════════════════════ */
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(220,38,38,.6) 30%,
+    rgba(255,100,100,.8) 50%,
+    rgba(220,38,38,.6) 70%,
+    transparent 100%
+  );
+  border-radius: 24px 24px 0 0;
+}
+
+.login-card {
+  position: relative; /* asegurar que ::before funcione */
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 36px 24px 28px;
+    border-radius: 20px;
+    max-width: 100%;
+    margin: 0 8px;
+  }
+}

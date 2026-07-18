@@ -39,8 +39,16 @@ function mensajeDelServidor(error: HttpErrorResponse): string | null {
   const mensaje = error.error?.message ?? error.error?.mensaje;
   if (typeof mensaje !== 'string' || !mensaje.trim()) return null;
 
-  // Los mensajes de validación del backend sí son útiles para la persona usuaria.
-  return error.status === 400 || error.status === 422 ? mensaje : null;
+  // Mensajes del backend útiles para la persona usuaria (validación o reglas de negocio).
+  if (error.status === 400 || error.status === 422 || error.status === 404) {
+    return mensaje;
+  }
+
+  if (error.status >= 500 && mensaje && !mensaje.includes('given id must not be null')) {
+    return mensaje;
+  }
+
+  return null;
 }
 
 /** Proporciona mensajes comprensibles y relacionados con la transacción fallida. */

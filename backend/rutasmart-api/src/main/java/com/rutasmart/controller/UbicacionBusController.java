@@ -24,6 +24,18 @@ public class UbicacionBusController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @GetMapping("/activas")
+    public List<UbicacionBusDTO> listarActivas() {
+        return ubicacionBusService.listarActivas();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/viaje/{idViaje}/ultima")
+    public UbicacionBusDTO ultimaPorViaje(@PathVariable Long idViaje) {
+        return ubicacionBusService.ultimaPorViaje(idViaje);
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public UbicacionBusDTO buscarPorId(@PathVariable Long id) {
         return ubicacionBusService.buscarPorId(id);

@@ -40,4 +40,8 @@ export interface DashboardAlumno {
    */
   horaLlegadaBus: string;
 
+  idRuta?: number;
+  codigoRuta?: string;
+  idViaje?: number;
+
 }

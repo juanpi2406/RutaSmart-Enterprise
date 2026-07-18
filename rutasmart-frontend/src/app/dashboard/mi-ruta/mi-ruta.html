@@ -11,7 +11,7 @@
         <p style="color: var(--muted);">Cargando...</p>
     } @else if(sinAsignacion){
         <div class="tabla-container" style="padding: 30px; text-align: center; color: var(--muted);">
-            No tienes una ruta asignada actualmente.
+            {{ errorMsg || 'No tienes una ruta asignada actualmente.' }}
         </div>
     } @else {
 
@@ -32,6 +32,26 @@
                 </div>
             </div>
         </div>
+
+        @if(mapa?.mapeable){
+        <section class="panel mapa-ruta">
+          <div class="panel-header"><h3>Mapa de la ruta</h3></div>
+          <app-route-map
+            [autoDemo]="true"
+            [rutaPuntos]="mapa!.puntos"
+            [marcadores]="mapa!.marcadores"
+            [rutaCodigo]="mapa!.codigo"
+            [rutaNombre]="mapa!.nombre"
+            [colorPrimario]="mapa!.colorPrimario"
+            [colorDestino]="mapa!.colorDestino"
+            [rutaId]="mapa!.codigo">
+          </app-route-map>
+        </section>
+        } @else if(mapa){
+        <div class="tabla-container mapa-sin-gps">
+          <i class="bi bi-geo-alt"></i> {{ mapa.mensaje || 'Esta ruta aún no tiene paraderos con coordenadas GPS.' }}
+        </div>
+        }
 
         <div class="tabla-container">
             <table>

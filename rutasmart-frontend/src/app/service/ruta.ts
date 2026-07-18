@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Ruta } from '../models/ruta';
+import { LimpiezaSinGps } from '../models/limpieza-sin-gps';
 import { API_BASE_URL } from '../config/api.config';
 
 @Injectable({
@@ -29,5 +30,9 @@ export class RutaService {
 
   eliminar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.API}/${id}`);
+  }
+
+  limpiarSinGps(): Observable<LimpiezaSinGps> {
+    return this.http.post<LimpiezaSinGps>(`${this.API}/limpiar-sin-gps`, {});
   }
 }

@@ -34,4 +34,7 @@ public class UsuarioUpdateDTO {
     @NotNull(message = "Debe indicar el estado.")
     private Boolean estado;
 
+    /** Nueva contraseña (opcional). */
+    private String password;
+
 }

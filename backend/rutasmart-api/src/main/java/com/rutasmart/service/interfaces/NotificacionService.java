@@ -16,4 +16,16 @@ public interface NotificacionService {
 
     void eliminar(Long id);
 
+    List<NotificacionDTO> listarPorUsuario(Long idUsuario);
+
+    long contarNoLeidas(Long idUsuario);
+
+    long contarNoLeidasGlobales();
+
+    NotificacionDTO marcarLeida(Long id);
+
+    List<NotificacionDTO> listarRecientes();
+
+    NotificacionDTO enviar(Long idUsuario, String titulo, String mensaje, String tipo);
+
 }

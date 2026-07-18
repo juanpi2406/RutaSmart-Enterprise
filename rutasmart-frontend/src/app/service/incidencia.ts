@@ -15,6 +15,10 @@ export class IncidenciaService {
     return this.http.get<Incidencia[]>(this.API);
   }
 
+  listarPorUsuario(idUsuario: number): Observable<Incidencia[]> {
+    return this.http.get<Incidencia[]>(`${this.API}/usuario/${idUsuario}`);
+  }
+
   buscarPorId(id: number): Observable<Incidencia> {
     return this.http.get<Incidencia>(`${this.API}/${id}`);
   }

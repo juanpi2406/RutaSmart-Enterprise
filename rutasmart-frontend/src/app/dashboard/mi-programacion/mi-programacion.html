@@ -3,7 +3,7 @@
     <div class="page-header">
         <div>
             <h2>Mi Programación</h2>
-            <p>Consulta los viajes que tienes asignados.</p>
+            <p>Viajes de hoy y próximas fechas. La plantilla de programación se repite; cada día se genera un viaje nuevo.</p>
         </div>
     </div>
 
@@ -15,6 +15,91 @@
         </div>
     } @else {
 
+        <div class="cards" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 18px;">
+            <div class="card">
+                <i class="bi bi-calendar-day-fill"></i>
+                <div>
+                    <span>Pendientes hoy</span>
+                    <h2>{{ viajesPendientes.length }}</h2>
+                </div>
+            </div>
+            <div class="card">
+                <i class="bi bi-check-circle-fill"></i>
+                <div>
+                    <span>Completados hoy</span>
+                    <h2>{{ viajesCompletados.length }}</h2>
+                </div>
+            </div>
+            <div class="card">
+                <i class="bi bi-calendar-event-fill"></i>
+                <div>
+                    <span>Próximos días</span>
+                    <h2>{{ viajesProximos.length }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="section-title">Pendientes de hoy</h3>
+        <div class="tabla-container" style="margin-bottom: 20px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ruta</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(viaje of viajesPendientes; track viaje.idViaje){
+                    <tr>
+                        <td>{{ nombreRuta(viaje.idProgramacion) }}</td>
+                        <td>{{ viaje.fechaViaje }}</td>
+                        <td><span class="badge warning">{{ viaje.estado }}</span></td>
+                        <td>{{ viaje.observaciones ?? '-' }}</td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--muted); padding: 24px;">
+                            No tienes viajes pendientes para hoy.
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="section-title">Completados hoy</h3>
+        <div class="tabla-container" style="margin-bottom: 20px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ruta</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(viaje of viajesCompletados; track viaje.idViaje){
+                    <tr>
+                        <td>{{ nombreRuta(viaje.idProgramacion) }}</td>
+                        <td>{{ viaje.fechaViaje }}</td>
+                        <td><span class="badge info">{{ viaje.estado }}</span></td>
+                        <td>{{ viaje.observaciones ?? '-' }}</td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--muted); padding: 24px;">
+                            Aún no completas viajes hoy.
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="section-title">Próximos días</h3>
         <div class="tabla-container">
             <table>
                 <thead>
@@ -26,23 +111,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(viaje of viajesLista; track viaje.idViaje){
+                    @for(viaje of viajesProximos; track viaje.idViaje){
                     <tr>
                         <td>{{ nombreRuta(viaje.idProgramacion) }}</td>
                         <td>{{ viaje.fechaViaje }}</td>
-                        <td>
-                            <span class="badge"
-                                [class.success]="viaje.estado === 'FINALIZADO'"
-                                [class.danger]="viaje.estado === 'CANCELADO'">
-                                {{ viaje.estado }}
-                            </span>
-                        </td>
+                        <td><span class="badge">{{ viaje.estado }}</span></td>
                         <td>{{ viaje.observaciones ?? '-' }}</td>
                     </tr>
                     } @empty {
                     <tr>
-                        <td colspan="4" style="text-align: center; color: var(--muted); padding: 30px;">
-                            No tienes viajes asignados.
+                        <td colspan="4" style="text-align: center; color: var(--muted); padding: 24px;">
+                            No hay viajes programados para fechas futuras.
                         </td>
                     </tr>
                     }

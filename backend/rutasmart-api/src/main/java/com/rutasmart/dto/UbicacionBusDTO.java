@@ -24,4 +24,7 @@ public class UbicacionBusDTO {
 
     private LocalDateTime fechaHora;
 
+    /** Código de la ruta del viaje (para tracking en mapa). */
+    private String codigoRuta;
+
 }

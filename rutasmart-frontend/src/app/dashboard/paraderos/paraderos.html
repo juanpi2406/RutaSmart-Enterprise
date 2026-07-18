@@ -89,7 +89,7 @@
                 <form>
                     <div class="form-group">
                         <label>Ruta</label>
-                        <select [(ngModel)]="form.idRuta" name="idRuta">
+                        <select [(ngModel)]="form.idRuta" name="idRuta" (ngModelChange)="onRutaFormChange()">
                             @for(ruta of rutas; track ruta.idRuta){
                                 <option [ngValue]="ruta.idRuta">{{ ruta.nombre }}</option>
                             }
@@ -132,6 +132,26 @@
                             <option [ngValue]="true">Activo</option>
                             <option [ngValue]="false">Inactivo</option>
                         </select>
+                    </div>
+
+                    <div class="form-group preview-mapa">
+                        <label>Vista previa de ruta</label>
+                        @if(cargandoPreview){
+                          <app-skeleton-loader [lineas]="3"></app-skeleton-loader>
+                        } @else if(previewMapa?.mapeable){
+                          <app-route-map
+                            [autoDemo]="false"
+                            [rutaPuntos]="previewMapa!.puntos"
+                            [marcadores]="previewMapa!.marcadores"
+                            [rutaCodigo]="previewMapa!.codigo"
+                            [rutaNombre]="previewMapa!.nombre"
+                            [colorPrimario]="previewMapa!.colorPrimario"
+                            [colorDestino]="previewMapa!.colorDestino"
+                            [rutaId]="previewMapa!.codigo">
+                          </app-route-map>
+                        } @else {
+                          <p class="preview-hint">{{ previewMapa?.mensaje || 'Agrega al menos 2 paraderos con GPS para ver el mapa.' }}</p>
+                        }
                     </div>
 
                     <div class="modal-footer">

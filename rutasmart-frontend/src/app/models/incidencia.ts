@@ -6,4 +6,6 @@ export interface Incidencia {
     descripcion: string;
     estado: string;
     fechaRegistro?: string;
+    latitud?: number;
+    longitud?: number;
 }

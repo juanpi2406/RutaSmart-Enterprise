@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChoferService } from '../../service/chofer';
 import { ViajeService } from '../../service/viaje';
@@ -23,48 +23,72 @@ export class MiProgramacionComponent implements OnInit {
   private rutaService = inject(RutaService);
   private programacionService = inject(ProgramacionViajeService);
   private session = inject(SessionService);
+  private cdr = inject(ChangeDetectorRef);
 
   cargando = false;
   sinChofer = false;
 
   rutas: Ruta[] = [];
   programaciones: ProgramacionViaje[] = [];
-  viajesLista: Viaje[] = [];
+  viajesHoy: Viaje[] = [];
+  viajesPendientes: Viaje[] = [];
+  viajesCompletados: Viaje[] = [];
+  viajesProximos: Viaje[] = [];
 
   ngOnInit(): void {
     this.cargando = true;
     const usuario = this.session.obtener();
+    if (!usuario?.idUsuario) {
+      this.sinChofer = true;
+      this.cargando = false;
+      return;
+    }
 
-    this.rutaService.listar().subscribe({ next: (data) => this.rutas = data });
-    this.programacionService.listar().subscribe({ next: (data) => this.programaciones = data });
+    this.rutaService.listar().subscribe({ next: (data) => (this.rutas = data) });
+    this.programacionService.listar().subscribe({ next: (data) => (this.programaciones = data) });
 
-    this.choferService.listar().subscribe({
-      next: (respuesta) => {
-        const chofer = respuesta.data.find(c => c.idUsuario === usuario?.idUsuario);
-
-        if (!chofer) {
-          this.sinChofer = true;
-          this.cargando = false;
-          return;
-        }
-
-        this.viajeService.listar().subscribe({
+    this.choferService.obtenerPorUsuario(usuario.idUsuario).subscribe({
+      next: (resp) => {
+        this.viajeService.listarPorChofer(resp.data.idChofer).subscribe({
           next: (data) => {
-            this.viajesLista = data
-              .filter(v => v.idChofer === chofer.idChofer)
-              .sort((a, b) => b.fechaViaje.localeCompare(a.fechaViaje));
+            this.clasificarViajes(data);
             this.cargando = false;
+            this.cdr.markForCheck();
           },
           error: () => {
             this.cargando = false;
+            this.cdr.markForCheck();
           }
         });
       },
       error: () => {
         this.sinChofer = true;
         this.cargando = false;
+        this.cdr.markForCheck();
       }
     });
+  }
+
+  private clasificarViajes(viajes: Viaje[]): void {
+    const hoy = this.fechaLocalIso();
+    this.viajesHoy = viajes.filter(v => v.fechaViaje === hoy);
+    this.viajesPendientes = this.viajesHoy.filter(v =>
+      ['PROGRAMADO', 'EN_CURSO', 'EN_RUTA'].includes((v.estado || '').toUpperCase())
+    );
+    this.viajesCompletados = this.viajesHoy.filter(v =>
+      ['FINALIZADO', 'COMPLETADO'].includes((v.estado || '').toUpperCase())
+    );
+    this.viajesProximos = viajes.filter(v =>
+      v.fechaViaje > hoy && (v.estado || '').toUpperCase() !== 'CANCELADO'
+    );
+  }
+
+  private fechaLocalIso(): string {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
   }
 
   nombreRuta(idProgramacion: number): string {
@@ -72,5 +96,4 @@ export class MiProgramacionComponent implements OnInit {
     if (!prog) return '-';
     return this.rutas.find(r => r.idRuta === prog.idRuta)?.nombre ?? '-';
   }
-
 }

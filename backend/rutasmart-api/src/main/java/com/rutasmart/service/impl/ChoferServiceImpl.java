@@ -8,11 +8,14 @@ import com.rutasmart.entity.Usuario;
 import com.rutasmart.exception.BusinessException;
 import com.rutasmart.exception.ResourceNotFoundException;
 import com.rutasmart.mapper.ChoferMapper;
+import com.rutasmart.repository.AsignacionProgramacionRepository;
 import com.rutasmart.repository.ChoferRepository;
 import com.rutasmart.repository.UsuarioRepository;
+import com.rutasmart.repository.ViajeRepository;
 import com.rutasmart.service.interfaces.ChoferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,6 +26,8 @@ public class ChoferServiceImpl implements ChoferService {
     private final ChoferRepository choferRepository;
     private final UsuarioRepository usuarioRepository;
     private final ChoferMapper choferMapper;
+    private final ViajeRepository viajeRepository;
+    private final AsignacionProgramacionRepository asignacionRepository;
 
     @Override
     public List<ChoferResponseDTO> listar() {
@@ -40,6 +45,19 @@ public class ChoferServiceImpl implements ChoferService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Chofer no encontrado."
+                        ));
+
+        return choferMapper.toResponseDTO(chofer);
+
+    }
+
+    @Override
+    public ChoferResponseDTO obtenerPorIdUsuario(Long idUsuario) {
+
+        Chofer chofer = choferRepository.findByUsuario_IdUsuario(idUsuario)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Chofer no encontrado para el usuario."
                         ));
 
         return choferMapper.toResponseDTO(chofer);
@@ -112,6 +130,7 @@ public class ChoferServiceImpl implements ChoferService {
     }
 
     @Override
+    @Transactional
     public void eliminar(Long id) {
 
         Chofer chofer = choferRepository.findById(id)
@@ -119,6 +138,16 @@ public class ChoferServiceImpl implements ChoferService {
                         new ResourceNotFoundException(
                                 "Chofer no encontrado."
                         ));
+
+        if (viajeRepository.countByChofer_IdChofer(id) > 0) {
+            throw new BusinessException(
+                    "No se puede eliminar el chofer porque tiene viajes registrados. Elimina los viajes primero.");
+        }
+
+        if (!asignacionRepository.findByChofer_IdChofer(id).isEmpty()) {
+            throw new BusinessException(
+                    "No se puede eliminar el chofer porque tiene asignaciones activas.");
+        }
 
         choferRepository.delete(chofer);
 

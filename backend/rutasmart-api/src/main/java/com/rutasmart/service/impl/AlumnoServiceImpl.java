@@ -8,6 +8,7 @@ import com.rutasmart.exception.ResourceNotFoundException;
 import com.rutasmart.mapper.AlumnoMapper;
 import com.rutasmart.repository.AlumnoRepository;
 import com.rutasmart.repository.UsuarioRepository;
+import com.rutasmart.service.AsistenciaReservaService;
 import com.rutasmart.service.interfaces.AlumnoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,9 +25,23 @@ public class AlumnoServiceImpl implements AlumnoService {
 
     private final AlumnoMapper alumnoMapper;
 
+    private final AsistenciaReservaService asistenciaReservaService;
+
+    private AlumnoDTO enriquecer(Alumno alumno) {
+        AlumnoDTO dto = alumnoMapper.toDTO(alumno);
+        long inasistencias = asistenciaReservaService.contarInasistencias(alumno.getIdAlumno());
+        dto.setInasistencias(inasistencias);
+        dto.setPuedeReservar(!asistenciaReservaService.estaSancionado(alumno.getIdAlumno()));
+        if (inasistencias >= 3) {
+            dto.setBloqueadoReservasHasta(
+                    asistenciaReservaService.calcularFinSancion(alumno.getIdAlumno()).toString());
+        }
+        return dto;
+    }
+
     @Override
     public List<AlumnoDTO> listar() {
-        return alumnoMapper.toDTOList(alumnoRepository.findAll());
+        return alumnoRepository.findAll().stream().map(this::enriquecer).toList();
     }
 
     @Override
@@ -36,7 +51,7 @@ public class AlumnoServiceImpl implements AlumnoService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Alumno no encontrado."));
 
-        return alumnoMapper.toDTO(alumno);
+        return enriquecer(alumno);
     }
 
     @Override
@@ -46,7 +61,7 @@ public class AlumnoServiceImpl implements AlumnoService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Alumno no encontrado para el usuario."));
 
-        return alumnoMapper.toDTO(alumno);
+        return enriquecer(alumno);
     }
 
     @Override
@@ -70,7 +85,7 @@ public class AlumnoServiceImpl implements AlumnoService {
 
         Alumno guardado = alumnoRepository.save(alumno);
 
-        return alumnoMapper.toDTO(guardado);
+        return enriquecer(guardado);
 
     }
 
@@ -103,7 +118,7 @@ public class AlumnoServiceImpl implements AlumnoService {
 
         Alumno actualizado = alumnoRepository.save(alumno);
 
-        return alumnoMapper.toDTO(actualizado);
+        return enriquecer(actualizado);
 
     }
 

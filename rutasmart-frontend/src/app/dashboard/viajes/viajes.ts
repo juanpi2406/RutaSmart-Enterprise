@@ -40,6 +40,8 @@ export class ViajesComponent implements OnInit {
 
   viajesLista: Viaje[] = [];
   viajesFiltrados: Viaje[] = [];
+  historialViajes: Viaje[] = [];
+  tabViajes: 'activos' | 'historial' = 'activos';
   filtroTexto = '';
   filtroEstado = 'TODOS';
   cargando = false;
@@ -50,6 +52,19 @@ export class ViajesComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarCatalogos();
+    this.cargarHistorial();
+  }
+
+  cargarHistorial(): void {
+    this.viajeService.listarHistorial().subscribe({
+      next: (data) => { this.historialViajes = data; this.cdr.markForCheck(); },
+      error: () => undefined
+    });
+  }
+
+  cambiarTab(tab: 'activos' | 'historial'): void {
+    this.tabViajes = tab;
+    this.cdr.markForCheck();
   }
 
   cargarCatalogos(): void {

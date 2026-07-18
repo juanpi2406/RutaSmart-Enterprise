@@ -8,4 +8,7 @@ export interface Ruta {
     distanciaKm?: number;
     tiempoEstimadoMin?: number;
     estado: boolean;
+    sede?: string;
+    /** Calculado en frontend: tiene ≥2 paraderos con GPS */
+    mapeable?: boolean;
 }

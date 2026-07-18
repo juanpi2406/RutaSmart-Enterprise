@@ -1,0 +1,41 @@
+<div class="live-map" [class.live-map--activo]="activo">
+  <div class="live-map__chrome">
+    <div class="live-map__badge">
+      <span class="live-map__codigo">{{ codigoRuta }}</span>
+      <div class="live-map__badge-txt">
+        <strong>{{ nombreRuta }}</strong>
+        <small>{{ etiquetaEstado }}</small>
+      </div>
+    </div>
+
+    <div class="live-map__stats">
+      <div class="live-map__stat">
+        <span>Progreso</span>
+        <strong>{{ progresoPct | number:'1.0-0' }}%</strong>
+      </div>
+      <div class="live-map__stat">
+        <span>Restantes</span>
+        <strong>{{ paradasRestantes }}</strong>
+      </div>
+      <div class="live-map__stat live-map__stat--wide">
+        <span>Parada</span>
+        <strong>{{ etiquetaParaderoActual }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="live-map__progreso">
+    <div class="live-map__progreso-fill" [style.width.%]="progresoPct"></div>
+  </div>
+
+  <div class="live-map__canvas-wrap">
+    <canvas #canvasHost class="live-map__canvas" role="application" aria-label="Animación de ruta en tiempo real"></canvas>
+  </div>
+
+  <div class="live-map__footer">
+    <span><i class="bi bi-mortarboard-fill"></i> {{ paradas[0]?.etiqueta ?? 'Origen' }}</span>
+    <span class="live-map__footer-line"></span>
+    <span><i class="bi bi-geo-alt-fill"></i> {{ paradas[paradas.length - 1]?.etiqueta ?? 'Destino' }}</span>
+    <span class="live-map__footer-hint">Lima Sur · Lima</span>
+  </div>
+</div>

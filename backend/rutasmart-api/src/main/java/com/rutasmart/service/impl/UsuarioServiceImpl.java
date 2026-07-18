@@ -297,6 +297,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setEstado(dto.getEstado());
         usuario.setRol(rol);
 
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            usuario.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
+        }
+
         Usuario actualizado = usuarioRepository.save(usuario);
 
         return usuarioMapper.toResponseDTO(actualizado);

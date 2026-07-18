@@ -1,49 +1,254 @@
-<div class="usuarios-container">
+<div class="alumno-page">
 
-    <div class="page-header">
-        <div>
-            <h2>Mi Perfil</h2>
-            <p>Actualiza tu información personal.</p>
-        </div>
+  <div class="page-header">
+    <div>
+      <h2>Mi Perfil</h2>
+      <p>Administra tu cuenta, seguridad y personalización de la plataforma.</p>
     </div>
+  </div>
 
-    @if(cargando){
-        <p style="color: var(--muted);">Cargando...</p>
-    } @else if(usuario){
+  @if(cargando){
+  <div class="loading-inline">
+    <i class="bi bi-arrow-repeat spin"></i> Cargando perfil...
+  </div>
+  } @else if(usuario){
 
-        <div class="tabla-container" style="padding: 24px; max-width: 500px;">
-            <form>
-                <div class="form-group">
-                    <label>Código</label>
-                    <input type="text" [value]="usuario.codigo" disabled>
-                </div>
+  <div class="perfil-layout perfil-layout--tabs">
 
-                <div class="form-group">
-                    <label>Nombres</label>
-                    <input type="text" [(ngModel)]="form.nombres" name="nombres" required>
-                </div>
+    <aside class="perfil-sidebar">
+      <div class="perfil-avatar" [ngStyle]="avatarStyle()">{{ iniciales() }}</div>
+      <h3>{{ usuario.nombres }} {{ usuario.apellidos }}</h3>
+      <p>{{ usuario.correo }}</p>
+      <span class="badge info"><i class="bi" [ngClass]="iconoRol()"></i> {{ rol }}</span>
+      <p class="perfil-codigo">Código: <strong>{{ usuario.codigo }}</strong></p>
 
-                <div class="form-group">
-                    <label>Apellidos</label>
-                    <input type="text" [(ngModel)]="form.apellidos" name="apellidos" required>
-                </div>
+      <nav class="perfil-tabs">
+        <button type="button" [class.active]="tabActiva === 'datos'" (click)="cambiarTab('datos')">
+          <i class="bi bi-person-fill"></i> Datos personales
+        </button>
+        <button type="button" [class.active]="tabActiva === 'seguridad'" (click)="cambiarTab('seguridad')">
+          <i class="bi bi-shield-lock-fill"></i> Seguridad
+        </button>
+        <button type="button" [class.active]="tabActiva === 'apariencia'" (click)="cambiarTab('apariencia')">
+          <i class="bi bi-palette-fill"></i> Apariencia
+        </button>
+        <button type="button" [class.active]="tabActiva === 'preferencias'" (click)="cambiarTab('preferencias')">
+          <i class="bi bi-sliders"></i> Preferencias
+        </button>
+      </nav>
 
-                <div class="form-group">
-                    <label>Correo</label>
-                    <input type="email" [(ngModel)]="form.correo" name="correo" required>
-                </div>
+      <button type="button" class="btn-cancelar perfil-logout" (click)="cerrarSesion()">
+        <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+      </button>
+    </aside>
 
-                <div class="form-group">
-                    <label>Teléfono</label>
-                    <input type="text" [(ngModel)]="form.telefono" name="telefono">
-                </div>
+    <div class="perfil-content">
 
-                <div class="modal-footer">
-                    <button type="button" class="btn-primary" (click)="guardarPerfil()">Guardar cambios</button>
-                </div>
-            </form>
+      @if(tabActiva === 'datos'){
+      <div class="perfil-form-card">
+        <div class="panel-header" style="margin-bottom:18px;">
+          <h3><i class="bi bi-person-vcard-fill"></i> Información personal</h3>
+        </div>
+        <form>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Código</label>
+              <input type="text" [value]="usuario.codigo" disabled>
+            </div>
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input type="text" [(ngModel)]="form.telefono" name="telefono" placeholder="987654321">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombres</label>
+              <input type="text" [(ngModel)]="form.nombres" name="nombres" required>
+            </div>
+            <div class="form-group">
+              <label>Apellidos</label>
+              <input type="text" [(ngModel)]="form.apellidos" name="apellidos" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Correo institucional</label>
+            <input type="email" [(ngModel)]="form.correo" name="correo" required>
+          </div>
+
+          @if(alumno){
+          <div class="perfil-role-block">
+            <h4><i class="bi bi-mortarboard-fill"></i> Datos académicos</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Código universitario</label>
+                <input type="text" [value]="alumno.codigoUniversitario" disabled>
+              </div>
+              <div class="form-group">
+                <label>Facultad</label>
+                <input type="text" [value]="alumno.facultad" disabled>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Sede</label>
+                <input type="text" [value]="alumno.sede" disabled>
+              </div>
+              <div class="form-group">
+                <label>Ciclo</label>
+                <input type="text" [value]="alumno.ciclo" disabled>
+              </div>
+            </div>
+          </div>
+          }
+
+          @if(chofer){
+          <div class="perfil-role-block">
+            <h4><i class="bi bi-person-badge-fill"></i> Datos de chofer</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Licencia</label>
+                <input type="text" [value]="chofer.numeroLicencia" disabled>
+              </div>
+              <div class="form-group">
+                <label>Categoría</label>
+                <input type="text" [value]="chofer.categoriaLicencia" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Vencimiento licencia</label>
+              <input type="text" [value]="chofer.fechaVencimiento" disabled>
+            </div>
+          </div>
+          }
+
+          @if(rol === 'ADMINISTRADOR'){
+          <div class="hint-banner" style="margin-top:8px;">
+            <i class="bi bi-shield-check"></i>
+            <span>Cuenta administradora con acceso completo al panel de gestión del sistema.</span>
+          </div>
+          }
+
+          <div class="modal-footer" style="border-top:none;padding:16px 0 0;">
+            <button type="button" class="btn-primary" (click)="guardarPerfil()" [disabled]="guardando">
+              @if(guardando){ <i class="bi bi-arrow-repeat spin"></i> Guardando... }
+              @else { <i class="bi bi-check2-circle"></i> Guardar cambios }
+            </button>
+          </div>
+        </form>
+      </div>
+      }
+
+      @if(tabActiva === 'seguridad'){
+      <div class="perfil-form-card">
+        <div class="panel-header" style="margin-bottom:18px;">
+          <h3><i class="bi bi-key-fill"></i> Cambiar contraseña</h3>
+        </div>
+        <div class="form-group">
+          <label>Nueva contraseña</label>
+          <input type="password" [(ngModel)]="passwordNueva" name="passwordNueva" placeholder="Mínimo 6 caracteres">
+        </div>
+        <div class="form-group">
+          <label>Confirmar contraseña</label>
+          <input type="password" [(ngModel)]="passwordConfirmar" name="passwordConfirmar" placeholder="Repite la contraseña">
+        </div>
+        <div class="hint-banner">
+          <i class="bi bi-info-circle-fill"></i>
+          <span>Usa una contraseña segura. Evita compartirla con otras personas.</span>
+        </div>
+        <button type="button" class="btn-primary" (click)="cambiarPassword()">
+          <i class="bi bi-shield-lock-fill"></i> Actualizar contraseña
+        </button>
+      </div>
+      }
+
+      @if(tabActiva === 'apariencia'){
+      <div class="perfil-form-card">
+        <div class="panel-header" style="margin-bottom:18px;">
+          <h3><i class="bi bi-palette-fill"></i> Personalización visual</h3>
         </div>
 
-    }
+        <div class="form-group">
+          <label>Modo de interfaz</label>
+          <div class="toggle-row">
+            <label class="toggle-item">
+              <input type="radio" name="modo" [value]="true" [(ngModel)]="tema.modoOscuro" (change)="aplicarTema()">
+              <span><i class="bi bi-moon-stars-fill"></i> Oscuro</span>
+            </label>
+            <label class="toggle-item">
+              <input type="radio" name="modo" [value]="false" [(ngModel)]="tema.modoOscuro" (change)="aplicarTema()">
+              <span><i class="bi bi-sun-fill"></i> Claro</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Paleta de color</label>
+          <div class="color-presets">
+            @for(preset of coloresTema; track preset.nombre){
+            <button type="button" class="color-preset" (click)="aplicarTema(preset)" [title]="preset.nombre">
+              <span [style.background]="preset.principal"></span>
+              {{ preset.nombre }}
+            </button>
+            }
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Color del avatar</label>
+          <div class="avatar-colors">
+            @for(color of coloresAvatar; track color){
+            <button type="button"
+              class="avatar-color-btn"
+              [class.active]="preferencias.avatarColor === color"
+              [style.background]="color"
+              (click)="seleccionarAvatar(color)"></button>
+            }
+          </div>
+        </div>
+
+        <button type="button" class="btn-secondary" (click)="restablecerTema()">
+          <i class="bi bi-arrow-counterclockwise"></i> Restablecer apariencia
+        </button>
+      </div>
+      }
+
+      @if(tabActiva === 'preferencias'){
+      <div class="perfil-form-card">
+        <div class="panel-header" style="margin-bottom:18px;">
+          <h3><i class="bi bi-sliders"></i> Preferencias de uso</h3>
+        </div>
+
+        <label class="pref-switch">
+          <input type="checkbox" [(ngModel)]="preferencias.notificacionesEmail">
+          <span>Recibir avisos por correo (simulado localmente)</span>
+        </label>
+        <label class="pref-switch">
+          <input type="checkbox" [(ngModel)]="preferencias.alertasViaje">
+          <span>Alertas de estado del bus / viaje</span>
+        </label>
+        <label class="pref-switch">
+          <input type="checkbox" [(ngModel)]="preferencias.recordatoriosReserva">
+          <span>Recordatorios de reservas próximas</span>
+        </label>
+        <label class="pref-switch">
+          <input type="checkbox" [(ngModel)]="preferencias.sidebarCompacto">
+          <span>Barra lateral compacta</span>
+        </label>
+
+        <div class="modal-footer" style="border-top:none;padding:16px 0 0;gap:10px;">
+          <button type="button" class="btn-primary" (click)="guardarPreferencias()">
+            <i class="bi bi-check2"></i> Guardar preferencias
+          </button>
+          <button type="button" class="btn-secondary" (click)="restablecerPreferencias()">
+            Restablecer
+          </button>
+        </div>
+      </div>
+      }
+
+    </div>
+  </div>
+
+  }
 
 </div>

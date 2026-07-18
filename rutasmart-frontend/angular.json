@@ -22,8 +22,8 @@
               }
             ],
         "styles": [
+          "node_modules/leaflet/dist/leaflet.css",
           "src/styles.css",
-
           "./public/css/style.css",
           "./public/css/navbar.css",
           "./public/css/sidebar.css",
@@ -46,8 +46,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "12kB",
+                  "maximumError": "20kB"
                 }
               ],
               "outputHashing": "all"

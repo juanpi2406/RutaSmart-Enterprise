@@ -8,8 +8,13 @@
         </div>
 
         <button class="btn-primary" (click)="abrirModalCrear()">
-            <i class="bi bi-plus-circle-fill"></i> Nueva Ruta
+            <i class="bi bi-map-fill"></i> Nueva Ruta con Mapa
         </button>
+        @if(totalSinGps > 0){
+        <button class="btn-secondary btn-limpiar-gps" (click)="limpiarRutasSinGps()">
+            <i class="bi bi-trash3"></i> Limpiar {{ totalSinGps }} sin GPS
+        </button>
+        }
 
     </div>
 
@@ -31,6 +36,14 @@
             </div>
         </div>
 
+        <div class="card card-warn">
+            <i class="bi bi-geo-alt-fill"></i>
+            <div>
+                <span>Sin mapa GPS</span>
+                <h2>{{ totalSinGps }}</h2>
+            </div>
+        </div>
+
     </div>
 
     <div class="toolbar">
@@ -41,6 +54,12 @@
             <option value="TODOS">Todos</option>
             <option value="ACTIVO">Activas</option>
             <option value="INACTIVO">Inactivas</option>
+        </select>
+
+        <select (change)="cambiarFiltroGps($event)">
+            <option value="TODOS">Todas (GPS)</option>
+            <option value="CON_GPS">Con mapa</option>
+            <option value="SIN_GPS">Sin GPS</option>
         </select>
 
     </div>
@@ -56,6 +75,7 @@
                     <th>Origen</th>
                     <th>Destino</th>
                     <th>Distancia</th>
+                    <th>Mapa</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
@@ -69,6 +89,13 @@
                     <td>{{ ruta.origen }}</td>
                     <td>{{ ruta.destino }}</td>
                     <td>{{ ruta.distanciaKm ?? '-' }} km</td>
+                    <td>
+                        @if(ruta.mapeable){
+                            <span class="badge success"><i class="bi bi-check-lg"></i> GPS OK</span>
+                        } @else {
+                            <span class="badge warning" title="Sin paraderos GPS — el chofer no puede iniciar viaje"><i class="bi bi-exclamation-triangle"></i> Sin GPS</span>
+                        }
+                    </td>
                     <td>
                         @if(ruta.estado){
                             <span class="badge success">Activa</span>
@@ -87,7 +114,7 @@
                 </tr>
                 } @empty {
                 <tr>
-                    <td colspan="7" style="text-align: center; color: var(--muted); padding: 30px;">
+                    <td colspan="8" style="text-align: center; color: var(--muted); padding: 30px;">
                         No se encontraron rutas registradas.
                     </td>
                 </tr>
@@ -100,13 +127,132 @@
 
     @if(mostrarModal){
     <div class="modal-overlay" (click)="cerrarModal()">
-        <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal" [class.modal-wide]="esNuevaRuta" (click)="$event.stopPropagation()">
             <div class="modal-header">
-                <h3>{{ rutaEnEdicion?.idRuta ? 'Editar Ruta' : 'Nueva Ruta' }}</h3>
+                <h3>
+                    @if(rutaEnEdicion?.idRuta){
+                        Editar Ruta
+                    } @else {
+                        Nueva Ruta — Paso {{ pasoWizard }} de 3
+                    }
+                </h3>
                 <button class="btn-close" (click)="cerrarModal()">&times;</button>
             </div>
 
+            @if(esNuevaRuta){
+            <div class="wizard-steps">
+                <span [class.active]="pasoWizard >= 1">1. Datos</span>
+                <span [class.active]="pasoWizard >= 2">2. Mapa</span>
+                <span [class.active]="pasoWizard >= 3">3. Preview</span>
+            </div>
+            }
+
             <div class="modal-body">
+                @if(esNuevaRuta && pasoWizard === 1){
+                <form>
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Código</label>
+                            <input type="text" [(ngModel)]="form.codigo" name="codigo" placeholder="Ej: R-03" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" [(ngModel)]="form.nombre" name="nombre" placeholder="Ej: UTP Sur → Villa" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Origen (texto)</label>
+                            <input type="text" [(ngModel)]="form.origen" name="origen" placeholder="Se completa al marcar en mapa">
+                        </div>
+                        <div class="form-group">
+                            <label>Destino (texto)</label>
+                            <input type="text" [(ngModel)]="form.destino" name="destino" placeholder="Se completa al marcar en mapa">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <input type="text" [(ngModel)]="form.descripcion" name="descripcion">
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Distancia (km)</label>
+                            <input type="number" [(ngModel)]="form.distanciaKm" name="distanciaKm">
+                        </div>
+                        <div class="form-group">
+                            <label>Tiempo estimado (min)</label>
+                            <input type="number" [(ngModel)]="form.tiempoEstimadoMin" name="tiempoEstimadoMin">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select [(ngModel)]="form.estado" name="estado">
+                            <option [ngValue]="true">Activa</option>
+                            <option [ngValue]="false">Inactiva</option>
+                        </select>
+                    </div>
+                </form>
+                }
+
+                @if(esNuevaRuta && pasoWizard === 2){
+                <div class="mapa-wizard">
+                    <app-route-editor-map
+                        [puntos]="puntosMapa"
+                        (puntosChange)="onPuntosMapaChange($event)">
+                    </app-route-editor-map>
+
+                    <div class="mapa-toolbar">
+                        <button type="button" class="btn-secondary btn-sm" (click)="quitarUltimoPunto()" [disabled]="!puntosMapa.length">
+                            <i class="bi bi-arrow-counterclockwise"></i> Deshacer último
+                        </button>
+                        <button type="button" class="btn-secondary btn-sm" (click)="limpiarPuntosMapa()" [disabled]="!puntosMapa.length">
+                            <i class="bi bi-trash"></i> Limpiar
+                        </button>
+                        <span class="mapa-contador">{{ puntosMapa.length }} punto(s) — mínimo 2</span>
+                    </div>
+
+                    @if(puntosMapa.length){
+                    <ul class="paradas-lista">
+                        @for(p of puntosMapa; track p.orden; let i = $index){
+                        <li>
+                            <span class="parada-num">{{ i + 1 }}</span>
+                            <input type="text" [(ngModel)]="p.nombre" [name]="'parada'+i" class="parada-nombre">
+                            <span class="parada-coords">{{ p.lat | number:'1.4-4' }}, {{ p.lng | number:'1.4-4' }}</span>
+                        </li>
+                        }
+                    </ul>
+                    }
+                </div>
+                }
+
+                @if(esNuevaRuta && pasoWizard === 3){
+                <div class="preview-wizard">
+                    <p class="preview-hint">
+                        <i class="bi bi-bus-front-fill"></i>
+                        Vista previa de la animación simulada (sin GPS real). Al guardar, el chofer verá el mismo recorrido.
+                    </p>
+                    <app-route-map
+                        [autoDemo]="true"
+                        [rutaPuntos]="puntosPreview"
+                        [marcadores]="marcadoresPreview"
+                        [rutaCodigo]="form.codigo || 'NUEVA'"
+                        [rutaNombre]="form.nombre || 'Nueva ruta'"
+                        [rutaId]="form.codigo || 'PREVIEW'"
+                        [tituloOrigen]="form.origen || 'Origen'"
+                        [tituloDestino]="form.destino || 'Destino'">
+                    </app-route-map>
+                    <div class="preview-resumen">
+                        <span><strong>{{ form.codigo }}</strong> — {{ form.nombre }}</span>
+                        <span>{{ puntosMapa.length }} paradas · {{ form.origen }} → {{ form.destino }}</span>
+                    </div>
+                </div>
+                }
+
+                @if(!esNuevaRuta){
                 <form>
                     <div class="form-group">
                         <label>Código</label>
@@ -150,12 +296,30 @@
                             <option [ngValue]="false">Inactiva</option>
                         </select>
                     </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
-                        <button type="button" class="btn-primary" (click)="guardarRuta()">Guardar</button>
-                    </div>
                 </form>
+                }
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+
+                    @if(esNuevaRuta && pasoWizard > 1){
+                    <button type="button" class="btn-secondary" (click)="pasoAnterior()">Atrás</button>
+                    }
+
+                    @if(esNuevaRuta && pasoWizard < 3){
+                    <button type="button" class="btn-primary" (click)="siguientePaso()">Siguiente</button>
+                    }
+
+                    @if(esNuevaRuta && pasoWizard === 3){
+                    <button type="button" class="btn-primary" (click)="guardarRuta()" [disabled]="guardando">
+                        {{ guardando ? 'Guardando…' : 'Guardar ruta' }}
+                    </button>
+                    }
+
+                    @if(!esNuevaRuta){
+                    <button type="button" class="btn-primary" (click)="guardarRuta()">Guardar</button>
+                    }
+                </div>
             </div>
 
         </div>

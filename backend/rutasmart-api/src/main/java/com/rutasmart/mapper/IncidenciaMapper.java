@@ -12,6 +12,8 @@ public interface IncidenciaMapper {
 
     @Mapping(source="usuario.idUsuario",target="idUsuario")
     @Mapping(source="viaje.idViaje",target="idViaje")
+    @Mapping(target = "latitud", ignore = true)
+    @Mapping(target = "longitud", ignore = true)
     IncidenciaDTO toDTO(Incidencia entity);
 
     @Mapping(target="usuario",ignore=true)

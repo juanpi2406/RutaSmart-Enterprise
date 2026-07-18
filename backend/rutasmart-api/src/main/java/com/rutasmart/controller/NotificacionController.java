@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notificaciones")
@@ -21,6 +22,36 @@ public class NotificacionController {
     @GetMapping
     public List<NotificacionDTO> listar() {
         return notificacionService.listar();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/recientes")
+    public List<NotificacionDTO> recientes() {
+        return notificacionService.listarRecientes();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/usuario/{idUsuario}")
+    public List<NotificacionDTO> porUsuario(@PathVariable Long idUsuario) {
+        return notificacionService.listarPorUsuario(idUsuario);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/usuario/{idUsuario}/no-leidas")
+    public Map<String, Long> noLeidasUsuario(@PathVariable Long idUsuario) {
+        return Map.of("total", notificacionService.contarNoLeidas(idUsuario));
+    }
+
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @GetMapping("/no-leidas")
+    public Map<String, Long> noLeidasGlobales() {
+        return Map.of("total", notificacionService.contarNoLeidasGlobales());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/{id}/leer")
+    public NotificacionDTO marcarLeida(@PathVariable Long id) {
+        return notificacionService.marcarLeida(id);
     }
 
     @PreAuthorize("isAuthenticated()")

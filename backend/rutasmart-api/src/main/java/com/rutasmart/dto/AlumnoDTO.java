@@ -23,4 +23,10 @@ public class AlumnoDTO {
 
     private Boolean estado;
 
+    private Long inasistencias;
+
+    private String bloqueadoReservasHasta;
+
+    private Boolean puedeReservar;
+
 }

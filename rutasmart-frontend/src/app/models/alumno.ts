@@ -13,4 +13,7 @@ export interface Alumno {
     sede: string;
     ciclo: number;
     estado: boolean;
+    inasistencias?: number;
+    bloqueadoReservasHasta?: string;
+    puedeReservar?: boolean;
 }

@@ -15,6 +15,10 @@ export class AsignacionProgramacionService {
     return this.http.get<AsignacionProgramacion[]>(this.API);
   }
 
+  listarPorChofer(idChofer: number): Observable<AsignacionProgramacion[]> {
+    return this.http.get<AsignacionProgramacion[]>(`${this.API}/chofer/${idChofer}`);
+  }
+
   buscarPorId(id: number): Observable<AsignacionProgramacion> {
     return this.http.get<AsignacionProgramacion>(`${this.API}/${id}`);
   }

@@ -38,4 +38,17 @@ export class ReservaService {
   eliminar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.API}/${id}`);
   }
+
+  obtenerCapacidad(idViaje: number): Observable<{ idViaje: number; capacidad: number; ocupados: number; disponibles: number }> {
+    return this.http.get<{ idViaje: number; capacidad: number; ocupados: number; disponibles: number }>(
+      `${this.API}/viaje/${idViaje}/capacidad`
+    );
+  }
+
+  validarQr(codigo: string, idViaje: number): Observable<{ valido: boolean; mensaje: string; reserva?: Reserva }> {
+    return this.http.post<{ valido: boolean; mensaje: string; reserva?: Reserva }>(
+      `${this.API}/validar-qr?codigo=${encodeURIComponent(codigo)}&idViaje=${idViaje}`,
+      {}
+    );
+  }
 }

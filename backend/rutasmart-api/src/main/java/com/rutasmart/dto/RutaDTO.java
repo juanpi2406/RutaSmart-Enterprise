@@ -29,4 +29,6 @@ public class RutaDTO {
 
     private Boolean estado;
 
+    private String sede;
+
 }
