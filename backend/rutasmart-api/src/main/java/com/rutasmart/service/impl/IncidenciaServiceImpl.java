@@ -13,10 +13,12 @@ import com.rutasmart.repository.ViajeRepository;
 import com.rutasmart.service.interfaces.IncidenciaService;
 import com.rutasmart.service.interfaces.NotificacionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class IncidenciaServiceImpl implements IncidenciaService {
@@ -50,6 +52,7 @@ public class IncidenciaServiceImpl implements IncidenciaService {
 
     }
 
+    @Transactional
     @Override
     public IncidenciaDTO guardar(IncidenciaDTO dto) {
 
@@ -95,6 +98,7 @@ public class IncidenciaServiceImpl implements IncidenciaService {
 
     }
 
+    @Transactional
     @Override
     public IncidenciaDTO actualizar(Long id, IncidenciaDTO dto) {
 
@@ -122,6 +126,7 @@ public class IncidenciaServiceImpl implements IncidenciaService {
 
     }
 
+    @Transactional
     @Override
     public void eliminar(Long id) {
 

@@ -11,11 +11,13 @@ import com.rutasmart.repository.UsuarioRepository;
 import com.rutasmart.service.AsistenciaReservaService;
 import com.rutasmart.service.interfaces.AlumnoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -72,6 +74,7 @@ public class AlumnoServiceImpl implements AlumnoService {
         return enriquecer(alumno);
     }
 
+    @Transactional
     @Override
     public AlumnoDTO guardar(AlumnoDTO dto) {
 
@@ -97,6 +100,7 @@ public class AlumnoServiceImpl implements AlumnoService {
 
     }
 
+    @Transactional
     @Override
     public AlumnoDTO actualizar(Long id, AlumnoDTO dto) {
 
@@ -130,6 +134,7 @@ public class AlumnoServiceImpl implements AlumnoService {
 
     }
 
+    @Transactional
     @Override
     public void eliminar(Long id) {
 

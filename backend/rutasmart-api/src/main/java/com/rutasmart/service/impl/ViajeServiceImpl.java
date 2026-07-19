@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 @Slf4j
