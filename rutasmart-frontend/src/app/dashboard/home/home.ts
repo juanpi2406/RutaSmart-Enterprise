@@ -475,6 +475,11 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
     if (!this.usuario?.idUsuario) return;
     this.dashboardService.dashboardChofer(this.usuario.idUsuario).subscribe({
       next: (data) => {
+        const nuevoIdViaje = data.idViaje;
+        const codigoAnterior = this.codigoRutaActivo;
+        const esPrimeraCargaChofer = this.anteriorIdViaje === null;
+        const viajeChanged = !esPrimeraCargaChofer && nuevoIdViaje !== this.anteriorIdViaje;
+
         this.busAsignado = data.busAsignado;
         this.estadoViaje = data.estadoViaje;
         this.pasajeros = data.pasajeros;
@@ -482,7 +487,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
         this.horaSalida = data.horaSalida;
         this.horaLlegada = data.horaLlegada;
         this.asientosDisponibles = data.asientosDisponibles;
-        this.idViajeActivo = data.idViaje;
+        this.idViajeActivo = nuevoIdViaje;
         this.idRutaActivo = data.idRuta;
         this.codigoRutaActivo = data.codigoRuta || 'R-01';
         this.ruta = data.ruta;
@@ -493,15 +498,21 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
         this.viajeIniciado = !jornadaCompleta
           && (data.estadoViaje === 'EN_CURSO' || data.estadoViaje === 'EN_RUTA');
 
+        this.anteriorIdViaje = nuevoIdViaje;
+
         if (jornadaCompleta) {
           this.simulacion?.unsubscribe();
-          if (this.codigoRutaActivo) {
-            this.reiniciarMapaViaje(this.codigoRutaActivo);
+          if (codigoAnterior) {
+            this.reiniciarMapaViaje(codigoAnterior);
           }
           this.rutaMapaActiva = null;
           this.idViajeActivo = undefined;
           this.codigoRutaActivo = '';
-        } else {
+        } else if (esPrimeraCargaChofer || viajeChanged) {
+          // Nuevo viaje asignado: resetear posición del viaje anterior
+          if (viajeChanged && codigoAnterior) {
+            this.reiniciarMapaViaje(codigoAnterior);
+          }
           this.cargarMapaRol(data.idRuta, data.codigoRuta);
         }
         this.cdr.detectChanges();
@@ -686,5 +697,8 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
     this.trackingBus.registrarInicioRuta(c, lat, lng);
     this.trackingBus.saltarA(c, lat, lng, false, undefined, 0);
     this.trackingBus.finalizar(c);
+    if (this.esBrowser) {
+      localStorage.removeItem('rutasmart-pos-v4-' + c);
+    }
   }
 }
