@@ -39,6 +39,7 @@ public class RutaServiceImpl implements RutaService {
 
     }
 
+    @Transactional
     @Override
     public RutaDTO guardar(RutaDTO dto) {
 
@@ -54,6 +55,7 @@ public class RutaServiceImpl implements RutaService {
 
     }
 
+    @Transactional
     @Override
     public RutaDTO actualizar(Long id, RutaDTO dto) {
 

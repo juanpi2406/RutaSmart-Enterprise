@@ -157,6 +157,7 @@ public class ReservaServiceImpl implements ReservaService {
 
     }
 
+    @Transactional
     @Override
     public void eliminar(Long id) {
 

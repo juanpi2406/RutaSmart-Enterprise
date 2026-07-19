@@ -8,6 +8,7 @@ import com.rutasmart.mapper.RolMapper;
 import com.rutasmart.repository.RolRepository;
 import com.rutasmart.service.interfaces.RolService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class RolServiceImpl implements RolService {
         return mapper.toDTO(rol);
     }
 
+    @Transactional
     @Override
     public RolDTO guardar(RolDTO dto) {
 
@@ -50,6 +52,7 @@ public class RolServiceImpl implements RolService {
         return mapper.toDTO(guardado);
     }
 
+    @Transactional
     @Override
     public RolDTO actualizar(Long id, RolDTO dto) {
 
@@ -70,6 +73,7 @@ public class RolServiceImpl implements RolService {
         return mapper.toDTO(actualizado);
     }
 
+    @Transactional
     @Override
     public void eliminar(Long id) {
 

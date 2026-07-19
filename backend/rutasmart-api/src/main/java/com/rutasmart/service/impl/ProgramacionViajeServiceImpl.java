@@ -41,6 +41,7 @@ public class ProgramacionViajeServiceImpl implements ProgramacionViajeService {
 
     }
 
+    @Transactional
     @Override
     public ProgramacionViajeDTO guardar(ProgramacionViajeDTO dto) {
 
@@ -56,6 +57,7 @@ public class ProgramacionViajeServiceImpl implements ProgramacionViajeService {
 
     }
 
+    @Transactional
     @Override
     public ProgramacionViajeDTO actualizar(Long id,
                                            ProgramacionViajeDTO dto) {

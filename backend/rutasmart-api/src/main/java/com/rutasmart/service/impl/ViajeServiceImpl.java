@@ -79,6 +79,7 @@ public class ViajeServiceImpl implements ViajeService {
         return enriquecer(entity);
     }
 
+    @Transactional
     @Override
     public ViajeDTO guardar(ViajeDTO dto) {
         ProgramacionViaje programacion = programacionRepository.findById(dto.getIdProgramacion())
@@ -98,6 +99,7 @@ public class ViajeServiceImpl implements ViajeService {
         return enriquecer(repository.save(entity));
     }
 
+    @Transactional
     @Override
     public ViajeDTO actualizar(Long id, ViajeDTO dto) {
         Viaje entity = repository.findById(id)
