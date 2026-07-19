@@ -153,14 +153,30 @@ export class BusTrackingService {
     return this.canales.get(key)!;
   }
 
+  /** Borra localStorage y resetea el BehaviorSubject al inicio de la ruta. */
+  resetear(codigoRuta: string): void {
+    if (this.esBrowser) {
+      localStorage.removeItem(this.clavePrefijo + codigoRuta);
+    }
+    const canal = this.obtenerCanal(codigoRuta);
+    const inicio = canal.inicio;
+    this.cancelarAnimacion(canal);
+    canal.from = { lat: inicio.lat, lng: inicio.lng };
+    canal.to = { lat: inicio.lat, lng: inicio.lng };
+    canal.subject.next({ ...inicio, activo: false, actualizadoEn: 0 });
+  }
+
   private leer(codigoRuta: string, fallback: PosicionBus): PosicionBus {
     if (!this.esBrowser) return { ...fallback };
     try {
       const raw = JSON.parse(localStorage.getItem(this.clavePrefijo + codigoRuta) ?? '{}');
       const pos = this.normalizar(raw, codigoRuta);
-      return Date.now() - (pos.actualizadoEn || 0) > 5 * 60 * 1000
-        ? { ...pos, activo: false }
-        : pos;
+      const age = Date.now() - (pos.actualizadoEn || 0);
+      // Solo restaurar si el bus estaba activo y la posición es reciente
+      if (!pos.activo || age > 5 * 60 * 1000) {
+        return { ...fallback, activo: false };
+      }
+      return pos;
     } catch {
       return { ...fallback };
     }
