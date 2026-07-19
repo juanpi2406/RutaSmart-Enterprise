@@ -26,16 +26,17 @@ import com.rutasmart.service.interfaces.DashboardService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class DashboardServiceImpl implements DashboardService {
