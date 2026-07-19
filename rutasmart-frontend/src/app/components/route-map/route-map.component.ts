@@ -232,11 +232,17 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   private actualizarPosicion(lat: number, lng: number, activo: boolean, indice?: number): void {
-    const progreso = progresoDesdeCoords(this.puntos, lat, lng);
-    this.progresoPct = progreso * 100;
     this.activo = activo;
-    this.paraderoActual = indice ?? indiceDesdeProgreso(this.paradas, progresoDesdeCoords(this.paradas, lat, lng));
-    const [x, y] = this.project(lat, lng);
+    // Bus inactivo y sin demo → reset visual al inicio de ruta
+    const conProgreso = activo || this.autoDemo;
+    const progreso = conProgreso ? progresoDesdeCoords(this.puntos, lat, lng) : 0;
+    this.progresoPct = progreso * 100;
+    this.paraderoActual = conProgreso
+      ? (indice ?? indiceDesdeProgreso(this.paradas, progresoDesdeCoords(this.paradas, lat, lng)))
+      : 0;
+    const useLat = conProgreso ? lat : (this.paradas[0]?.lat ?? lat);
+    const useLng = conProgreso ? lng : (this.paradas[0]?.lng ?? lng);
+    const [x, y] = this.project(useLat, useLng);
     this.busX = x;
     this.busY = y;
     const next = interpolarRuta(this.puntos, Math.min(0.999, progreso + 0.002));
