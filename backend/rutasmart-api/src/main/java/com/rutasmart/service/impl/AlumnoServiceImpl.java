@@ -11,12 +11,14 @@ import com.rutasmart.repository.UsuarioRepository;
 import com.rutasmart.service.AsistenciaReservaService;
 import com.rutasmart.service.interfaces.AlumnoService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AlumnoServiceImpl implements AlumnoService {
 
     private final AlumnoRepository alumnoRepository;
@@ -29,12 +31,18 @@ public class AlumnoServiceImpl implements AlumnoService {
 
     private AlumnoDTO enriquecer(Alumno alumno) {
         AlumnoDTO dto = alumnoMapper.toDTO(alumno);
-        long inasistencias = asistenciaReservaService.contarInasistencias(alumno.getIdAlumno());
-        dto.setInasistencias(inasistencias);
-        dto.setPuedeReservar(!asistenciaReservaService.estaSancionado(alumno.getIdAlumno()));
-        if (inasistencias >= 3) {
-            dto.setBloqueadoReservasHasta(
-                    asistenciaReservaService.calcularFinSancion(alumno.getIdAlumno()).toString());
+        try {
+            long inasistencias = asistenciaReservaService.contarInasistencias(alumno.getIdAlumno());
+            dto.setInasistencias(inasistencias);
+            dto.setPuedeReservar(!asistenciaReservaService.estaSancionado(alumno.getIdAlumno()));
+            if (inasistencias >= 3) {
+                dto.setBloqueadoReservasHasta(
+                        asistenciaReservaService.calcularFinSancion(alumno.getIdAlumno()).toString());
+            }
+        } catch (Exception ex) {
+            log.warn("No se pudo calcular asistencias para alumno {}: {}", alumno.getIdAlumno(), ex.getMessage());
+            dto.setInasistencias(0L);
+            dto.setPuedeReservar(true);
         }
         return dto;
     }
