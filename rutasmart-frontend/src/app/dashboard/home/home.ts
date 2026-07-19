@@ -361,6 +361,10 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
     this.wsService.conectar();
     this.wsService.escucharUbicaciones().subscribe((u) => {
       if (!u.codigoRuta) return;
+      // ALUMNO: solo actualizar con posiciones del viaje activo (ignorar si no hay viaje o viaje no coincide)
+      if (this.rol === 'ALUMNO' && this.anteriorIdViaje !== null) {
+        if (!this.idViajeActivo || u.idViaje !== this.idViajeActivo) return;
+      }
       this.trackingBus.publicarRuta(
         u.codigoRuta,
         Number(u.latitud),
@@ -592,6 +596,10 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
         for (const u of lista) {
           const codigo = u.codigoRuta;
           if (!codigo) continue;
+          // ALUMNO: solo publicar posiciones del viaje activo
+          if (this.rol === 'ALUMNO' && this.anteriorIdViaje !== null) {
+            if (!this.idViajeActivo || u.idViaje !== this.idViajeActivo) continue;
+          }
           this.trackingBus.publicarRuta(
             codigo,
             Number(u.latitud),
