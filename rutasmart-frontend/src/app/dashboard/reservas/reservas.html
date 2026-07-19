@@ -75,7 +75,7 @@
 </div>
 
 @if(mostrarModal && reservaEnEdicion){
-<div class="modal-overlay" (click)="cerrarModal()">
+<div class="modal-overlay">
   <div class="modal" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h3>{{ reservaEnEdicion.idReserva ? 'Editar Reserva' : 'Nueva Reserva' }}</h3>

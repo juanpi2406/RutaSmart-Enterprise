@@ -87,7 +87,7 @@
     </div>
 
     @if(mostrarModal){
-    <div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal-overlay">
         <div class="modal" (click)="$event.stopPropagation()">
             <div class="modal-header">
                 <h3>{{ choferEnEdicion?.idChofer ? 'Editar Chofer' : 'Nuevo Chofer' }}</h3>

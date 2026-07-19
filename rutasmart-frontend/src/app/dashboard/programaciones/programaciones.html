@@ -81,7 +81,7 @@
     </div>
 
     @if(mostrarModal){
-    <div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal-overlay">
         <div class="modal" (click)="$event.stopPropagation()">
             <div class="modal-header">
                 <h3>{{ programacionEnEdicion?.idProgramacion ? 'Editar Programación' : 'Nueva Programación' }}</h3>
@@ -141,7 +141,7 @@
     }
 
     @if(mostrarModalAsignacion){
-    <div class="modal-overlay" (click)="cerrarModalAsignacion()">
+    <div class="modal-overlay">
         <div class="modal" (click)="$event.stopPropagation()">
             <div class="modal-header">
                 <h3>Asignar Bus y Chofer</h3>

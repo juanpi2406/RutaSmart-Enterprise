@@ -159,7 +159,7 @@
 </div>
 
 @if(mostrarModal && viajeSeleccionado){
-<div class="modal-overlay" (click)="cerrarModal()">
+<div class="modal-overlay">
   <div class="modal" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h3>Confirmar reserva — Viaje #{{ viajeSeleccionado.idViaje }}</h3>

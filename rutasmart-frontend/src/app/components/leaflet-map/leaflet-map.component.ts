@@ -49,7 +49,8 @@ export class LeafletMapComponent implements AfterViewInit, OnChanges, OnDestroy 
     const host = document.querySelector('.leaflet-host') as HTMLElement;
     if (!host || this.puntos.length < 1 || this.map) return;
     this.hostEl = host;
-    this.L = await import('leaflet');
+    const mod = await import('leaflet');
+    this.L = ((mod as any).default ?? mod) as LeafletNS;
     const L = this.L;
     this.map = L.map(host, { zoomControl: true, attributionControl: true });
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
