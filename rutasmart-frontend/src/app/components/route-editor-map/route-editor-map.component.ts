@@ -91,7 +91,8 @@ export class RouteEditorMapComponent implements AfterViewInit, OnChanges, OnDest
     const host = this.mapHost?.nativeElement;
     if (!host || this.map) return;
 
-    this.L = await import('leaflet');
+    const mod = await import('leaflet');
+    this.L = ((mod as any).default ?? mod) as LeafletNS;
     const L = this.L;
 
     this.map = L.map(host, { zoomControl: true });
