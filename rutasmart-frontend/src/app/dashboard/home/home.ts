@@ -146,6 +146,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
       case 'ALUMNO':
         this.cargarDashboardAlumno();
         this.cargarPerfilAlumno();
+        this.pollDashboard = interval(15000).subscribe(() => this.cargarDashboardAlumno());
         break;
       case 'CHOFER':
         this.cargarDashboardChofer();
@@ -370,7 +371,8 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
       }
       this.cdr.detectChanges();
     });
-    this.pollUbicacion = interval(5000).subscribe(() => this.sincronizarUbicacionApi());
+    this.wsService.alConectar().subscribe(() => this.sincronizarUbicacionApi());
+    this.pollUbicacion = interval(3000).subscribe(() => this.sincronizarUbicacionApi());
     this.sincronizarUbicacionApi();
   }
 

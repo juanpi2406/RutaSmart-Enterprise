@@ -16,6 +16,7 @@ export class WebsocketService implements OnDestroy {
   private socket?: WebSocket;
   private mensajes$ = new Subject<WsMensaje>();
   private reconectarTimer?: ReturnType<typeof setTimeout>;
+  private reconectado$ = new Subject<void>();
 
   ngOnDestroy(): void {
     this.desconectar();
@@ -27,6 +28,7 @@ export class WebsocketService implements OnDestroy {
     const wsUrl = API_BASE_URL.replace(/^http/, 'ws') + '/ws/tracking';
     try {
       this.socket = new WebSocket(wsUrl);
+      this.socket.onopen = () => this.reconectado$.next();
       this.socket.onmessage = (ev) => {
         try {
           const msg = JSON.parse(ev.data) as WsMensaje;
@@ -35,6 +37,9 @@ export class WebsocketService implements OnDestroy {
       };
       this.socket.onclose = () => {
         this.reconectarTimer = setTimeout(() => this.conectar(), 5000);
+      };
+      this.socket.onerror = () => {
+        this.socket?.close();
       };
     } catch { /* ignore */ }
   }
@@ -47,6 +52,10 @@ export class WebsocketService implements OnDestroy {
 
   escuchar(): Observable<WsMensaje> {
     return this.mensajes$.asObservable();
+  }
+
+  alConectar(): Observable<void> {
+    return this.reconectado$.asObservable();
   }
 
   escucharUbicaciones(): Observable<UbicacionBus> {
