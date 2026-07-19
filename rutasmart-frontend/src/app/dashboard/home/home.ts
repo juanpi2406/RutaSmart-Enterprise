@@ -125,6 +125,8 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private indiceRuta = 0;
   private chartListo = false;
+  // null = aún no cargado; undefined = viaje terminado
+  private anteriorIdViaje: number | undefined | null = null;
 
   ngOnInit(): void {
     this.usuario = this.session.obtener();
@@ -424,6 +426,15 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
     if (!this.usuario?.idUsuario) return;
     this.dashboardService.dashboardAlumno(this.usuario.idUsuario).subscribe({
       next: (data) => {
+        const nuevoIdViaje = data.idViaje;
+        const nuevoCodigoRuta = data.codigoRuta || 'R-01';
+        const viajeChanged = this.anteriorIdViaje !== null && nuevoIdViaje !== this.anteriorIdViaje;
+
+        if (viajeChanged) {
+          // Viaje terminó o cambió → resetear posición del bus al inicio
+          this.resetearTracking(this.codigoRutaActivo || nuevoCodigoRuta);
+        }
+
         this.proximoViaje = data.proximoViaje;
         this.estadoBus = data.estadoBus;
         this.misReservas = data.misReservas;
@@ -431,14 +442,33 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
         this.ruta = data.ruta;
         this.paradero = data.paradero;
         this.horaLlegadaBus = data.horaLlegadaBus;
-        this.idViajeActivo = data.idViaje;
+        this.idViajeActivo = nuevoIdViaje;
         this.idRutaActivo = data.idRuta;
-        this.codigoRutaActivo = data.codigoRuta || 'R-01';
-        this.cargarMapaRol(data.idRuta, data.codigoRuta);
+        this.codigoRutaActivo = nuevoCodigoRuta;
+        const esPrimeraCarga = this.anteriorIdViaje === null;
+        this.anteriorIdViaje = nuevoIdViaje;
+
+        // Cargar mapa en primera carga o cuando cambia el viaje
+        if (esPrimeraCarga || viajeChanged) {
+          this.cargarMapaRol(data.idRuta, nuevoCodigoRuta);
+        }
+
         this.cdr.detectChanges();
       },
       error: (error) => console.error('Error cargando Dashboard Alumno', error)
     });
+  }
+
+  private resetearTracking(codigoRuta: string): void {
+    if (!codigoRuta) return;
+    const inicio = this.rutaMapaActiva?.marcadores?.[0];
+    const lat = inicio?.lat ?? -12.1895;
+    const lng = inicio?.lng ?? -76.985;
+    this.trackingBus.saltarA(codigoRuta, lat, lng, false, undefined, 0);
+    this.trackingBus.finalizar(codigoRuta);
+    if (this.esBrowser) {
+      localStorage.removeItem('rutasmart-pos-v4-' + codigoRuta);
+    }
   }
 
   cargarDashboardChofer(mostrarAlerta = false): void {
@@ -546,6 +576,8 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
   private sincronizarUbicacionApi(): void {
     this.ubicacionService.listarActivas().subscribe({
       next: (lista) => {
+        const codigosActivos = new Set(lista.map(u => u.codigoRuta).filter(Boolean));
+
         for (const u of lista) {
           const codigo = u.codigoRuta;
           if (!codigo) continue;
@@ -557,6 +589,15 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
             u.idViaje
           );
         }
+
+        // Si la ruta del alumno ya no tiene bus activo → marcar como inactivo
+        if (this.rol === 'ALUMNO' && this.codigoRutaActivo && !codigosActivos.has(this.codigoRutaActivo)) {
+          const pos = this.trackingBus.obtenerActualRuta(this.codigoRutaActivo);
+          if (pos.activo) {
+            this.trackingBus.finalizar(this.codigoRutaActivo);
+          }
+        }
+
         this.cdr.detectChanges();
       },
       error: () => undefined
