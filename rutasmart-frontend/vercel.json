@@ -1,0 +1,5 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/rutasmart-frontend/browser",
+  "installCommand": "npm install --legacy-peer-deps"
+}

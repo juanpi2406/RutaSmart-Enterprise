@@ -448,8 +448,11 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
         const esPrimeraCarga = this.anteriorIdViaje === null;
         this.anteriorIdViaje = nuevoIdViaje;
 
-        // Cargar mapa en primera carga o cuando cambia el viaje
+        // En primera carga o cambio de viaje: resetear tracking y recargar mapa
         if (esPrimeraCarga || viajeChanged) {
+          if (nuevoCodigoRuta) {
+            this.trackingBus.resetear(nuevoCodigoRuta);
+          }
           this.cargarMapaRol(data.idRuta, nuevoCodigoRuta);
         }
 
@@ -461,14 +464,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private resetearTracking(codigoRuta: string): void {
     if (!codigoRuta) return;
-    const inicio = this.rutaMapaActiva?.marcadores?.[0];
-    const lat = inicio?.lat ?? -12.1895;
-    const lng = inicio?.lng ?? -76.985;
-    this.trackingBus.saltarA(codigoRuta, lat, lng, false, undefined, 0);
-    this.trackingBus.finalizar(codigoRuta);
-    if (this.esBrowser) {
-      localStorage.removeItem('rutasmart-pos-v4-' + codigoRuta);
-    }
+    this.trackingBus.resetear(codigoRuta);
   }
 
   cargarDashboardChofer(mostrarAlerta = false): void {
@@ -509,9 +505,13 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
           this.idViajeActivo = undefined;
           this.codigoRutaActivo = '';
         } else if (esPrimeraCargaChofer || viajeChanged) {
-          // Nuevo viaje asignado: resetear posición del viaje anterior
+          // Resetear tracking: viaje nuevo o primera carga con viaje no iniciado
           if (viajeChanged && codigoAnterior) {
-            this.reiniciarMapaViaje(codigoAnterior);
+            this.trackingBus.resetear(codigoAnterior);
+          }
+          // En primera carga, resetear el código de la nueva ruta para borrar posición vieja
+          if (this.codigoRutaActivo) {
+            this.trackingBus.resetear(this.codigoRutaActivo);
           }
           this.cargarMapaRol(data.idRuta, data.codigoRuta);
         }
@@ -689,16 +689,6 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
   private reiniciarMapaViaje(codigo?: string): void {
     const c = codigo || this.codigoRutaActivo;
     if (!c) return;
-
-    const inicio = this.rutaMapaActiva?.marcadores?.[0];
-    const lat = inicio?.lat ?? -12.1895;
-    const lng = inicio?.lng ?? -76.985;
-
-    this.trackingBus.registrarInicioRuta(c, lat, lng);
-    this.trackingBus.saltarA(c, lat, lng, false, undefined, 0);
-    this.trackingBus.finalizar(c);
-    if (this.esBrowser) {
-      localStorage.removeItem('rutasmart-pos-v4-' + c);
-    }
+    this.trackingBus.resetear(c);
   }
 }
