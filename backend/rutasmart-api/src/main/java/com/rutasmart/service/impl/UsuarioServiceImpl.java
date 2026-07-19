@@ -229,6 +229,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         choferRepository.save(chofer);
 
     }
+        @Transactional
         @Override
     public UsuarioResponseDTO actualizar(Long id,
                                          UsuarioUpdateDTO dto) {

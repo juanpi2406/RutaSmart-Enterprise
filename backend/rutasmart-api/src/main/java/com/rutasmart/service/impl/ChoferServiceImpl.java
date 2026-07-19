@@ -65,6 +65,7 @@ public class ChoferServiceImpl implements ChoferService {
 
     }
 
+    @Transactional
     @Override
     public ChoferResponseDTO crear(ChoferCreateDTO dto) {
 
@@ -100,6 +101,7 @@ public class ChoferServiceImpl implements ChoferService {
 
     }
 
+    @Transactional
     @Override
     public ChoferResponseDTO actualizar(Long id,
                                         ChoferUpdateDTO dto) {

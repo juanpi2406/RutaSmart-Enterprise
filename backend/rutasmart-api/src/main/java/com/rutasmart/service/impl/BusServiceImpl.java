@@ -38,6 +38,7 @@ public class BusServiceImpl implements BusService {
         return busMapper.toDTO(bus);
     }
 
+    @Transactional
     @Override
     public BusDTO guardar(BusDTO dto) {
 
@@ -57,6 +58,7 @@ public class BusServiceImpl implements BusService {
 
     }
 
+    @Transactional
     @Override
     public BusDTO actualizar(Long id, BusDTO dto) {
 

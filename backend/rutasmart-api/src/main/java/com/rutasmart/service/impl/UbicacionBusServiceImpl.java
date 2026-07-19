@@ -11,6 +11,7 @@ import com.rutasmart.service.interfaces.UbicacionBusService;
 import com.rutasmart.service.ArrivalNotificationService;
 import com.rutasmart.websocket.TrackingBroadcastService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,6 +46,7 @@ public class UbicacionBusServiceImpl implements UbicacionBusService {
 
     }
 
+    @Transactional
     @Override
     public UbicacionBusDTO guardar(UbicacionBusDTO dto) {
 
@@ -71,6 +73,7 @@ public class UbicacionBusServiceImpl implements UbicacionBusService {
 
     }
 
+    @Transactional
     @Override
     public UbicacionBusDTO actualizar(Long id,
                                       UbicacionBusDTO dto) {
@@ -100,6 +103,7 @@ public class UbicacionBusServiceImpl implements UbicacionBusService {
 
     }
 
+    @Transactional
     @Override
     public void eliminar(Long id) {
 
