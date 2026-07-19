@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class RutaServiceImpl implements RutaService {

@@ -10,10 +10,12 @@ import com.rutasmart.repository.RutaRepository;
 import com.rutasmart.service.interfaces.ParaderoService;
 import com.rutasmart.service.interfaces.RutaGeometriaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class ParaderoServiceImpl implements ParaderoService {
@@ -41,6 +43,7 @@ public class ParaderoServiceImpl implements ParaderoService {
         return mapper.toDTO(entity);
     }
 
+    @Transactional
     @Override
     public ParaderoDTO guardar(ParaderoDTO dto) {
         Ruta ruta = rutaRepository.findById(dto.getIdRuta())
@@ -54,6 +57,7 @@ public class ParaderoServiceImpl implements ParaderoService {
         return mapper.toDTO(guardado);
     }
 
+    @Transactional
     @Override
     public ParaderoDTO actualizar(Long id, ParaderoDTO dto) {
         Paradero entity = repository.findById(id)
@@ -76,6 +80,7 @@ public class ParaderoServiceImpl implements ParaderoService {
         return mapper.toDTO(actualizado);
     }
 
+    @Transactional
     @Override
     public void eliminar(Long id) {
         Paradero entity = repository.findById(id)

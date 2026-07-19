@@ -9,10 +9,12 @@ import com.rutasmart.repository.NotificacionRepository;
 import com.rutasmart.repository.UsuarioRepository;
 import com.rutasmart.service.interfaces.NotificacionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class NotificacionServiceImpl implements NotificacionService {
@@ -42,6 +44,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 
     }
 
+    @Transactional
     @Override
     public NotificacionDTO guardar(NotificacionDTO dto) {
 
@@ -62,6 +65,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 
     }
 
+    @Transactional
     @Override
     public NotificacionDTO actualizar(Long id,
                                       NotificacionDTO dto) {
@@ -91,6 +95,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 
     }
 
+    @Transactional
     @Override
     public void eliminar(Long id) {
 
@@ -122,6 +127,7 @@ public class NotificacionServiceImpl implements NotificacionService {
         return notificacionRepository.countByLeido(false);
     }
 
+    @Transactional
     @Override
     public NotificacionDTO marcarLeida(Long id) {
         Notificacion notificacion = notificacionRepository.findById(id)
@@ -138,6 +144,7 @@ public class NotificacionServiceImpl implements NotificacionService {
         );
     }
 
+    @Transactional
     @Override
     public NotificacionDTO enviar(Long idUsuario, String titulo, String mensaje, String tipo) {
         NotificacionDTO dto = new NotificacionDTO();

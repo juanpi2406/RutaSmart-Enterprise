@@ -13,10 +13,12 @@ import com.rutasmart.repository.ChoferRepository;
 import com.rutasmart.repository.ProgramacionViajeRepository;
 import com.rutasmart.service.interfaces.AsignacionProgramacionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class AsignacionProgramacionServiceImpl implements AsignacionProgramacionService {
@@ -47,6 +49,7 @@ public class AsignacionProgramacionServiceImpl implements AsignacionProgramacion
         return mapper.toDTO(entity);
     }
 
+    @Transactional
     @Override
     public AsignacionProgramacionDTO guardar(AsignacionProgramacionDTO dto) {
 
@@ -68,6 +71,7 @@ public class AsignacionProgramacionServiceImpl implements AsignacionProgramacion
         return mapper.toDTO(repository.save(entity));
     }
 
+    @Transactional
     @Override
     public AsignacionProgramacionDTO actualizar(Long id, AsignacionProgramacionDTO dto) {
 
@@ -94,6 +98,7 @@ public class AsignacionProgramacionServiceImpl implements AsignacionProgramacion
         return mapper.toDTO(repository.save(entity));
     }
 
+    @Transactional
     @Override
     public void eliminar(Long id) {
 

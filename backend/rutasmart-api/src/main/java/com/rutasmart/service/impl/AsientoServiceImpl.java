@@ -9,10 +9,12 @@ import com.rutasmart.repository.AsientoRepository;
 import com.rutasmart.repository.ViajeRepository;
 import com.rutasmart.service.interfaces.AsientoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class AsientoServiceImpl implements AsientoService {
@@ -26,6 +28,7 @@ public class AsientoServiceImpl implements AsientoService {
         return mapper.toDTOList(repository.findByViaje_IdViaje(idViaje));
     }
 
+    @Transactional
     @Override
     public AsientoDTO guardar(AsientoDTO dto) {
         Viaje viaje = viajeRepository.getReferenceById(dto.getIdViaje());
@@ -35,6 +38,7 @@ public class AsientoServiceImpl implements AsientoService {
         return mapper.toDTO(guardado);
     }
 
+    @Transactional
     @Override
     public AsientoDTO actualizar(Long id, AsientoDTO dto) {
         Asiento entity = repository.findById(id)
@@ -45,6 +49,7 @@ public class AsientoServiceImpl implements AsientoService {
         return mapper.toDTO(actualizado);
     }
 
+    @Transactional
     @Override
     public void eliminar(Long id) {
         repository.deleteById(id);
