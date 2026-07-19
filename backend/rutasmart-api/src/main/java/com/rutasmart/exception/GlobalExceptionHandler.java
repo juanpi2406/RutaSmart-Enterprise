@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> generalException(
             Exception ex) {
 
-        log.error("Error no controlado", ex);
+        log.error("Error no controlado — tipo: {} | mensaje: {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error("Ocurrió un error inesperado en el servidor."));
