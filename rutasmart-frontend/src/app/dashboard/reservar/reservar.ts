@@ -192,6 +192,9 @@ export class ReservarComponent implements OnInit {
     this.paraderoService.listarPorRuta(this.idRutaSeleccionada).subscribe({
       next: (data) => {
         this.paraderos = data.sort((a, b) => a.orden - b.orden);
+        if (this.paraderos.length) {
+          this.form.idParadero = this.paraderos[0].idParadero;
+        }
         this.cdr.markForCheck();
       },
       error: () => {
