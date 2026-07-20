@@ -179,8 +179,10 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   private calcularProyeccion(): void {
-    const lats = this.puntos.map(p => p.lat);
-    const lngs = this.puntos.map(p => p.lng);
+    // Incluir marcadores en el bbox para que nunca queden fuera del canvas
+    const todos = [...this.puntos, ...(this.marcadores ?? [])];
+    const lats = todos.map(p => p.lat);
+    const lngs = todos.map(p => p.lng);
     this.minLat = Math.min(...lats);
     this.maxLat = Math.max(...lats);
     this.minLng = Math.min(...lngs);
@@ -240,9 +242,9 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.paraderoActual = conProgreso
       ? (indice ?? indiceDesdeProgreso(this.paradas, progresoDesdeCoords(this.paradas, lat, lng)))
       : 0;
-    // Cuando inactivo, usar las coords del BehaviorSubject (ya apuntan al paradero de abordaje)
-    const useLat = lat;
-    const useLng = lng;
+    // Cuando inactivo, colocar bus en el primer punto de la ruta (inicio físico del recorrido)
+    const useLat = conProgreso ? lat : (this.puntos[0]?.lat ?? lat);
+    const useLng = conProgreso ? lng : (this.puntos[0]?.lng ?? lng);
     const [x, y] = this.project(useLat, useLng);
     this.busX = x;
     this.busY = y;
@@ -390,11 +392,8 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
     // —— Paraderos ——
     this.paradas.forEach((p, i) => {
-      const idxEnPoly = this.puntos.findIndex(
-        (pt) => pt.tipo === p.tipo && Math.abs(pt.lat - p.lat) < 0.0001 && Math.abs(pt.lng - p.lng) < 0.0001
-      );
-      const pi = idxEnPoly >= 0 ? idxEnPoly : Math.min(i, pxPuntos.length - 1);
-      const [x, y] = pxPuntos[pi] ?? pxPuntos[0];
+      // Proyectar desde las coords reales del paradero — nunca desde pxPuntos index
+      const [x, y] = this.project(p.lat, p.lng);
       const esExtremo = p.tipo === 'origen' || p.tipo === 'destino';
       const visitado = i <= this.paraderoActual;
       const esActual = i === this.paraderoActual;
