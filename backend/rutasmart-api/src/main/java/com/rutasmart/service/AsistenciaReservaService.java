@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -57,7 +58,7 @@ public class AsistenciaReservaService {
         if (inasistencias < MAX_INASISTENCIAS) return;
 
         LocalDate bloqueadoHasta = calcularFinSancion(alumno.getIdAlumno());
-        if (!LocalDate.now().isAfter(bloqueadoHasta)) {
+        if (!LocalDate.now(ZoneId.of("America/Lima")).isAfter(bloqueadoHasta)) {
             throw new BusinessException(
                     "Tienes " + inasistencias + " inasistencias registradas. "
                             + "No puedes reservar hasta el "
@@ -75,19 +76,19 @@ public class AsistenciaReservaService {
                 .findByAlumno_IdAlumnoAndEstadoOrderByViaje_FechaViajeDesc(idAlumno, "NO_ASISTIO");
 
         if (inasistencias.size() < MAX_INASISTENCIAS) {
-            return LocalDate.now().minusDays(1);
+            return LocalDate.now(ZoneId.of("America/Lima")).minusDays(1);
         }
 
         Reserva tercera = inasistencias.get(MAX_INASISTENCIAS - 1);
         LocalDate fechaReferencia = tercera.getViaje() != null
                 ? tercera.getViaje().getFechaViaje()
-                : LocalDate.now();
+                : LocalDate.now(ZoneId.of("America/Lima"));
         return fechaReferencia.plusDays(DIAS_SANCION);
     }
 
     public boolean estaSancionado(Long idAlumno) {
         if (contarInasistencias(idAlumno) < MAX_INASISTENCIAS) return false;
-        return !LocalDate.now().isAfter(calcularFinSancion(idAlumno));
+        return !LocalDate.now(ZoneId.of("America/Lima")).isAfter(calcularFinSancion(idAlumno));
     }
 
     private void evaluarSancion(Alumno alumno) {

@@ -12,6 +12,7 @@ import com.rutasmart.entity.Incidencia;
 import com.rutasmart.entity.Reserva;
 import com.rutasmart.entity.Viaje;
 
+import java.time.ZoneId;
 import com.rutasmart.repository.AlumnoRepository;
 import com.rutasmart.repository.BusRepository;
 import com.rutasmart.repository.ChoferRepository;
@@ -79,7 +80,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     private List<ReservaPorDiaDTO> construirReservasPorDia(int dias) {
-        LocalDate hoy = LocalDate.now();
+        LocalDate hoy = LocalDate.now(ZoneId.of("America/Lima"));
         LocalDateTime desde = hoy.minusDays(dias - 1L).atStartOfDay();
 
         Map<LocalDate, Long> porDia = new HashMap<>();
@@ -212,7 +213,7 @@ public class DashboardServiceImpl implements DashboardService {
             return dto;
         }
 
-        LocalDate hoy = LocalDate.now();
+        LocalDate hoy = LocalDate.now(ZoneId.of("America/Lima"));
 
         long pendientes = viajeRepository.countByChofer_IdChoferAndFechaViajeAndEstadoIn(
                 chofer.getIdChofer(), hoy, List.of("PROGRAMADO", "EN_CURSO", "EN_RUTA"));
