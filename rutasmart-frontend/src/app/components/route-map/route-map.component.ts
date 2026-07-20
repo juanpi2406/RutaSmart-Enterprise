@@ -240,8 +240,9 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.paraderoActual = conProgreso
       ? (indice ?? indiceDesdeProgreso(this.paradas, progresoDesdeCoords(this.paradas, lat, lng)))
       : 0;
-    const useLat = conProgreso ? lat : (this.paradas[0]?.lat ?? lat);
-    const useLng = conProgreso ? lng : (this.paradas[0]?.lng ?? lng);
+    // Cuando inactivo, usar las coords del BehaviorSubject (ya apuntan al paradero de abordaje)
+    const useLat = lat;
+    const useLng = lng;
     const [x, y] = this.project(useLat, useLng);
     this.busX = x;
     this.busY = y;
@@ -348,7 +349,7 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     const progreso = this.progresoPct / 100;
     if (progreso > 0.005) {
       const cutIdx = Math.floor(progreso * (this.puntos.length - 1));
-      const pxCut = pxPuntos.slice(0, cutIdx + 2);
+      const pxCut = pxPuntos.slice(0, cutIdx + 1);
       if (pxCut.length >= 2) {
         // glow
         ctx.beginPath();
@@ -472,16 +473,20 @@ export class RouteMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   private curveThrough(ctx: CanvasRenderingContext2D, pts: [number, number][], i: number): void {
     // Catmull-Rom suavizado
     if (i === 0 || pts.length < 2) return;
-    if (pts.length === 2 || i === pts.length - 1) {
+    if (pts.length === 2) {
       ctx.lineTo(pts[i][0], pts[i][1]);
       return;
     }
     const p0 = pts[i - 1];
     const p1 = pts[i];
+    if (i === pts.length - 1) {
+      // Último segmento: curva suave al punto final en lugar de lineTo recto
+      ctx.quadraticCurveTo(p0[0], p0[1], p1[0], p1[1]);
+      return;
+    }
     const cpx = (p0[0] + p1[0]) / 2;
     const cpy = (p0[1] + p1[1]) / 2;
     ctx.quadraticCurveTo(p0[0], p0[1], cpx, cpy);
-    if (i === pts.length - 1) ctx.lineTo(p1[0], p1[1]);
   }
 
   private dibujarBus(ctx: CanvasRenderingContext2D, x: number, y: number, angle: number): void {

@@ -318,7 +318,9 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
         this.codigoRutaActivo = mapa.codigo || codigo || 'R-01';
         this.idRutaActivo = mapa.idRuta;
         if (mapa.mapeable && mapa.marcadores.length) {
-          const inicio = mapa.marcadores[0];
+          // Usar el paradero de abordaje (destino en BD = UTP Lima Sur para el alumno)
+          const inicio = mapa.marcadores.find(m => m.tipo === 'destino')
+            ?? mapa.marcadores[mapa.marcadores.length - 1];
           this.trackingBus.registrarInicioRuta(this.codigoRutaActivo, inicio.lat, inicio.lng);
           if (!this.viajeIniciado) {
             this.trackingBus.saltarA(
