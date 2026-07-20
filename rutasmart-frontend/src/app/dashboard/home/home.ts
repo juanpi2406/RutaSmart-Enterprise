@@ -279,11 +279,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit, OnDestroy 
   private onViajeFinalizado(): void {
     this.viajeIniciado = false;
     this.simulacion?.unsubscribe();
-
-    if (this.codigoRutaActivo) {
-      this.reiniciarMapaViaje(this.codigoRutaActivo);
-    }
-
+    // El mapa se resetea dentro de cargarDashboardChofer cuando detecta jornadaCompleta
     this.cargarDashboardChofer(true);
   }
 
